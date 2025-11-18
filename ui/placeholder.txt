@@ -1,0 +1,9 @@
+这是一个占位符文件，表示此文件夹用于存放UI资源。
+
+实际使用时，请将以下文件放入此目录：
+- home.png / home-active.png
+- upload.png / upload-active.png  
+- collection.png / collection-active.png
+- achievement.png / achievement-active.png
+- logo.png
+- default-equipment.png

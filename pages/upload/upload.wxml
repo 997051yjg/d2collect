@@ -1,0 +1,100 @@
+<!--pages/upload/upload.wxml-->
+<view class="container">
+  <!-- 登录提示 -->
+  <view class="login-prompt" wx:if="{{!isLoggedIn}}">
+    <view class="login-prompt-card card">
+      <text class="login-prompt-title">需要登录</text>
+      <text class="login-prompt-desc">请先登录后才能上传装备</text>
+      <button class="btn-primary login-btn" bindtap="goToLogin">去登录</button>
+    </view>
+  </view>
+
+  <!-- 上传界面 -->
+  <view class="upload-section" wx:if="{{isLoggedIn}}">
+    <!-- 图片上传区域 -->
+    <view class="upload-area card">
+      <view class="upload-header">
+        <text class="upload-title gold-text">上传装备图片</text>
+        <text class="upload-tip">支持JPG、PNG格式，最大5MB</text>
+      </view>
+      
+      <view class="image-preview" wx:if="{{uploadedImage}}">
+        <image class="preview-image" src="{{uploadedImage}}" mode="aspectFit"></image>
+        <view class="preview-actions">
+          <button class="btn-secondary" bindtap="removeImage">删除</button>
+          <button class="btn-primary" bindtap="reuploadImage">重新上传</button>
+        </view>
+      </view>
+      
+      <view class="upload-button" wx:else>
+        <view class="upload-icon">📷</view>
+        <text class="upload-text">点击选择图片</text>
+        <button class="upload-btn" bindtap="chooseImage" size="mini">选择图片</button>
+      </view>
+    </view>
+
+    <!-- 装备信息表单 -->
+    <view class="form-section card" wx:if="{{uploadedImage}}">
+      <view class="form-header">
+        <text class="form-title gold-text">装备信息</text>
+      </view>
+      
+      <form bindsubmit="submitForm">
+        <!-- 装备名称搜索 -->
+        <view class="form-group">
+          <label class="form-label">装备名称</label>
+          <view class="search-container">
+            <input 
+              class="input search-input" 
+              name="name" 
+              placeholder="输入装备名称关键字搜索" 
+              value="{{formData.name}}" 
+              bindinput="onNameInput"
+              bindblur="onInputBlur"
+            />
+            
+            <!-- 搜索结果 -->
+            <view class="search-results" wx:if="{{showSearchResults}}">
+              <view 
+                class="search-result-item" 
+                wx:for="{{searchResults}}" 
+                wx:key="index"
+                bindtap="selectEquipment"
+                data-index="{{index}}"
+              >
+                <text class="result-name">{{item.name}}</text>
+                <text class="result-type">{{item.type}} - {{item.rarity}}</text>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 选中的装备信息 -->
+          <view class="selected-equipment" wx:if="{{selectedEquipment}}">
+            <text class="selected-name">{{selectedEquipment.name}}</text>
+            <text class="selected-info">{{selectedEquipment.type}} - {{selectedEquipment.rarity}}</text>
+          </view>
+        </view>
+        
+        <view class="form-actions">
+          <button class="btn-secondary" form-type="reset" bindtap="resetForm">重置</button>
+          <button class="btn-primary" form-type="submit" disabled="{{!canSubmit}}">提交上传</button>
+        </view>
+      </form>
+    </view>
+
+    <!-- 上传进度 -->
+    <view class="upload-progress" wx:if="{{uploading}}">
+      <view class="progress-card card">
+        <text class="progress-title">上传中...</text>
+        <progress class="progress-bar" percent="{{uploadProgress}}" show-info />
+        <text class="progress-text">{{uploadProgress}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+</view>

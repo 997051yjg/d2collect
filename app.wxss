@@ -1,0 +1,243 @@
+/* app.wxss */
+
+/* 全局样式 - 暗黑破坏神2风格 */
+page {
+  background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+  color: #ffffff;
+  font-family: 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+}
+
+/* 暗黑风格容器 */
+.container {
+  padding: 20rpx;
+  min-height: 100vh;
+}
+
+/* 暗金文字效果 */
+.gold-text {
+  color: #d4af37;
+}
+
+/* 激活状态的金色光晕文字 */
+.gold-text.active {
+  text-shadow: 0 0 10rpx rgba(212, 175, 55, 0.5);
+}
+
+/* 卡片样式 - 统一为首页黑金主题 */
+.card {
+  background: rgba(10, 10, 10, 0.95);
+  border: 2rpx solid #d4af37;
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
+}
+
+.card:active {
+  transform: scale(0.98);
+  border-color: #ffd700;
+  box-shadow: 
+    0 0 30rpx rgba(255, 215, 0, 0.4),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 激活状态的卡片 - 金色光芒效果 */
+.card.active {
+  border-color: #d4af37;
+  box-shadow: 0 0 20rpx rgba(212, 175, 55, 0.3);
+  position: relative;
+}
+
+.card.active::before {
+  content: '';
+  position: absolute;
+  top: -2rpx;
+  left: -2rpx;
+  right: -2rpx;
+  bottom: -2rpx;
+  border-radius: 14rpx;
+  background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+  animation: goldGlow 2s ease-in-out infinite alternate;
+  z-index: -1;
+}
+
+@keyframes goldGlow {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+  color: #000000;
+  border: none;
+  border-radius: 8rpx;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #b8860b 0%, #d4af37 100%);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border: 1rpx solid #666;
+  border-radius: 8rpx;
+  font-weight: 500;
+}
+
+.btn-secondary:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* 输入框样式 */
+.input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1rpx solid #666;
+  border-radius: 8rpx;
+  color: #ffffff;
+  padding: 20rpx;
+}
+
+.input:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 10rpx rgba(212, 175, 55, 0.3);
+}
+
+/* 加载动画 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40rpx;
+}
+
+.loading-spinner {
+  width: 40rpx;
+  height: 40rpx;
+  border: 4rpx solid #333;
+  border-top: 4rpx solid #d4af37;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 网格布局 */
+.grid {
+  display: grid;
+  gap: 20rpx;
+}
+
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.grid-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* 响应式布局 */
+@media (max-width: 750rpx) {
+  .grid-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 500rpx) {
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 自定义导航栏样式 - 暗黑黑金主题 */
+.tab-bar-custom {
+  background: rgba(10, 10, 10, 0.95) !important;
+  border-top: 2rpx solid #d4af37 !important;
+  backdrop-filter: blur(10rpx);
+  height: 100rpx !important;
+}
+
+.tab-bar-item {
+  padding: 16rpx 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab-bar-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 4rpx;
+  background: linear-gradient(90deg, #d4af37, #ffd700);
+  border-radius: 2rpx;
+  transition: all 0.3s ease;
+}
+
+.tab-bar-item.selected::before {
+  width: 60rpx;
+}
+
+.tab-bar-item .tab-bar-text {
+  font-size: 24rpx;
+  font-weight: 500;
+  margin-top: 8rpx;
+  color: #b89c4f;
+  transition: all 0.3s ease;
+}
+
+.tab-bar-item.selected .tab-bar-text {
+  color: #d4af37 !important;
+  text-shadow: 0 0 10rpx rgba(212, 175, 55, 0.5);
+  font-weight: 600;
+}
+
+.tab-bar-item .tab-bar-icon {
+  width: 48rpx;
+  height: 48rpx;
+  transition: all 0.3s ease;
+}
+
+.tab-bar-item.selected .tab-bar-icon {
+  filter: drop-shadow(0 0 8rpx rgba(212, 175, 55, 0.6));
+  transform: scale(1.1);
+}
+
+.tab-bar-item:active {
+  transform: scale(0.95);
+}
+
+/* 导航栏图标占位样式（如果没有图片） */
+.tab-icon-placeholder {
+  width: 48rpx;
+  height: 48rpx;
+  background: rgba(212, 175, 55, 0.2);
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #b89c4f;
+  font-weight: bold;
+}
+
+.tab-bar-item.selected .tab-icon-placeholder {
+  background: rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+  box-shadow: 0 0 12rpx rgba(212, 175, 55, 0.3);
+}

@@ -1,0 +1,263 @@
+/* pages/detail/detail.wxss */
+
+.detail-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: #ffffff;
+  padding: 20rpx;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #d4af37;
+  border-top: 4rpx solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: #cccccc;
+  font-size: 28rpx;
+}
+
+/* 装备头部 */
+.equipment-header {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  background: rgba(10, 10, 10, 0.95);
+  border: 2rpx solid #d4af37;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
+}
+
+.equipment-header:active {
+  transform: scale(0.98);
+  border-color: #ffd700;
+  box-shadow: 
+    0 0 30rpx rgba(255, 215, 0, 0.4),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
+}
+
+.emoji {
+  font-size: 80rpx;
+  margin-right: 30rpx;
+}
+
+.info {
+  flex: 1;
+}
+
+.name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #d4af37;
+  margin-bottom: 10rpx;
+}
+
+.type {
+  display: block;
+  font-size: 28rpx;
+  color: #cccccc;
+  margin-bottom: 15rpx;
+}
+
+.status {
+  display: inline-block;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+.status.activated {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  border: 1rpx solid rgba(76, 175, 80, 0.5);
+}
+
+.status.not-activated {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  border: 1rpx solid rgba(244, 67, 54, 0.5);
+}
+
+/* 图片区域 */
+.image-section {
+  margin-bottom: 30rpx;
+}
+
+.image-preview {
+  text-align: center;
+}
+
+.equipment-image {
+  width: 300rpx;
+  height: 300rpx;
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+  border: 2rpx solid #d4af37;
+}
+
+.equipment-image.show {
+  opacity: 1;
+}
+
+.equipment-image.hide {
+  opacity: 0.3;
+}
+
+.image-controls {
+  margin-top: 20rpx;
+  display: flex;
+  gap: 20rpx;
+  justify-content: center;
+}
+
+.btn-view, .btn-toggle, .btn-upload {
+  background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+  color: #000000;
+  border: none;
+  border-radius: 8rpx;
+  padding: 16rpx 24rpx;
+  font-size: 26rpx;
+  font-weight: bold;
+}
+
+.btn-view:active, .btn-toggle:active, .btn-upload:active {
+  opacity: 0.8;
+}
+
+.no-image {
+  text-align: center;
+  padding: 60rpx 30rpx;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16rpx;
+  border: 1rpx dashed #666666;
+}
+
+.no-image-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.no-image-text {
+  display: block;
+  color: #999999;
+  font-size: 28rpx;
+  margin-bottom: 30rpx;
+}
+
+/* 属性区域 */
+.attributes-section, .activation-info, .description-section {
+  background: rgba(10, 10, 10, 0.95);
+  border: 2rpx solid #d4af37;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
+}
+
+.attributes-section:active, .activation-info:active, .description-section:active {
+  transform: scale(0.98);
+  border-color: #ffd700;
+  box-shadow: 
+    0 0 30rpx rgba(255, 215, 0, 0.4),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #d4af37;
+  margin-bottom: 20rpx;
+  border-bottom: 1rpx solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 10rpx;
+}
+
+.attributes-list, .activation-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.attribute-item, .activation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 0;
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.attribute-item:last-child, .activation-item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: #cccccc;
+  font-size: 28rpx;
+}
+
+.value {
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 描述区域 */
+.description-content {
+  color: #cccccc;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+/* 未找到装备 */
+.not-found {
+  text-align: center;
+  padding: 100rpx 30rpx;
+}
+
+.not-found-icon {
+  font-size: 100rpx;
+  margin-bottom: 30rpx;
+}
+
+.not-found-text {
+  display: block;
+  color: #999999;
+  font-size: 32rpx;
+  margin-bottom: 40rpx;
+}
+
+.btn-back {
+  background: #666666;
+  color: #ffffff;
+  border: none;
+  border-radius: 8rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+}

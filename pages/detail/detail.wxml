@@ -1,0 +1,78 @@
+<!-- pages/detail/detail.wxml -->
+
+<view class="detail-container">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 装备详情 -->
+  <view wx:if="{{!loading && equipment}}" class="equipment-detail">
+    <!-- 头部信息 -->
+    <view class="equipment-header">
+      <view class="emoji">{{getEquipmentEmoji(equipment.type)}}</view>
+      <view class="info">
+        <text class="name">{{equipment.name}}</text>
+        <text class="type">{{equipment.type}} · {{equipment.rarity}}</text>
+        <view class="status {{isActivated ? 'activated' : 'not-activated'}}">
+          {{isActivated ? '已激活' : '未激活'}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 装备图片 -->
+    <view class="image-section">
+      <view class="image-preview" wx:if="{{isActivated && userEquipment && userEquipment.images && userEquipment.images[0]}}">
+        <image 
+          src="{{userEquipment.images[0]}}" 
+          class="equipment-image {{showImage ? 'show' : 'hide'}}"
+          mode="aspectFit"
+          bindtap="viewImage"
+        />
+        <view class="image-controls">
+          <button class="btn-view" bindtap="viewImage">查看大图</button>
+          <button class="btn-toggle" bindtap="toggleImage">
+            {{showImage ? '隐藏图片' : '显示图片'}}
+          </button>
+        </view>
+      </view>
+      
+      <view wx:else class="no-image">
+        <view class="no-image-icon">🖼️</view>
+        <text class="no-image-text">该装备尚未激活</text>
+        <button class="btn-upload" bindtap="goToUpload">上传装备</button>
+      </view>
+    </view>
+
+    <!-- 装备属性 -->
+    <view class="attributes-section">
+      <view class="section-title">装备属性</view>
+      <view class="attributes-list">
+        <view class="attribute-item" wx:if="{{equipment.stats}}">
+          <text class="label">属性：</text>
+          <text class="value">{{equipment.stats}}</text>
+        </view>
+        <view class="attribute-item" wx:if="{{equipment.requiredLevel}}">
+          <text class="label">需求等级：</text>
+          <text class="value">{{equipment.requiredLevel}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 装备描述 -->
+    <view class="description-section" wx:if="{{equipment.description}}">
+      <view class="section-title">装备描述</view>
+      <view class="description-content">
+        {{equipment.description}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 装备不存在 -->
+  <view wx:if="{{!loading && !equipment}}" class="not-found">
+    <view class="not-found-icon">❓</view>
+    <text class="not-found-text">装备不存在</text>
+    <button class="btn-back" bindtap="onBack">返回</button>
+  </view>
+</view>

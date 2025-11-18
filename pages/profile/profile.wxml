@@ -1,0 +1,64 @@
+<!--pages/profile/profile.wxml-->
+<view class="container">
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="logo-section">
+      <view class="logo">👤</view>
+      <text class="title">个人中心</text>
+      <text class="subtitle">管理您的个人信息</text>
+    </view>
+  </view>
+
+  <!-- 未登录状态 -->
+  <view wx:if="{{!isLoggedIn}}" class="login-prompt">
+    <view class="login-icon">👤</view>
+    <text class="login-text">请先登录</text>
+    <button class="btn-primary login-btn" bindtap="wxLogin">微信登录</button>
+    <text class="login-alternative">使用微信账号登录</text>
+  </view>
+
+  <!-- 已登录状态 -->
+  <view wx:if="{{isLoggedIn}}" class="profile-content">
+    <!-- 头像区域 -->
+    <view class="avatar-section card">
+      <view class="avatar-container">
+        <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+        <view class="avatar-overlay" bindtap="uploadAvatar">
+          <text class="upload-text">{{uploadingAvatar ? '上传中...' : '更换头像'}}</text>
+        </view>
+      </view>
+      <text class="avatar-tip">点击头像可更换</text>
+    </view>
+
+    <!-- 昵称区域 -->
+    <view class="nickname-section card">
+      <view wx:if="{{!editing}}" class="nickname-display">
+        <text class="nickname-label">昵称：</text>
+        <text class="nickname-value">{{userInfo.nickName}}</text>
+        <button class="edit-btn" size="mini" bindtap="startEditNickName">编辑</button>
+      </view>
+      
+      <view wx:if="{{editing}}" class="nickname-edit">
+        <input 
+          class="nickname-input" 
+          value="{{tempNickName}}" 
+          placeholder="请输入昵称" 
+          maxlength="20"
+          bindinput="onNickNameInput"
+        />
+        <view class="edit-actions">
+          <button class="cancel-btn" size="mini" bindtap="cancelEditNickName">取消</button>
+          <button class="save-btn" size="mini" bindtap="saveNickName">保存</button>
+        </view>
+      </view>
+    </view>
+
+
+
+    <!-- 功能按钮 -->
+    <view class="actions-section">
+      <button class="action-btn home-btn" bindtap="goToHome">返回首页</button>
+      <button class="action-btn logout-btn" bindtap="logout">退出登录</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,443 @@
+/* pages/upload/upload.wxss */
+
+.container {
+  padding: 20rpx;
+  min-height: 100vh;
+}
+
+/* 登录提示 */
+.login-prompt {
+  padding: 40rpx 20rpx;
+}
+
+.login-prompt-card {
+  padding: 60rpx 40rpx;
+  text-align: center;
+}
+
+.login-prompt-title {
+  display: block;
+  font-size: 36rpx;
+  color: #d4af37;
+  margin-bottom: 16rpx;
+  font-weight: 600;
+}
+
+.login-prompt-desc {
+  display: block;
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+  line-height: 1.5;
+}
+
+.login-btn {
+  padding: 24rpx 48rpx;
+  font-size: 32rpx;
+}
+
+/* 上传区域 */
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+}
+
+.upload-area {
+  padding: 40rpx;
+}
+
+.upload-header {
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.upload-title {
+  display: block;
+  font-size: 36rpx;
+  margin-bottom: 12rpx;
+  font-weight: 600;
+}
+
+.upload-tip {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 图片预览 */
+.image-preview {
+  text-align: center;
+}
+
+.preview-image {
+  width: 300rpx;
+  height: 300rpx;
+  border-radius: 12rpx;
+  margin-bottom: 20rpx;
+  border: 2rpx solid #333;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 20rpx;
+  justify-content: center;
+}
+
+.preview-actions button {
+  padding: 16rpx 32rpx;
+  font-size: 26rpx;
+}
+
+/* 上传按钮 */
+.upload-button {
+  text-align: center;
+  padding: 60rpx 40rpx;
+  border: 2rpx dashed #666;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.upload-button:active {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.upload-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.upload-text {
+  display: block;
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 20rpx;
+}
+
+.upload-btn {
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+}
+
+/* 表单区域 */
+.form-section {
+  padding: 40rpx;
+}
+
+.form-header {
+  margin-bottom: 30rpx;
+}
+
+.form-title {
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #ffffff;
+  margin-bottom: 12rpx;
+  font-weight: 500;
+}
+
+.input, .textarea, .picker {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1rpx solid #666;
+  border-radius: 8rpx;
+  color: #ffffff;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+.input:focus, .textarea:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 10rpx rgba(212, 175, 55, 0.3);
+}
+
+.textarea {
+  height: 120rpx;
+  resize: none;
+}
+
+.picker-value {
+  color: #ffffff;
+}
+
+.picker-value:empty::before {
+  content: '请选择装备类型';
+  color: #999;
+}
+
+/* 表单操作 */
+.form-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 40rpx;
+}
+
+.form-actions button {
+  flex: 1;
+  padding: 24rpx;
+  font-size: 28rpx;
+}
+
+/* 上传进度 */
+.upload-progress {
+  padding: 20rpx;
+}
+
+.progress-card {
+  padding: 40rpx;
+  text-align: center;
+}
+
+.progress-title {
+  display: block;
+  font-size: 28rpx;
+  color: #d4af37;
+  margin-bottom: 20rpx;
+}
+
+.progress-bar {
+  width: 100%;
+  margin-bottom: 16rpx;
+}
+
+.progress-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 加载状态 */
+.loading {
+  flex-direction: column;
+  gap: 20rpx;
+  padding: 60rpx;
+}
+
+.loading-text {
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 搜索相关样式 */
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #333;
+  border: 1rpx solid #666;
+  border-top: none;
+  border-radius: 0 0 8rpx 8rpx;
+  max-height: 300rpx;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+}
+
+.search-result-item {
+  padding: 20rpx;
+  border-bottom: 1rpx solid #555;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:active {
+  background: #444;
+}
+
+.result-name {
+  display: block;
+  font-size: 28rpx;
+  color: #d4af37;
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.result-type {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.selected-equipment {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1rpx solid #d4af37;
+  border-radius: 8rpx;
+}
+
+.selected-name {
+  display: block;
+  font-size: 28rpx;
+  color: #d4af37;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.selected-info {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 卡片样式 */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  border-radius: 12rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background: #d4af37;
+  color: #000;
+  border: none;
+  border-radius: 8rpx;
+}
+
+.btn-primary:disabled {
+  background: #666;
+  color: #999;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #999;
+  border: 1rpx solid #666;
+  border-radius: 8rpx;
+}
+
+/* 金色文字 */
+.gold-text {
+  color: #d4af37;
+}
+
+/* 搜索相关样式 */
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #333;
+  border: 1rpx solid #666;
+  border-top: none;
+  border-radius: 0 0 8rpx 8rpx;
+  max-height: 300rpx;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+}
+
+.search-result-item {
+  padding: 20rpx;
+  border-bottom: 1rpx solid #555;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:active {
+  background: #444;
+}
+
+.result-name {
+  display: block;
+  font-size: 28rpx;
+  color: #d4af37;
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.result-type {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.selected-equipment {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1rpx solid #d4af37;
+  border-radius: 8rpx;
+}
+
+.selected-name {
+  display: block;
+  font-size: 28rpx;
+  color: #d4af37;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.selected-info {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 卡片样式 */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  border-radius: 12rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background: #d4af37;
+  color: #000;
+  border: none;
+  border-radius: 8rpx;
+}
+
+.btn-primary:disabled {
+  background: #666;
+  color: #999;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #999;
+  border: 1rpx solid #666;
+  border-radius: 8rpx;
+}
+
+/* 金色文字 */
+.gold-text {
+  color: #d4af37;
+}

@@ -1,0 +1,49 @@
+{
+    "pages": [
+        "pages/index/index",
+        "pages/upload/upload",
+        "pages/collection/collection",
+        "pages/profile/profile",
+        "pages/detail/detail",
+        "pages/utils"
+    ],
+    "window": {
+        "backgroundTextStyle": "dark",
+        "navigationBarBackgroundColor": "#0a0a0a",
+        "navigationBarTitleText": "暗黑2装备图鉴",
+        "navigationBarTextStyle": "white",
+        "backgroundColor": "#0a0a0a",
+        "enablePullDownRefresh": false
+    },
+    "tabBar": {
+        "color": "#b89c4f",
+        "selectedColor": "#d4af37",
+        "backgroundColor": "#0a0a0a",
+        "borderStyle": "black",
+        "position": "bottom",
+        "list": [
+            {
+                "pagePath": "pages/index/index",
+                "text": "首页"
+            },
+            {
+                "pagePath": "pages/upload/upload",
+                "text": "上传装备"
+            },
+            {
+                "pagePath": "pages/collection/collection",
+                "text": "我的图鉴"
+            },
+            {
+                "pagePath": "pages/profile/profile",
+                "text": "个人中心"
+            }
+        ]
+    },
+    "style": "v2",
+    "sitemapLocation": "sitemap.json",
+    "lazyCodeLoading": "requiredComponents",
+    "useExtendedLib": {
+        "weui": true
+    }
+}
