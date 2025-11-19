@@ -1,5 +1,6 @@
 // pages/collection/collection.js
 const app = getApp()
+const { startTimer, endTimer, debounce, throttle } = require('../../utils/performance.js')
 
 Page({
   data: {
@@ -55,11 +56,14 @@ Page({
     this.filterEquipmentList()
   },
 
-  // 切换筛选面板显示状态
+  // 切换筛选面板显示状态（优化setData）
   toggleFilterPanel() {
-    this.setData({
-      showFilterPanel: !this.data.showFilterPanel
-    })
+    const newState = !this.data.showFilterPanel
+    if (newState !== this.data.showFilterPanel) {
+      this.setData({
+        showFilterPanel: newState
+      })
+    }
   },
 
   // 切换高级筛选条件（多选）
@@ -83,18 +87,45 @@ Page({
     this.filterEquipmentList()
   },
 
-  // 加载图鉴数据
+  // 加载图鉴数据（优化版）
   async loadCollectionData() {
     try {
       this.setData({ loading: true })
       
-      // 获取用户装备仓库
-      const userEquipment = await this.getUserEquipment()
-      // 获取所有装备模板
-      const allTemplates = await this.getAllEquipmentTemplates()
+      // 检查缓存
+      const cacheKey = `collectionData_${app.globalData.openid}`
+      const cachedData = wx.getStorageSync(cacheKey)
+      const now = Date.now()
+      
+      // 缓存有效期为3分钟
+      if (cachedData && (now - cachedData.timestamp < 3 * 60 * 1000)) {
+        this.setData({
+          equipmentList: cachedData.equipmentList,
+          activatedCount: cachedData.activatedCount,
+          totalCount: cachedData.totalCount,
+          completionRate: cachedData.completionRate
+        })
+        this.filterEquipmentList()
+        return
+      }
+      
+      // 并行获取数据
+      const [userEquipment, allTemplates] = await Promise.all([
+        this.getUserEquipment(),
+        this.getAllEquipmentTemplates()
+      ])
       
       // 计算激活状态和统计数据
       const processedData = this.processEquipmentData(allTemplates, userEquipment)
+      
+      // 缓存结果
+      wx.setStorageSync(cacheKey, {
+        equipmentList: processedData.list,
+        activatedCount: processedData.stats.activatedCount,
+        totalCount: processedData.stats.totalCount,
+        completionRate: processedData.stats.completionRate,
+        timestamp: now
+      })
       
       this.setData({
         equipmentList: processedData.list,
@@ -344,11 +375,46 @@ Page({
     })
   },
 
-  // 搜索输入处理
+  // 搜索输入处理（添加防抖）
   onSearchInput(e) {
     const keyword = e.detail.value.trim()
-    this.setData({ searchKeyword: keyword })
-    this.filterEquipmentList()
+    
+    // 清除之前的定时器
+    clearTimeout(this.searchTimer)
+    
+    // 设置防抖定时器，300ms后执行搜索
+    this.searchTimer = setTimeout(() => {
+      this.setData({ searchKeyword: keyword })
+      this.filterEquipmentList()
+    }, 300)
+  },
+
+  // 图片懒加载处理
+  onImageLoad(e) {
+    const { index } = e.currentTarget.dataset
+    const { filteredList } = this.data
+    
+    if (filteredList[index]) {
+      // 标记图片已加载
+      filteredList[index].imageLoaded = true
+      this.setData({
+        [`filteredList[${index}].imageLoaded`]: true
+      })
+    }
+  },
+
+  // 图片加载失败处理
+  onImageError(e) {
+    const { index } = e.currentTarget.dataset
+    const { filteredList } = this.data
+    
+    if (filteredList[index]) {
+      // 使用默认图标替换
+      filteredList[index].imageError = true
+      this.setData({
+        [`filteredList[${index}].imageError`]: true
+      })
+    }
   },
 
   // 查看装备详情或跳转上传

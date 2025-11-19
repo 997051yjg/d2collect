@@ -1,5 +1,6 @@
 // pages/upload/upload.js
 const app = getApp()
+const { startTimer, endTimer, debounce, optimizeImage } = require('../../utils/performance.js')
 
 Page({
   data: {
@@ -237,7 +238,7 @@ Page({
     })
   },
 
-  // 名称输入变化
+  // 名称输入变化（优化防抖）
   onNameInput(e) {
     const keyword = e.detail.value
     this.setData({
@@ -247,9 +248,19 @@ Page({
     
     // 延迟搜索，避免频繁请求
     clearTimeout(this.searchTimer)
-    this.searchTimer = setTimeout(() => {
-      this.searchEquipment(keyword)
-    }, 300)
+    
+    // 只有关键词长度大于等于1时才搜索
+    if (keyword.trim().length >= 1) {
+      this.searchTimer = setTimeout(() => {
+        this.searchEquipment(keyword.trim())
+      }, 500)
+    } else {
+      // 清空搜索结果
+      this.setData({
+        searchResults: [],
+        showSearchResults: false
+      })
+    }
   },
 
   // 搜索装备

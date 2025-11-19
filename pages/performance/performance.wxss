@@ -1,0 +1,326 @@
+/* 性能监控页面样式 */
+.performance-page {
+  padding: 30rpx;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  min-height: 100vh;
+  color: #ffffff;
+}
+
+/* 头部样式 */
+.header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #b0b0b0;
+  display: block;
+}
+
+/* 控制面板 */
+.control-panel {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 40rpx;
+  backdrop-filter: blur(10px);
+}
+
+.control-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.control-label {
+  font-size: 32rpx;
+  margin-right: 20rpx;
+  flex: 1;
+}
+
+.control-status {
+  font-size: 28rpx;
+  color: #4CAF50;
+  margin-left: 20rpx;
+}
+
+.control-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.btn {
+  flex: 1;
+  min-width: 150rpx;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  border: none;
+  font-size: 28rpx;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: #2196F3;
+  color: white;
+}
+
+.btn-secondary {
+  background: #607D8B;
+  color: white;
+}
+
+.btn-warning {
+  background: #FF9800;
+  color: white;
+}
+
+.btn-info {
+  background: #00BCD4;
+  color: white;
+}
+
+.btn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+/* 系统信息 */
+.info-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 40rpx;
+  backdrop-filter: blur(10px);
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 30rpx;
+  color: #ffffff;
+  border-left: 6rpx solid #2196F3;
+  padding-left: 20rpx;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.info-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12rpx;
+  padding: 20rpx;
+  text-align: center;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #b0b0b0;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.info-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ffffff;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.info-percent {
+  font-size: 22rpx;
+  color: #4CAF50;
+  display: block;
+}
+
+/* 性能指标 */
+.metrics-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 40rpx;
+  backdrop-filter: blur(10px);
+}
+
+.metric-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  border-left: 4rpx solid #2196F3;
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.metric-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.metric-count {
+  font-size: 24rpx;
+  color: #b0b0b0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+.metric-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15rpx;
+  margin-bottom: 15rpx;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #b0b0b0;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.stat-value {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #ffffff;
+  display: block;
+}
+
+.metric-bar {
+  margin-top: 15rpx;
+}
+
+.bar-container {
+  width: 100%;
+  height: 8rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4rpx;
+  overflow: hidden;
+  margin-bottom: 8rpx;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  transition: width 0.5s ease;
+}
+
+.bar-label {
+  font-size: 22rpx;
+  color: #b0b0b0;
+  text-align: center;
+  display: block;
+}
+
+.no-data {
+  text-align: center;
+  padding: 60rpx 20rpx;
+}
+
+.no-data-text {
+  font-size: 28rpx;
+  color: #b0b0b0;
+}
+
+/* 优化建议 */
+.suggestions-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  backdrop-filter: blur(10px);
+}
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  padding: 15rpx;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8rpx;
+  border-left: 4rpx solid #4CAF50;
+}
+
+.suggestion-icon {
+  font-size: 32rpx;
+  margin-right: 15rpx;
+  min-width: 40rpx;
+}
+
+.suggestion-text {
+  font-size: 26rpx;
+  color: #ffffff;
+  flex: 1;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metric-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .control-buttons {
+    flex-direction: column;
+  }
+  
+  .btn {
+    min-width: auto;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.metric-card {
+  animation: fadeIn 0.5s ease;
+}
+
+.info-item {
+  animation: fadeIn 0.5s ease;
+}
+
+.suggestion-item {
+  animation: fadeIn 0.5s ease;
+}

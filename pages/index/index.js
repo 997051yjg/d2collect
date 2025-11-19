@@ -1,5 +1,6 @@
 // pages/index/index.js
 const app = getApp()
+const { startTimer, endTimer, debounce } = require('../../utils/performance.js')
 
 Page({
   data: {
@@ -37,7 +38,7 @@ Page({
     })
   },
 
-  // 加载图鉴统计数据
+  // 加载图鉴统计数据（优化版）
   async loadUserStats() {
     if (!this.data.isLoggedIn || !app.globalData.openid) {
       console.log('用户未登录，跳过加载统计数据')
@@ -51,30 +52,61 @@ Page({
       return
     }
 
+    // 检查缓存，避免重复查询
+    const cacheKey = `userStats_${app.globalData.openid}`
+    const cachedStats = wx.getStorageSync(cacheKey)
+    const now = Date.now()
+    
+    // 缓存有效期为5分钟
+    if (cachedStats && (now - cachedStats.timestamp < 5 * 60 * 1000)) {
+      this.setData({
+        collectionStats: cachedStats.data
+      })
+      return
+    }
+
     try {
       this.setData({ loading: true })
       
       const db = wx.cloud.database()
       
-      // 获取用户已激活的装备数量
-      const { data: userEquipments } = await db.collection('user_warehouse')
-        .where({ openid: app.globalData.openid })
-        .get()
+      // 并行查询，提高效率
+      const [userEquipmentsResult, totalCountResult] = await Promise.all([
+        // 只查询激活状态的装备，减少数据量
+        db.collection('user_warehouse')
+          .where({ 
+            openid: app.globalData.openid,
+            isActive: true
+          })
+          .field({
+            _id: true,
+            templateId: true
+          })
+          .count(),
+        
+        // 获取总装备数量
+        db.collection('equipment_templates')
+          .count()
+      ])
       
-      // 获取总装备数量
-      const { data: equipmentTemplates } = await db.collection('equipment_templates')
-        .get()
-      
-      const activatedCount = userEquipments.length
-      const totalCount = equipmentTemplates.length
+      const activatedCount = userEquipmentsResult.total
+      const totalCount = totalCountResult.total
       const completionRate = totalCount > 0 ? Math.round((activatedCount / totalCount) * 100) : 0
       
+      const stats = {
+        activatedCount: activatedCount,
+        totalCount: totalCount,
+        completionRate: completionRate
+      }
+      
+      // 缓存结果
+      wx.setStorageSync(cacheKey, {
+        data: stats,
+        timestamp: now
+      })
+      
       this.setData({
-        collectionStats: {
-          activatedCount: activatedCount,
-          totalCount: totalCount,
-          completionRate: completionRate
-        }
+        collectionStats: stats
       })
       
     } catch (error) {
