@@ -50,29 +50,49 @@
               placeholder="输入装备名称关键字搜索" 
               value="{{formData.name}}" 
               bindinput="onNameInput"
-              bindblur="onInputBlur"
             />
-            
-            <!-- 搜索结果 -->
-            <view class="search-results" wx:if="{{showSearchResults}}">
-              <view 
-                class="search-result-item" 
-                wx:for="{{searchResults}}" 
-                wx:key="index"
-                bindtap="selectEquipment"
-                data-index="{{index}}"
-              >
-                <text class="result-name">{{item.name}}</text>
-                <text class="result-type">{{item.type}} - {{item.rarity}}</text>
+          </view>
+        </view>
+        
+        <!-- 独立装备模板卡片区域 -->
+        <view class="templates-section" wx:if="{{searchResults.length > 0}}">
+          
+          <view class="templates-grid">
+            <view 
+              class="template-card {{selectedEquipment && selectedEquipment._id === item._id ? 'selected' : ''}}" 
+              wx:for="{{searchResults}}" 
+              wx:key="_id"
+              bindtap="selectEquipment"
+              data-index="{{index}}"
+            >
+              <!-- 装备图标 -->
+              <view class="template-image">
+                <view class="image-placeholder">{{item.emoji || getEquipmentEmoji(item.type)}}</view>
+              </view>
+              
+              <!-- 装备信息 -->
+              <view class="template-info">
+                <text class="template-name">{{item.name}}</text>
+                <text class="template-type">{{item.type}}</text>
+                <view class="template-rarity {{item.rarity === '套装' ? 'suit' : 'unique'}}">
+                  {{item.rarity}}
+                </view>
+              </view>
+              
+              <!-- 激活状态 -->
+              <view class="activation-status">
+                <text class="status-text" wx:if="{{selectedEquipment && selectedEquipment._id === item._id}}">已选中</text>
+                <text class="status-text default" wx:else>未选中</text>
               </view>
             </view>
           </view>
-          
-          <!-- 选中的装备信息 -->
-          <view class="selected-equipment" wx:if="{{selectedEquipment}}">
-            <text class="selected-name">{{selectedEquipment.name}}</text>
-            <text class="selected-info">{{selectedEquipment.type}} - {{selectedEquipment.rarity}}</text>
-          </view>
+        </view>
+        
+        <!-- 空状态 -->
+        <view class="empty-templates" wx:if="{{searchKeyword && searchResults.length === 0}}">
+          <view class="empty-icon">🔍</view>
+          <text class="empty-text">未找到匹配的装备</text>
+          <text class="empty-subtext">请尝试其他关键字</text>
         </view>
         
         <view class="form-actions">

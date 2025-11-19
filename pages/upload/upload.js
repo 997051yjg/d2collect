@@ -97,6 +97,15 @@ Page({
     this.chooseImage()
   },
 
+  // 输入框获得焦点时显示搜索结果
+  onInputFocus() {
+    if (this.data.searchResults.length > 0) {
+      this.setData({
+        showSearchResults: true
+      })
+    }
+  },
+
   // 输入框失去焦点时隐藏搜索结果
   onInputBlur() {
     // 延迟隐藏，避免点击搜索结果时立即隐藏
@@ -105,6 +114,20 @@ Page({
         showSearchResults: false
       })
     }, 200)
+  },
+
+  // 获取装备类型的emoji
+  getEquipmentEmoji(type) {
+    const emojiMap = {
+      '武器': '⚔️',
+      '防具': '🛡️',
+      '饰品': '💍',
+      '符文': '🔣',
+      '药水': '🧪',
+      '卷轴': '📜'
+    }
+    
+    return emojiMap[type] || '❓'
   },
 
   // 检查表单有效性
@@ -187,11 +210,19 @@ Page({
     const { index } = e.currentTarget.dataset
     const equipment = this.data.searchResults[index]
     
-    this.setData({
-      selectedEquipment: equipment,
-      'formData.name': equipment.name,
-      showSearchResults: false
-    })
+    // 如果点击的是已选中的装备，则取消选中
+    if (this.data.selectedEquipment && this.data.selectedEquipment._id === equipment._id) {
+      this.setData({
+        selectedEquipment: null,
+        'formData.name': ''
+      })
+    } else {
+      // 否则选中新装备
+      this.setData({
+        selectedEquipment: equipment,
+        'formData.name': equipment.name
+      })
+    }
     
     this.checkFormValidity()
   },
@@ -204,7 +235,7 @@ Page({
   },
 
   // 提交表单
-  async submitForm(e) {
+  async submitForm() {
     // 检查登录状态
     if (!this.data.isLoggedIn) {
       wx.showToast({
@@ -292,8 +323,8 @@ Page({
   // 上传图片
   uploadImage() {
     return new Promise((resolve, reject) => {
-      const uploadTask = wx.cloud.uploadFile({
-        cloudPath: `equipments/${Date.now()}-${Math.random().toString(36).substr(2)}.jpg`,
+      wx.cloud.uploadFile({
+        cloudPath: `equipments/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`,
         filePath: this.data.uploadedImage,
         onUploadProgress: (res) => {
           const progress = Math.round((res.loaded / res.total) * 100)
