@@ -21,31 +21,26 @@
       </view>
     </view>
 
-    <!-- 装备图片 -->
-    <view class="image-section">
-      <view class="image-preview" wx:if="{{isActivated && userEquipment && userEquipment.images && userEquipment.images[0]}}">
-        <image 
-          src="{{userEquipment.images[0]}}" 
-          class="equipment-image {{showImage ? 'show' : 'hide'}}"
-          mode="aspectFit"
-          bindtap="viewImage"
-        />
-        <view class="image-controls">
-          <button class="btn-view" bindtap="viewImage">查看大图</button>
-          <button class="btn-toggle" bindtap="toggleImage">
-            {{showImage ? '隐藏图片' : '显示图片'}}
-          </button>
-        </view>
-      </view>
-      
-      <view wx:else class="no-image">
-        <view class="no-image-icon">🖼️</view>
-        <text class="no-image-text">该装备尚未激活</text>
-        <button class="btn-upload" bindtap="goToUpload">上传装备</button>
+    <!-- 多图片预览卡片 - 横向布局 -->
+    <view class="images-section" wx:if="{{isActivated && userEquipment && userEquipment.images && userEquipment.images.length > 0}}">
+      <view class="section-title">装备图片</view>
+      <view class="images-container">
+        <scroll-view class="images-scroll" scroll-x="true" scroll-left="{{scrollLeft}}" show-scrollbar="false">
+          <view class="images-list">
+            <block wx:for="{{userEquipment.images}}" wx:key="*this" wx:for-item="image" wx:for-index="index">
+              <view class="image-thumbnail" bindtap="viewImage" data-image="{{image}}" data-index="{{index}}">
+                <image src="{{image}}" class="thumbnail-image" mode="aspectFill" />
+                <view class="thumbnail-overlay" wx:if="{{currentImageIndex === index}}">
+                  <text class="thumbnail-text">当前</text>
+                </view>
+              </view>
+            </block>
+          </view>
+        </scroll-view>
       </view>
     </view>
 
-    <!-- 装备属性 -->
+    <!-- 装备属性卡片 -->
     <view class="attributes-section">
       <view class="section-title">装备属性</view>
       <view class="attributes-list">
@@ -60,11 +55,15 @@
       </view>
     </view>
 
-    <!-- 装备描述 -->
-    <view class="description-section" wx:if="{{equipment.description}}">
-      <view class="section-title">装备描述</view>
-      <view class="description-content">
-        {{equipment.description}}
+    <!-- 收藏者信息卡片 -->
+    <view class="collector-section" wx:if="{{isActivated && userInfo}}">
+      <view class="section-title">收藏者</view>
+      <view class="collector-content">
+        <image class="collector-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+        <view class="collector-info">
+          <text class="collector-nickname">{{userInfo.nickName}}</text>
+          <text class="collector-badge">装备收藏者</text>
+        </view>
       </view>
     </view>
   </view>
@@ -75,4 +74,10 @@
     <text class="not-found-text">装备不存在</text>
     <button class="btn-back" bindtap="onBack">返回</button>
   </view>
+
+  <!-- 隐藏的canvas用于生成分享图片 -->
+  <canvas 
+    canvas-id="shareCanvas" 
+    style="width: 750rpx; height: 1000rpx; position: fixed; top: -9999rpx; left: -9999rpx;"
+  ></canvas>
 </view>

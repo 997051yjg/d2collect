@@ -478,7 +478,7 @@ Page({
   onShareTimeline() {
     return {
       title: '暗黑2装备图鉴 - 我的收藏',
-      imageUrl: this.data.userInfo ? this.data.userInfo.avatarUrl : '/images/share-cover.png'
+      imageUrl: this.data.userInfo ? this.data.userInfo.avatarUrl : '/images/default-avatar.png'
     }
   }
 })

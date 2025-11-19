@@ -71,11 +71,6 @@
   font-size: 32rpx;
 }
 
-/* 已登录状态 */
-.profile-content {
-  /* 使用与首页相同的卡片样式 */
-}
-
 /* 头像区域 */
 .avatar-section {
   text-align: center;

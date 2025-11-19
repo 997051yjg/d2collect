@@ -44,5 +44,8 @@
     "lazyCodeLoading": "requiredComponents",
     "useExtendedLib": {
         "weui": true
-    }
+    },
+    "requiredPrivateInfos": [
+        "getLocation"
+    ]
 }

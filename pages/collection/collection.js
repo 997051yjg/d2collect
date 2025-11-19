@@ -356,10 +356,22 @@ Page({
 
   // 分享功能
   onShareAppMessage() {
-    return {
-      title: '暗黑2装备图鉴',
-      path: '/pages/collection/collection',
-      imageUrl: '/images/share-cover.png'
+    const { currentShareId, currentShareName } = this.data
+    
+    if (currentShareId && currentShareName) {
+      // 分享单个装备
+      return {
+        title: `我的暗黑2装备：${currentShareName}`,
+        path: `/pages/detail/detail?id=${currentShareId}`,
+        imageUrl: '/images/default-avatar.png'
+      }
+    } else {
+      // 分享整个图鉴
+      return {
+        title: '暗黑2装备图鉴',
+        path: '/pages/collection/collection',
+        imageUrl: '/images/default-avatar.png'
+      }
     }
   },
 
@@ -367,7 +379,7 @@ Page({
   onShareTimeline() {
     return {
       title: '暗黑2装备图鉴 - 记录你的出货装备',
-      imageUrl: '/images/share-cover.png'
+      imageUrl: '/images/default-avatar.png'
     }
   },
 
@@ -393,10 +405,34 @@ Page({
 
   // 分享单个装备
   shareEquipment(id, name) {
-    wx.showModal({
-      title: '分享装备',
-      content: `分享装备"${name}"功能开发中`,
-      showCancel: false
+    const { equipmentList } = this.data
+    const equipment = equipmentList.find(item => item.id === id)
+    
+    if (!equipment) {
+      wx.showToast({
+        title: '装备信息获取失败',
+        icon: 'none'
+      })
+      return
+    }
+    
+    // 启用分享功能
+    wx.showShareMenu({
+      withShareTicket: true,
+      menus: ['shareAppMessage', 'shareTimeline']
+    })
+    
+    // 设置当前分享的装备ID
+    this.setData({
+      currentShareId: id,
+      currentShareName: name
+    })
+    
+    // 提示用户使用右上角分享
+    wx.showToast({
+      title: '请点击右上角分享',
+      icon: 'none',
+      duration: 2000
     })
   }
 })
