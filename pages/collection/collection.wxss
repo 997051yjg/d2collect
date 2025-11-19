@@ -381,8 +381,10 @@
   justify-content: center;
 }
 
-.image-placeholder {
-  font-size: 48rpx;
+.equipment-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   z-index: 2;
   position: relative;
 }

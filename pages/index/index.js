@@ -117,12 +117,13 @@ Page({
         const recentEquipments = userEquipments.map(userEquip => {
           const template = equipmentTemplates.find(t => t._id === userEquip.templateId)
           if (template) {
-            const emoji = this.getEquipmentEmoji(template.type)
+            const icon = template.image || this.getEquipmentIcon(template.type)
             return {
               id: template._id,
               name: template.name,
               type: template.type,
-              emoji: emoji,
+              icon: icon,
+              rarity: template.rarity || '普通',
               activationTime: userEquip.activationTime
             }
           }
@@ -145,18 +146,21 @@ Page({
     }
   },
 
-  // 获取装备类型的emoji
-  getEquipmentEmoji(type) {
-    const emojiMap = {
-      '武器': '⚔️',
-      '防具': '🛡️',
-      '饰品': '💍',
-      '符文': '🔣',
-      '药水': '🧪',
-      '卷轴': '📜'
+  // 获取装备类型的图标
+  getEquipmentIcon(type) {
+    // 默认图标路径映射
+    const iconMap = {
+      '头部': '/images/equipment-icons/helmet.png',
+      '盔甲': '/images/equipment-icons/armor.png',
+      '腰带': '/images/equipment-icons/belt.png',
+      '鞋子': '/images/equipment-icons/boots.png',
+      '手套': '/images/equipment-icons/gloves.png',
+      '戒指': '/images/equipment-icons/ring.png',
+      '项链': '/images/equipment-icons/amulet.png',
+      '手持': '/images/equipment-icons/weapon.png'
     }
     
-    return emojiMap[type] || '❓'
+    return iconMap[type] || '/images/equipment-icons/default.png'
   },
 
   // 微信登录

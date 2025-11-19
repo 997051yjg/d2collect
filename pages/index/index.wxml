@@ -76,9 +76,25 @@
       <scroll-view class="recent-list" scroll-x="true">
         <view class="recent-items">
           <view class="recent-item" wx:for="{{recentEquipments}}" wx:key="id" bindtap="viewEquipment" data-id="{{item.id}}">
-            <view class="equipment-image">{{item.emoji}}</view>
-            <text class="equipment-name">{{item.name}}</text>
-            <text class="equipment-type">{{item.type}}</text>
+            
+            <!-- 装备卡片（与图鉴页面保持一致） -->
+            <view class="equipment-card activated">
+              <!-- 装备图片 -->
+              <view class="equipment-image">
+                <image class="equipment-icon" src="{{item.icon}}" mode="aspectFit" />
+                <!-- 已激活光晕效果 -->
+                <view class="glow-effect"></view>
+              </view>
+              
+              <!-- 装备信息 -->
+              <view class="equipment-info">
+                <text class="equipment-name">{{item.name}}</text>
+                <view class="equipment-rarity {{item.rarity === '套装' ? 'suit' : 'unique'}}">
+                  {{item.rarity}}
+                </view>
+              </view>
+              
+            </view>
           </view>
         </view>
       </scroll-view>

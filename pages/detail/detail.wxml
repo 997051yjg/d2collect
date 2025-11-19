@@ -9,15 +9,25 @@
 
   <!-- 装备详情 -->
   <view wx:if="{{!loading && equipment}}" class="equipment-detail">
-    <!-- 头部信息 -->
-    <view class="equipment-header">
-      <view class="emoji">{{getEquipmentEmoji(equipment.type)}}</view>
-      <view class="info">
-        <text class="name">{{equipment.name}}</text>
-        <text class="type">{{equipment.type}} · {{equipment.rarity}}</text>
-        <view class="status {{isActivated ? 'activated' : 'not-activated'}}">
-          {{isActivated ? '已激活' : '未激活'}}
+    <!-- 顶部信息布局 - 左侧信息，中间图片 -->
+    <view class="equipment-header-layout">
+      <!-- 左侧信息 -->
+      <view class="equipment-info-left">
+        <view class="equipment-icon">
+          <image class="icon-image" src="{{getEquipmentIcon(equipment.type)}}" mode="aspectFit" />
         </view>
+        <view class="info">
+          <text class="name">{{equipment.name}}</text>
+          <text class="type">{{equipment.type}} · {{equipment.rarity}}</text>
+          <view class="status {{isActivated ? 'activated' : 'not-activated'}}">
+            {{isActivated ? '已激活' : '未激活'}}
+          </view>
+        </view>
+      </view>
+      
+      <!-- 中间装备图片 -->
+      <view class="equipment-image-center">
+        <image class="main-equipment-image" src="{{equipment.image || getEquipmentIcon(equipment.type)}}" mode="aspectFit" />
       </view>
     </view>
 

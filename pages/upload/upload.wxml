@@ -67,7 +67,7 @@
             >
               <!-- 装备图标 -->
               <view class="template-image">
-                <view class="image-placeholder">{{item.emoji || getEquipmentEmoji(item.type)}}</view>
+                <image class="equipment-icon" src="{{item.image || getEquipmentIcon(item.type)}}" mode="aspectFit" />
               </view>
               
               <!-- 装备信息 -->

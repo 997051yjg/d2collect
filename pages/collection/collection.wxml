@@ -12,15 +12,25 @@
     
     <!-- 快速筛选栏 -->
     <view class="quick-filter-bar">
-      <view class="filter-tabs">
+        <view class="filter-tabs">
         <view class="filter-tab {{currentFilter === 'all' ? 'active' : ''}}" 
               bindtap="setFilter" data-filter="all">全部</view>
-        <view class="filter-tab {{currentFilter === 'weapon' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="weapon">武器</view>
+        <view class="filter-tab {{currentFilter === 'helmet' ? 'active' : ''}}" 
+              bindtap="setFilter" data-filter="helmet">头部</view>
         <view class="filter-tab {{currentFilter === 'armor' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="armor">防具</view>
-        <view class="filter-tab {{currentFilter === 'accessory' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="accessory">饰品</view>
+              bindtap="setFilter" data-filter="armor">盔甲</view>
+        <view class="filter-tab {{currentFilter === 'belt' ? 'active' : ''}}" 
+              bindtap="setFilter" data-filter="belt">腰带</view>
+        <view class="filter-tab {{currentFilter === 'boots' ? 'active' : ''}}" 
+              bindtap="setFilter" data-filter="boots">鞋子</view>
+        <view class="filter-tab {{currentFilter === 'gloves' ? 'active' : ''}}" 
+              bindtap="setFilter" data-filter="gloves">手套</view>
+        <view class="filter-tab {{currentFilter === 'ring' ? 'active' : ''}}" 
+              bindtap="setFilter" data-filter="ring">戒指</view>
+        <view class="filter-tab {{currentFilter === 'amulet' ? 'active' : ''}}" 
+              bindtap="setFilter" data-filter="amulet">项链</view>
+        <view class="filter-tab {{currentFilter === 'weapon' ? 'active' : ''}}" 
+              bindtap="setFilter" data-filter="weapon">手持</view>
         <view class="filter-tab {{currentFilter === 'active' ? 'active' : ''}}" 
               bindtap="setFilter" data-filter="active">已激活</view>
       </view>
@@ -88,7 +98,7 @@
         <view class="equipment-card {{item.isActivated ? 'activated' : ''}}">
           <!-- 装备图片 -->
           <view class="equipment-image">
-            <view class="image-placeholder">{{item.emoji}}</view>
+            <image class="equipment-icon" src="{{item.icon}}" mode="aspectFit" />
             <!-- 已激活光晕效果 -->
             <view class="glow-effect" wx:if="{{item.isActivated}}"></view>
           </view>
