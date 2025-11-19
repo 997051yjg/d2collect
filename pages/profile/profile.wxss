@@ -30,6 +30,17 @@
   margin-bottom: 16rpx;
 }
 
+.logo-image {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.login-icon-image {
+  width: 120rpx;
+  height: 120rpx;
+}
+
 .title {
   display: block;
   font-size: 48rpx;

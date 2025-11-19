@@ -27,7 +27,7 @@
       </view>
       
       <view class="upload-button" wx:else>
-        <view class="upload-icon">📷</view>
+        <view class="upload-icon"><image class="upload-icon-image" src="/images/2.png" mode="aspectFit" /></view>
         <text class="upload-text">点击选择图片</text>
         <button class="upload-btn" bindtap="chooseImage" size="mini">选择图片</button>
       </view>

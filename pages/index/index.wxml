@@ -3,6 +3,7 @@
   <!-- 头部区域 -->
   <view class="header">
     <view class="logo-section">
+      <image class="logo-image" src="/images/1.png" mode="aspectFit" />
       <text class="title">暗黑2装备图鉴</text>
       <text class="subtitle">❇ 基德祝福你 ❇</text>
     </view>
@@ -49,12 +50,12 @@
   <view class="quick-actions-section">
     <view class="quick-actions-bar">
       <view class="action-item" bindtap="goToUpload">
-        <view class="action-icon">📤</view>
+        <view class="action-icon"><image class="icon-image" src="/images/2.png" mode="aspectFit" /></view>
         <text class="action-text">上传装备</text>
       </view>
       <view class="action-divider"></view>
       <view class="action-item" bindtap="goToCollection">
-        <view class="action-icon">📚</view>
+        <view class="action-icon"><image class="icon-image" src="/images/3.png" mode="aspectFit" /></view>
         <text class="action-text">装备图鉴</text>
       </view>
     </view>

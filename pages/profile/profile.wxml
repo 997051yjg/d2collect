@@ -3,7 +3,7 @@
   <!-- 头部区域 -->
   <view class="header">
     <view class="logo-section">
-      <view class="logo">👤</view>
+      <view class="logo"><image class="logo-image" src="/images/4.png" mode="aspectFit" /></view>
       <text class="title">我的信息</text>
       <text class="subtitle">管理您的个人信息</text>
     </view>
@@ -11,7 +11,7 @@
 
   <!-- 未登录状态 -->
   <view wx:if="{{!isLoggedIn}}" class="login-prompt">
-    <view class="login-icon">👤</view>
+    <view class="login-icon"><image class="login-icon-image" src="/images/4.png" mode="aspectFit" /></view>
     <text class="login-text">请先登录</text>
     <button class="btn-primary login-btn" bindtap="wxLogin">微信登录</button>
     <text class="login-alternative">使用微信账号登录</text>

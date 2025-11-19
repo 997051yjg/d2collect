@@ -110,6 +110,18 @@
   color: #b89c4f;
 }
 
+.upload-icon-image {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.upload-icon-image {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 20rpx;
+}
+
 .upload-text {
   display: block;
   font-size: 28rpx;

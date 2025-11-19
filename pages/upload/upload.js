@@ -19,8 +19,13 @@ Page({
     selectedEquipment: null
   },
 
-  onLoad() {
+  onLoad(options) {
     this.checkLoginStatus()
+    
+    // 如果有传递参数，自动选择对应装备
+    if (options.templateId && options.equipmentName) {
+      this.autoSelectEquipment(options.templateId, decodeURIComponent(options.equipmentName))
+    }
   },
 
   onShow() {
@@ -31,6 +36,82 @@ Page({
   checkLoginStatus() {
     const isLoggedIn = app.globalData.isLoggedIn
     this.setData({ isLoggedIn })
+  },
+
+  // 自动选择装备
+  async autoSelectEquipment(templateId, equipmentName) {
+    try {
+      const db = wx.cloud.database()
+      
+      // 根据templateId获取装备信息
+      const { data: equipment } = await db.collection('equipment_templates')
+        .doc(templateId)
+        .get()
+      
+      if (equipment) {
+        // 设置表单数据
+        this.setData({
+          'formData.name': equipmentName,
+          searchKeyword: equipmentName,
+          selectedEquipment: equipment,
+          searchResults: [equipment]
+        })
+        
+        this.checkFormValidity()
+        
+        // 显示提示信息
+        wx.showToast({
+          title: `已自动选择装备：${equipmentName}`,
+          icon: 'none',
+          duration: 2000
+        })
+      }
+    } catch (error) {
+      console.error('自动选择装备失败:', error)
+      wx.showToast({
+        title: '自动选择失败，请手动选择装备',
+        icon: 'none',
+        duration: 2000
+      })
+    }
+  },
+
+  // 自动选择装备
+  async autoSelectEquipment(templateId, equipmentName) {
+    try {
+      const db = wx.cloud.database()
+      
+      // 根据templateId获取装备信息
+      const { data: equipment } = await db.collection('equipment_templates')
+        .doc(templateId)
+        .get()
+      
+      if (equipment) {
+        // 设置表单数据
+        this.setData({
+          'formData.name': equipmentName,
+          searchKeyword: equipmentName,
+          selectedEquipment: equipment,
+          searchResults: [equipment]
+        })
+        
+        this.checkFormValidity()
+        
+        // 显示提示信息
+        wx.showToast({
+          title: `已自动选择装备：${equipmentName}`,
+          icon: 'none',
+          duration: 2000
+        })
+      }
+    } catch (error) {
+      console.error('自动选择装备失败:', error)
+      wx.showToast({
+        title: '自动选择失败，请手动选择装备',
+        icon: 'none',
+        duration: 2000
+      })
+    }
   },
 
   // 跳转到登录

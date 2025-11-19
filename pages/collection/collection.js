@@ -351,20 +351,19 @@ Page({
     this.filterEquipmentList()
   },
 
-  // 查看装备详情
+  // 查看装备详情或跳转上传
   viewEquipment(e) {
-    const { id, activated } = e.currentTarget.dataset
+    const { id, activated, name } = e.currentTarget.dataset
     
     if (!activated) {
-      wx.showModal({
-        title: '未激活',
-        content: '该装备尚未激活，请先上传对应装备',
-        showCancel: false
+      // 未激活装备：跳转到上传页面并自动选择装备
+      wx.navigateTo({
+        url: `/pages/upload/upload?templateId=${id}&equipmentName=${encodeURIComponent(name)}`
       })
       return
     }
     
-    // 跳转到装备详情页
+    // 已激活装备：跳转到装备详情页
     wx.navigateTo({
       url: `/pages/detail/detail?id=${id}`
     })
