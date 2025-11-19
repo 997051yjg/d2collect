@@ -4,7 +4,7 @@
   <view class="header">
     <view class="logo-section">
       <text class="title">暗黑2装备图鉴</text>
-      <text class="subtitle">基德会记录你的每一次好运</text>
+      <text class="subtitle">基德会祝福你</text>
     </view>
     
     <!-- 用户登录状态 -->
