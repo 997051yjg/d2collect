@@ -41,7 +41,7 @@
   display: flex;
   padding: 40rpx 30rpx;
   background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid #d4af37;
+  border: 3rpx solid #d4af37;
   border-radius: 16rpx;
   margin-bottom: 30rpx;
   transition: all 0.3s ease;
@@ -50,6 +50,37 @@
   box-shadow: 
     0 4rpx 20rpx rgba(0, 0, 0, 0.5),
     inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
+  align-items: flex-start;
+}
+
+/* 左右内容之间的金色竖线 */
+.equipment-header-layout::after {
+  content: '';
+  position: absolute;
+  top: 40rpx;
+  bottom: 40rpx;
+  left: calc(50% - 1rpx);
+  width: 2rpx;
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    #d4af37 20%, 
+    #d4af37 80%, 
+    transparent 100%);
+}
+
+/* 左右内容之间的金色竖线 */
+.equipment-header-layout::after {
+  content: '';
+  position: absolute;
+  top: 40rpx;
+  bottom: 40rpx;
+  left: calc(50% - 1rpx);
+  width: 2rpx;
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    #d4af37 20%, 
+    #d4af37 80%, 
+    transparent 100%);
 }
 
 /* 头部区域的流光效果 */
@@ -78,6 +109,9 @@
   flex-direction: column;
   flex: 1;
   margin-right: 40rpx;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 10rpx;
 }
 
 /* 装备图片（左上角） */
@@ -85,6 +119,8 @@
   width: 150rpx;
   height: 150rpx;
   margin-bottom: 20rpx;
+  display: flex;
+  justify-content: center;
 }
 
 .main-equipment-image {
@@ -92,28 +128,31 @@
   height: 100%;
   object-fit: contain;
   border-radius: 12rpx;
-  border: 2rpx solid #d4af37;
-  box-shadow: 0 4rpx 15rpx rgba(212, 175, 55, 0.3);
+  border: 1rpx solid #d4af37;
+  box-shadow: 0 2rpx 8rpx rgba(212, 175, 55, 0.2);
 }
 
 /* 基本信息（左下角） */
 .equipment-info-bottom-left {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
+  width: 100%;
 }
 
 /* 右侧区域：装备属性 */
 .equipment-attributes-right {
   flex: 1;
   min-width: 200rpx;
+  padding-left: 30rpx;
 }
 
 .equipment-attributes-right .section-title {
-  font-size: 28rpx;
+  font-size: 32rpx;
   font-weight: bold;
   color: #d4af37;
-  margin-bottom: 20rpx;
+  margin-bottom: 25rpx;
   border-bottom: 1rpx solid rgba(212, 175, 55, 0.3);
   padding-bottom: 8rpx;
 }
@@ -121,12 +160,13 @@
 .equipment-attributes-right .attributes-list {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 20rpx;
 }
 
 .equipment-attributes-right .attribute-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   padding: 8rpx 0;
   border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
 }
@@ -137,28 +177,32 @@
 
 .equipment-attributes-right .label {
   color: #cccccc;
-  font-size: 24rpx;
-  margin-bottom: 4rpx;
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  white-space: nowrap;
 }
 
 .equipment-attributes-right .value {
   color: #ffffff;
-  font-size: 24rpx;
+  font-size: 28rpx;
   font-weight: bold;
   line-height: 1.4;
+  text-align: left;
+  flex: 1;
 }
 
 /* 右侧区域：装备属性 */
 .equipment-attributes-right {
   flex: 1;
   min-width: 200rpx;
+  padding-left: 30rpx;
 }
 
 .equipment-attributes-right .section-title {
-  font-size: 28rpx;
+  font-size: 32rpx;
   font-weight: bold;
   color: #d4af37;
-  margin-bottom: 20rpx;
+  margin-bottom: 25rpx;
   border-bottom: 1rpx solid rgba(212, 175, 55, 0.3);
   padding-bottom: 8rpx;
 }
@@ -166,12 +210,13 @@
 .equipment-attributes-right .attributes-list {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 20rpx;
 }
 
 .equipment-attributes-right .attribute-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   padding: 8rpx 0;
   border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
 }
@@ -182,28 +227,32 @@
 
 .equipment-attributes-right .label {
   color: #cccccc;
-  font-size: 24rpx;
-  margin-bottom: 4rpx;
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  white-space: nowrap;
 }
 
 .equipment-attributes-right .value {
   color: #ffffff;
-  font-size: 24rpx;
+  font-size: 28rpx;
   font-weight: bold;
   line-height: 1.4;
+  text-align: left;
+  flex: 1;
 }
 
 /* 右侧区域：装备属性 */
 .equipment-attributes-right {
   flex: 1;
   min-width: 200rpx;
+  padding-left: 30rpx;
 }
 
 .equipment-attributes-right .section-title {
-  font-size: 28rpx;
+  font-size: 32rpx;
   font-weight: bold;
   color: #d4af37;
-  margin-bottom: 20rpx;
+  margin-bottom: 25rpx;
   border-bottom: 1rpx solid rgba(212, 175, 55, 0.3);
   padding-bottom: 8rpx;
 }
@@ -211,12 +260,13 @@
 .equipment-attributes-right .attributes-list {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 20rpx;
 }
 
 .equipment-attributes-right .attribute-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   padding: 8rpx 0;
   border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
 }
@@ -227,15 +277,18 @@
 
 .equipment-attributes-right .label {
   color: #cccccc;
-  font-size: 24rpx;
-  margin-bottom: 4rpx;
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  white-space: nowrap;
 }
 
 .equipment-attributes-right .value {
   color: #ffffff;
-  font-size: 24rpx;
+  font-size: 28rpx;
   font-weight: bold;
   line-height: 1.4;
+  text-align: left;
+  flex: 1;
 }
 
 /* 头部区域的流光效果 */
@@ -694,8 +747,9 @@
   left: 0;
   right: 0;
   background: rgba(212, 175, 55, 0.9);
-  padding: 6rpx;
+  padding: 2rpx;
   text-align: center;
+  height: 20rpx;
 }
 
 .thumbnail-text {

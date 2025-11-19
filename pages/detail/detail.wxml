@@ -33,7 +33,6 @@
         <view class="section-title">装备属性</view>
         <view class="attributes-list">
           <view class="attribute-item" wx:if="{{equipment.stats}}">
-            <text class="label">属性：</text>
             <text class="value">{{equipment.stats}}</text>
           </view>
           <view class="attribute-item" wx:if="{{equipment.requiredLevel}}">
@@ -44,7 +43,7 @@
       </view>
     </view>
 
-    <!-- 多图片预览卡片 - 横向布局 -->
+        <!-- 多图片预览卡片 - 横向布局 -->
     <view class="images-section" wx:if="{{isActivated && userEquipment && userEquipment.images && userEquipment.images.length > 0}}">
       <view class="section-title">装备图片</view>
       <view class="images-container">
@@ -53,9 +52,6 @@
             <block wx:for="{{userEquipment.images}}" wx:key="*this" wx:for-item="image" wx:for-index="index">
               <view class="image-thumbnail" bindtap="viewImage" data-image="{{image}}" data-index="{{index}}">
                 <image src="{{image}}" class="thumbnail-image" mode="aspectFill" />
-                <view class="thumbnail-overlay" wx:if="{{currentImageIndex === index}}">
-                  <text class="thumbnail-text">当前</text>
-                </view>
               </view>
             </block>
           </view>
@@ -67,7 +63,7 @@
 
     <!-- 收藏者信息卡片 -->
     <view class="collector-section" wx:if="{{isActivated && userInfo}}">
-      <view class="section-title">收藏者</view>
+      <view class="section-title">创建者</view>
       <view class="collector-content">
         <image class="collector-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
         <view class="collector-info">
