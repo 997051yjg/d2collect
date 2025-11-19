@@ -227,7 +227,7 @@
   line-height: 1.5;
 }
 
-/* 最近上传 */
+/* 最近收获 */
 .recent-section {
   margin-bottom: 40rpx;
 }
@@ -276,8 +276,8 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  width: 180rpx;
-  padding: 40rpx;
+  width: 240rpx;
+  padding: 20rpx;
   text-align: center;
   transition: all 0.3s ease;
   background: transparent;
@@ -286,6 +286,194 @@
 
 .recent-item:active {
   transform: scale(0.98);
+}
+
+/* 最近收获装备卡片样式 */
+.equipment-card-recent {
+  background: rgba(10, 10, 10, 0.95);
+  border-radius: 16rpx;
+  padding: 20rpx;
+  border: 2rpx solid #d4af37;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
+  width: 200rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.equipment-card-recent:active {
+  transform: scale(0.98);
+  border-color: #ffd700;
+  box-shadow: 
+    0 0 25rpx rgba(255, 215, 0, 0.4),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
+}
+
+.equipment-card-recent.activated {
+  border-color: #b89c4f;
+  box-shadow: 0 0 20rpx rgba(184, 156, 79, 0.3);
+}
+
+.equipment-image-recent {
+  position: relative;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.equipment-icon-recent {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 2;
+  position: relative;
+}
+
+/* 最近收获光晕效果 */
+.glow-effect-recent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90rpx;
+  height: 90rpx;
+  background: radial-gradient(circle, rgba(184, 156, 79, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+/* 装备信息区域 */
+.equipment-info-recent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  width: 100%;
+}
+
+.equipment-name-recent {
+  font-size: 24rpx;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 暗金装备名称颜色 */
+.equipment-name-recent.unique {
+  color: #d4af37;
+  text-shadow: 0 0 8rpx rgba(212, 175, 55, 0.6);
+}
+
+/* 套装装备名称颜色 */
+.equipment-name-recent.suit {
+  color: #4a90e2;
+  text-shadow: 0 0 8rpx rgba(74, 144, 226, 0.6);
+}
+
+/* 符文之语装备名称颜色 */
+.equipment-name-recent.rune {
+  color: #d4af37;
+  text-shadow: 0 0 8rpx rgba(212, 175, 55, 0.6);
+}
+
+.equipment-rarity-recent {
+  font-size: 20rpx;
+  font-weight: 500;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  text-align: center;
+}
+
+.equipment-rarity-recent.unique {
+  background: linear-gradient(135deg, #b89c4f, #d4af37);
+  color: #000000;
+  text-shadow: 0 1rpx 2rpx rgba(255, 255, 255, 0.5);
+}
+
+.equipment-rarity-recent.suit {
+  background: linear-gradient(135deg, #4a90e2, #5d9cec);
+  color: #ffffff;
+  text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.5);
+}
+
+.equipment-rarity-recent.rune {
+  background: linear-gradient(135deg, #b89c4f, #d4af37);
+  color: #000000;
+  text-shadow: 0 1rpx 2rpx rgba(255, 255, 255, 0.5);
+}
+
+/* 小正方形装备卡片（保留，但不再使用） */
+.equipment-card-small {
+  background: rgba(10, 10, 10, 0.95);
+  border-radius: 12rpx;
+  padding: 16rpx;
+  border: 2rpx solid #d4af37;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 4rpx 16rpx rgba(0, 0, 0, 0.5),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.equipment-card-small:active {
+  transform: scale(0.95);
+  border-color: #ffd700;
+  box-shadow: 
+    0 0 20rpx rgba(255, 215, 0, 0.4),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
+}
+
+.equipment-card-small.activated {
+  border-color: #b89c4f;
+  box-shadow: 0 0 15rpx rgba(184, 156, 79, 0.3);
+}
+
+.equipment-image-small {
+  position: relative;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.equipment-icon-small {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 2;
+  position: relative;
+}
+
+/* 小光晕效果 */
+.glow-effect-small {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70rpx;
+  height: 70rpx;
+  background: radial-gradient(circle, rgba(184, 156, 79, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: glow 2s ease-in-out infinite alternate;
 }
 
 /* 装备卡片（与图鉴页面保持一致） */

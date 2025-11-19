@@ -92,12 +92,12 @@ Page({
     }
   },
 
-  // 加载最近上传的装备
+  // 加载最近收获的装备
   async loadRecentEquipments() {
     try {
       const db = wx.cloud.database()
       
-      // 获取用户最近上传的装备
+      // 获取用户最近收获的装备
       const { data: userEquipments } = await db.collection('user_warehouse')
         .where({ openid: app.globalData.openid })
         .orderBy('activationTime', 'desc')

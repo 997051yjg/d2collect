@@ -4,7 +4,7 @@
   <view class="header">
     <view class="logo-section">
       <text class="title">暗黑2装备图鉴</text>
-      <text class="subtitle">基德会祝福你</text>
+      <text class="subtitle">❇ 基德祝福你 ❇</text>
     </view>
     
     <!-- 用户登录状态 -->
@@ -67,33 +67,32 @@
     </view>
   </view>
 
-  <!-- 最近上传 -->
+  <!-- 最近收获 -->
   <view class="recent-section" wx:if="{{isLoggedIn && recentEquipments.length > 0}}" bindtap="goToCollection">
     <view class="recent-bar">
       <view class="recent-header">
-        <text class="recent-title">最近上传</text>
+        <text class="recent-title">最近收获</text>
       </view>
       <scroll-view class="recent-list" scroll-x="true">
         <view class="recent-items">
           <view class="recent-item" wx:for="{{recentEquipments}}" wx:key="id" bindtap="viewEquipment" data-id="{{item.id}}">
             
-            <!-- 装备卡片（与图鉴页面保持一致） -->
-            <view class="equipment-card activated">
+            <!-- 装备卡片（放大版，显示名称和品质） -->
+            <view class="equipment-card-recent activated">
               <!-- 装备图片 -->
-              <view class="equipment-image">
-                <image class="equipment-icon" src="{{item.icon}}" mode="aspectFit" />
+              <view class="equipment-image-recent">
+                <image class="equipment-icon-recent" src="{{item.icon}}" mode="aspectFit" />
                 <!-- 已激活光晕效果 -->
-                <view class="glow-effect"></view>
+                <view class="glow-effect-recent"></view>
               </view>
               
               <!-- 装备信息 -->
-              <view class="equipment-info">
-                <text class="equipment-name">{{item.name}}</text>
-                <view class="equipment-rarity {{item.rarity === '套装' ? 'suit' : 'unique'}}">
+              <view class="equipment-info-recent">
+                <text class="equipment-name-recent {{item.rarity === '套装' ? 'suit' : item.rarity === '符文之语' ? 'rune' : 'unique'}}">{{item.name}}</text>
+                <view class="equipment-rarity-recent {{item.rarity === '套装' ? 'suit' : item.rarity === '符文之语' ? 'rune' : 'unique'}}">
                   {{item.rarity}}
                 </view>
               </view>
-              
             </view>
           </view>
         </view>

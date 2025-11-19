@@ -10,67 +10,61 @@
              value="{{searchKeyword}}" />
     </view>
     
-    <!-- 快速筛选栏 -->
-    <view class="quick-filter-bar">
-        <view class="filter-tabs">
-        <view class="filter-tab {{currentFilter === 'all' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="all">全部</view>
-        <view class="filter-tab {{currentFilter === 'helmet' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="helmet">头部</view>
-        <view class="filter-tab {{currentFilter === 'armor' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="armor">盔甲</view>
-        <view class="filter-tab {{currentFilter === 'belt' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="belt">腰带</view>
-        <view class="filter-tab {{currentFilter === 'boots' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="boots">鞋子</view>
-        <view class="filter-tab {{currentFilter === 'gloves' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="gloves">手套</view>
-        <view class="filter-tab {{currentFilter === 'ring' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="ring">戒指</view>
-        <view class="filter-tab {{currentFilter === 'amulet' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="amulet">项链</view>
-        <view class="filter-tab {{currentFilter === 'weapon' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="weapon">手持</view>
-        <view class="filter-tab {{currentFilter === 'active' ? 'active' : ''}}" 
-              bindtap="setFilter" data-filter="active">已激活</view>
+    <!-- 筛选下拉卡片 -->
+    <view class="filter-dropdown">
+      <view class="filter-toggle" bindtap="toggleFilterPanel">
+        <text class="filter-toggle-text">筛选</text>
+        <text class="filter-toggle-icon {{showFilterPanel ? 'active' : ''}}">▼</text>
       </view>
       
-      <!-- 排序和筛选按钮 -->
-      <view class="sort-controls">
-        <view class="sort-btn" bindtap="toggleFilterPanel">
-          <text class="sort-icon">⚙️</text>
-          <text class="sort-text">筛选</text>
+      <!-- 筛选面板 -->
+      <view class="filter-panel {{showFilterPanel ? 'show' : ''}}">
+        <!-- 装备类型筛选（单选） -->
+        <view class="filter-group">
+          <text class="filter-label">装备类型</text>
+          <view class="type-filters">
+            <view class="type-filter {{currentTypeFilter === 'all' ? 'active' : ''}}" 
+                  bindtap="setTypeFilter" data-type="all">全部</view>
+            <view class="type-filter {{currentTypeFilter === 'helmet' ? 'active' : ''}}" 
+                  bindtap="setTypeFilter" data-type="helmet">头部</view>
+            <view class="type-filter {{currentTypeFilter === 'armor' ? 'active' : ''}}" 
+                  bindtap="setTypeFilter" data-type="armor">盔甲</view>
+            <view class="type-filter {{currentTypeFilter === 'belt' ? 'active' : ''}}" 
+                  bindtap="setTypeFilter" data-type="belt">腰带</view>
+            <view class="type-filter {{currentTypeFilter === 'boots' ? 'active' : ''}}" 
+                  bindtap="setTypeFilter" data-type="boots">鞋子</view>
+            <view class="type-filter {{currentTypeFilter === 'gloves' ? 'active' : ''}}" 
+                  bindtap="setTypeFilter" data-type="gloves">手套</view>
+            <view class="type-filter {{currentTypeFilter === 'ring' ? 'active' : ''}}" 
+                  bindtap="setTypeFilter" data-type="ring">戒指</view>
+            <view class="type-filter {{currentTypeFilter === 'amulet' ? 'active' : ''}}" 
+                  bindtap="setTypeFilter" data-type="amulet">项链</view>
+            <view class="type-filter {{currentTypeFilter === 'weapon' ? 'active' : ''}}" 
+                  bindtap="setTypeFilter" data-type="weapon">手持</view>
+          </view>
         </view>
-        <view class="sort-btn {{sortBy === 'name' ? 'selected' : ''}}" bindtap="toggleSort" data-sort-by="name">
-          <text class="sort-icon">{{sortBy === 'name' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}}</text>
-          <text class="sort-text">名称</text>
+        
+        <!-- 高级筛选（多选） -->
+        <view class="filter-group">
+          <text class="filter-label">高级筛选</text>
+          <view class="advanced-filters">
+            <view class="advanced-filter {{advancedFilters.unique ? 'active' : ''}}" 
+                  bindtap="toggleAdvancedFilter" data-filter="unique">暗金</view>
+            <view class="advanced-filter {{advancedFilters.suit ? 'active' : ''}}" 
+                  bindtap="toggleAdvancedFilter" data-filter="suit">套装</view>
+            <view class="advanced-filter {{advancedFilters.runeWord ? 'active' : ''}}" 
+                  bindtap="toggleAdvancedFilter" data-filter="runeWord">符文之语</view>
+            <view class="advanced-filter {{advancedFilters.activated ? 'active' : ''}}" 
+                  bindtap="toggleAdvancedFilter" data-filter="activated">已激活</view>
+            <view class="advanced-filter {{advancedFilters.notActivated ? 'active' : ''}}" 
+                  bindtap="toggleAdvancedFilter" data-filter="notActivated">未激活</view>
+          </view>
         </view>
-        <view class="sort-btn {{sortBy === 'rarity' ? 'selected' : ''}}" bindtap="toggleSort" data-sort-by="rarity">
-          <text class="sort-icon">{{sortBy === 'rarity' ? (sortOrder === 'asc' ? '▲' : '▼') : '⇅'}}</text>
-          <text class="sort-text">稀有度</text>
+        
+        <!-- 筛选操作按钮 -->
+        <view class="filter-actions">
+          <view class="filter-btn reset" bindtap="resetFilters">重置</view>
         </view>
-      </view>
-    </view>
-    
-    <!-- 高级筛选面板 -->
-    <view class="filter-panel {{showFilterPanel ? 'show' : ''}}">
-      <view class="filter-group">
-        <text class="filter-label">稀有度筛选</text>
-        <view class="rarity-filters">
-          <view class="rarity-filter {{currentRarityFilter === 'all' ? 'active' : ''}}" 
-                bindtap="setRarityFilter" data-rarity="all">全部</view>
-          <view class="rarity-filter {{currentRarityFilter === '套装' ? 'active' : ''}}" 
-                bindtap="setRarityFilter" data-rarity="套装">套装</view>
-          <view class="rarity-filter {{currentRarityFilter === '暗金' ? 'active' : ''}}" 
-                bindtap="setRarityFilter" data-rarity="暗金">暗金</view>
-          <view class="rarity-filter {{currentRarityFilter === '符文之语' ? 'active' : ''}}" 
-                bindtap="setRarityFilter" data-rarity="符文之语">符文之语</view>
-        </view>
-      </view>
-      
-      <view class="filter-actions">
-        <view class="filter-btn" bindtap="toggleFilterPanel">关闭</view>
-        <view class="filter-btn reset" bindtap="resetFilters">重置</view>
       </view>
     </view>
   </view>
@@ -79,11 +73,6 @@
 
   <!-- 图鉴列表 -->
   <view class="collection-section">
-    <!-- 搜索结果统计 -->
-    <view class="search-stats" wx:if="{{filteredList.length > 0 && (searchKeyword || currentFilter !== 'all' || currentRarityFilter !== 'all')}}">
-      <text class="search-stats-text">找到 {{filteredList.length}} 件装备</text>
-    </view>
-    
     <view class="collection-grid" wx:if="{{filteredList.length > 0}}">
       <view class="collection-item" 
             wx:for="{{filteredList}}" 

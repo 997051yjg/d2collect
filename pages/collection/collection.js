@@ -5,15 +5,18 @@ Page({
   data: {
     isLoggedIn: false,
     loading: false,
-    currentFilter: 'all',
-    currentRarityFilter: 'all',
+    showFilterPanel: false, // 筛选面板显示状态
+    currentTypeFilter: 'all', // 装备类型筛选（单选）
+    advancedFilters: { // 高级筛选（多选）
+      unique: true, // 暗金
+      suit: true,   // 套装
+      runeWord: true, // 符文之语
+      activated: true,  // 已激活
+      notActivated: true // 未激活
+    },
     searchKeyword: '',
     equipmentList: [],
     filteredList: [],
-    activatedCount: 0,
-    totalCount: 0,
-    completionRate: 0,
-    showFilterPanel: false,
     sortBy: 'name', // name, type, rarity, activation
     sortOrder: 'asc' // asc, desc
   },
@@ -45,10 +48,38 @@ Page({
     this.setData({ isLoggedIn })
   },
 
-  // 设置筛选条件
-  setFilter(e) {
+  // 设置类型筛选条件（第二行，单选）
+  setTypeFilter(e) {
+    const type = e.currentTarget.dataset.type
+    this.setData({ currentTypeFilter: type })
+    this.filterEquipmentList()
+  },
+
+  // 切换筛选面板显示状态
+  toggleFilterPanel() {
+    this.setData({
+      showFilterPanel: !this.data.showFilterPanel
+    })
+  },
+
+  // 切换高级筛选条件（多选）
+  toggleAdvancedFilter(e) {
     const filter = e.currentTarget.dataset.filter
-    this.setData({ currentFilter: filter })
+    const { advancedFilters } = this.data
+    
+    // 切换选中状态
+    advancedFilters[filter] = !advancedFilters[filter]
+    
+    // 检查是否所有筛选都被取消，如果是则默认选中所有
+    const allUnselected = Object.values(advancedFilters).every(value => !value)
+    if (allUnselected) {
+      // 重置为默认选中所有
+      Object.keys(advancedFilters).forEach(key => {
+        advancedFilters[key] = true
+      })
+    }
+    
+    this.setData({ advancedFilters })
     this.filterEquipmentList()
   },
 
@@ -179,36 +210,50 @@ Page({
 
   // 筛选装备列表
   filterEquipmentList() {
-    const { equipmentList, currentFilter, currentRarityFilter, searchKeyword, sortBy, sortOrder } = this.data
+    const { equipmentList, currentTypeFilter, advancedFilters, searchKeyword, sortBy, sortOrder } = this.data
     
     let filteredList = [...equipmentList]
     
-    // 基础筛选
-    if (currentFilter !== 'all') {
-      if (currentFilter === 'active') {
-        filteredList = filteredList.filter(item => item.isActivated)
-      } else {
-        // 类型筛选
-        const typeMap = {
-          'helmet': '头部',
-          'armor': '盔甲',
-          'belt': '腰带',
-          'boots': '鞋子',
-          'gloves': '手套',
-          'ring': '戒指',
-          'amulet': '项链',
-          'weapon': '手持'
-        }
-        filteredList = filteredList.filter(item => item.type === typeMap[currentFilter])
+    // 第二行：类型筛选（单选）
+    if (currentTypeFilter !== 'all') {
+      const typeMap = {
+        'helmet': '头部',
+        'armor': '盔甲',
+        'belt': '腰带',
+        'boots': '鞋子',
+        'gloves': '手套',
+        'ring': '戒指',
+        'amulet': '项链',
+        'weapon': '手持'
       }
+      filteredList = filteredList.filter(item => item.type === typeMap[currentTypeFilter])
     }
     
-    // 稀有度筛选
-    if (currentRarityFilter !== 'all') {
-      filteredList = filteredList.filter(item => item.rarity === currentRarityFilter)
+    // 第三行：高级筛选（多选）
+    if (advancedFilters) {
+      // 稀有度筛选
+      const rarityFilters = []
+      if (advancedFilters.unique) rarityFilters.push('暗金')
+      if (advancedFilters.suit) rarityFilters.push('套装')
+      if (advancedFilters.runeWord) rarityFilters.push('符文之语')
+      
+      if (rarityFilters.length > 0) {
+        filteredList = filteredList.filter(item => rarityFilters.includes(item.rarity))
+      }
+      
+      // 激活状态筛选
+      const activationFilters = []
+      if (advancedFilters.activated) activationFilters.push(true)
+      if (advancedFilters.notActivated) activationFilters.push(false)
+      
+      if (activationFilters.length === 1) {
+        // 如果只选择了一个激活状态，进行筛选
+        filteredList = filteredList.filter(item => activationFilters.includes(item.isActivated))
+      }
+      // 如果两个都选或都不选，则不进行筛选（显示所有）
     }
     
-    // 关键词搜索
+    // 第一行：关键词搜索
     if (searchKeyword) {
       filteredList = filteredList.filter(item => 
         item.name.includes(searchKeyword) || 
@@ -259,13 +304,6 @@ Page({
     })
   },
 
-  // 设置稀有度筛选
-  setRarityFilter(e) {
-    const rarity = e.currentTarget.dataset.rarity
-    this.setData({ currentRarityFilter: rarity })
-    this.filterEquipmentList()
-  },
-
   // 切换排序方式
   toggleSort(e) {
     const { sortBy } = e.currentTarget.dataset
@@ -282,20 +320,20 @@ Page({
     this.filterEquipmentList()
   },
 
-  // 显示/隐藏筛选面板
-  toggleFilterPanel() {
-    this.setData({ showFilterPanel: !this.data.showFilterPanel })
-  },
-
   // 重置筛选条件
   resetFilters() {
     this.setData({
-      currentFilter: 'all',
-      currentRarityFilter: 'all',
+      currentTypeFilter: 'all',
+      advancedFilters: {
+        unique: true,
+        suit: true,
+        runeWord: true,
+        activated: true,
+        notActivated: true
+      },
       searchKeyword: '',
       sortBy: 'name',
-      sortOrder: 'asc',
-      showFilterPanel: false
+      sortOrder: 'asc'
     })
     
     this.filterEquipmentList()
