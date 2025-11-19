@@ -137,7 +137,6 @@ Page({
       this.filterEquipmentList()
       
     } catch (error) {
-      console.error('加载图鉴数据失败:', error)
       wx.showToast({
         title: '加载失败',
         icon: 'none'
@@ -157,23 +156,95 @@ Page({
       
       return data
     } catch (error) {
-      console.error('获取用户装备失败:', error)
       return []
     }
   },
 
-  // 获取所有装备模板
+  // 获取所有装备模板（优先使用云函数）
   async getAllEquipmentTemplates() {
     try {
-      const db = wx.cloud.database()
-      const { data } = await db.collection('equipment_templates')
-        .orderBy('createTime', 'desc')
-        .get()
+      // 直接使用云函数获取所有数据，性能更好
+      const result = await wx.cloud.callFunction({
+        name: 'getAllEquipmentTemplates'
+      })
       
-      return data
+      if (result && result.result && result.result.code === 0) {
+        return result.result.data
+      } else {
+        // 云函数失败时使用小程序端分批次获取作为备用方案
+        return await this.getAllEquipmentTemplatesByClient()
+      }
     } catch (error) {
-      console.error('获取装备模板失败:', error)
+      // 主方案失败时使用备用方案
+      return await this.getAllEquipmentTemplatesByClient()
+    }
+  },
+
+  // 备用方案：小程序端分批次获取
+  async getAllEquipmentTemplatesByClient() {
+    try {
+      const db = wx.cloud.database()
+      const MAX_BATCH_SIZE = 20 // 微信云开发限制
+      
+      // 先获取数据总数
+      const countResult = await db.collection('equipment_templates').count()
+      const total = countResult.total
+      
+      if (total === 0) {
+        return []
+      }
+      
+      // 计算需要分几次获取
+      const batchTimes = Math.ceil(total / MAX_BATCH_SIZE)
+      
+      // 存储所有数据的数组
+      let allData = []
+      
+      // 分批次获取数据
+      for (let i = 0; i < batchTimes; i++) {
+        const result = await db.collection('equipment_templates')
+          .orderBy('createTime', 'desc')
+          .skip(i * MAX_BATCH_SIZE)
+          .limit(MAX_BATCH_SIZE)
+          .get()
+        
+        allData = allData.concat(result.data)
+        
+        // 如果已经获取到足够的数据，提前结束
+        if (allData.length >= total) {
+          break
+        }
+      }
+      
+      return allData
+    } catch (error) {
       return []
+    }
+  },
+
+  // 通过云函数获取所有装备模板
+  async getAllEquipmentTemplatesByCloudFunction() {
+    try {
+      const result = await wx.cloud.callFunction({
+        name: 'getAllEquipmentTemplates',
+        data: {}
+      })
+      
+      // 检查云函数返回的数据结构
+      if (result && result.result) {
+        if (result.result.code === 0) {
+          // 成功获取数据
+          return result.result.data
+        } else {
+          // 云函数返回错误
+          throw new Error(result.result.message)
+        }
+      } else {
+        // 云函数调用失败
+        throw new Error('云函数调用失败')
+      }
+    } catch (error) {
+      throw error
     }
   },
 
@@ -194,7 +265,9 @@ Page({
     
     const list = uniqueTemplates.map(template => {
       const isActivated = activatedIds.has(template._id)
-      const icon = template.image || this.getEquipmentIcon(template.type)
+      // 修复图片路径
+      const fixedImage = template.image ? this.fixImagePath(template.image) : null
+      const icon = fixedImage || this.getEquipmentIcon(template.type)
       
       return {
         id: template._id,
@@ -203,7 +276,7 @@ Page({
         rarity: template.rarity,
         icon: icon,
         isActivated: isActivated,
-        image: template.image || '',
+        image: fixedImage || '',
         activationTime: userEquipment.find(item => item.templateId === template._id)?.activationTime || null
       }
     })
@@ -237,6 +310,16 @@ Page({
     }
     
     return iconMap[type] || '/images/equipment-icons/default.png'
+  },
+
+  // 修复图片路径格式
+  fixImagePath(imagePath) {
+    if (!imagePath || !imagePath.includes('cloud://')) {
+      return imagePath
+    }
+    
+    // 直接返回原始路径，让微信小程序处理云存储路径
+    return imagePath
   },
 
   // 筛选装备列表
@@ -411,9 +494,16 @@ Page({
     if (filteredList[index]) {
       // 使用默认图标替换
       filteredList[index].imageError = true
+      // 尝试使用装备类型默认图标
+      const defaultIcon = this.getEquipmentIcon(filteredList[index].type)
+      filteredList[index].icon = defaultIcon
+      
       this.setData({
-        [`filteredList[${index}].imageError`]: true
+        [`filteredList[${index}].imageError`]: true,
+        [`filteredList[${index}].icon`]: defaultIcon
       })
+      
+      // 静默处理，不显示错误提示，避免干扰用户体验
     }
   },
 
