@@ -4,7 +4,7 @@
   <view class="header">
     <view class="logo-section">
       <view class="logo">👤</view>
-      <text class="title">个人中心</text>
+      <text class="title">我的信息</text>
       <text class="subtitle">管理您的个人信息</text>
     </view>
   </view>

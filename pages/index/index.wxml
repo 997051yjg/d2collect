@@ -55,7 +55,7 @@
       <view class="action-divider"></view>
       <view class="action-item" bindtap="goToCollection">
         <view class="action-icon">📚</view>
-        <text class="action-text">我的图鉴</text>
+        <text class="action-text">装备图鉴</text>
       </view>
     </view>
   </view>

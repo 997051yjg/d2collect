@@ -4,8 +4,7 @@
         "pages/upload/upload",
         "pages/collection/collection",
         "pages/profile/profile",
-        "pages/detail/detail",
-        "pages/utils"
+        "pages/detail/detail"
     ],
     "window": {
         "backgroundTextStyle": "dark",

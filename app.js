@@ -49,9 +49,15 @@ App({
         this.globalData.isLoggedIn = true
         this.globalData.userInfo = userInfo
         this.globalData.openid = openid
-        this.globalData.hasUserInfo = true
         
-        console.log('登录状态: 已登录，用户:', userInfo.nickName)
+        // 检查是否为默认信息（真机环境下可能的问题）
+        if (userInfo.nickName === '测试号1' || userInfo.avatarUrl === '/images/default-avatar.png') {
+          this.globalData.hasUserInfo = false
+          console.log('登录状态: 已登录（默认信息，需要完善）')
+        } else {
+          this.globalData.hasUserInfo = true
+          console.log('登录状态: 已登录，用户:', userInfo.nickName)
+        }
         
         // 从数据库同步用户信息（确保数据一致性）
         await this.syncUserInfoFromDB(openid)
@@ -84,6 +90,7 @@ App({
         // 比较本地和数据库的信息，使用数据库中的信息
         if (this.globalData.userInfo && 
             (this.globalData.userInfo.nickName === '暗黑冒险者' || 
+             this.globalData.userInfo.nickName === '测试号1' ||
              this.globalData.userInfo.avatarUrl === '/images/default-avatar.png')) {
           
           // 如果本地是默认信息，使用数据库中的信息
@@ -93,6 +100,7 @@ App({
           }
           
           this.globalData.userInfo = updatedUserInfo
+          this.globalData.hasUserInfo = true
           wx.setStorageSync('userInfo', updatedUserInfo)
           
           console.log('用户信息已从数据库同步:', updatedUserInfo.nickName)
