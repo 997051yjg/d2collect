@@ -385,8 +385,6 @@ Page({
             this.setData({ uploadedImage: '' })
             this.resetForm()
             
-            // 检查成就
-            this.checkAchievements()
             
           } catch (error) {
             this.setData({ uploading: false })
@@ -526,29 +524,4 @@ Page({
     
     console.log('装备记录创建成功')
   },
-
-  // 检查成就进度
-  async checkAchievements() {
-    try {
-      console.log('开始调用成就检查云函数...')
-      const result = await wx.cloud.callFunction({
-        name: 'checkAchievements'
-        // 云函数会自动获取openid，不需要手动传递
-      })
-      console.log('成就检查完成:', result)
-      
-      // 如果有新完成的成就，显示提示
-      if (result.result && result.result.completedCount > 0) {
-        wx.showToast({
-          title: `恭喜完成${result.result.completedCount}个成就！`,
-          icon: 'success',
-          duration: 3000
-        })
-      }
-    } catch (error) {
-      console.error('成就检查失败:', error)
-      // 云函数调用失败时，不阻塞正常流程
-      console.log('云函数调用失败，不影响正常上传流程')
-    }
-  }
 })
