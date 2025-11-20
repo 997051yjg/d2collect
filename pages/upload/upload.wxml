@@ -11,30 +11,8 @@
 
   <!-- 上传界面 -->
   <view class="upload-section" wx:if="{{isLoggedIn}}">
-    <!-- 图片上传区域 -->
-    <view class="upload-area card">
-      <view class="upload-header">
-        <text class="upload-title gold-text">上传装备图片</text>
-        <text class="upload-tip">支持JPG、PNG格式，最大5MB</text>
-      </view>
-      
-      <view class="image-preview" wx:if="{{uploadedImage}}">
-        <image class="preview-image" src="{{uploadedImage}}" mode="aspectFit"></image>
-        <view class="preview-actions">
-          <button class="btn-secondary" bindtap="removeImage">删除</button>
-          <button class="btn-primary" bindtap="reuploadImage">重新上传</button>
-        </view>
-      </view>
-      
-      <view class="upload-button" wx:else>
-        <view class="upload-icon"><image class="upload-icon-image" src="/images/2.png" mode="aspectFit" /></view>
-        <text class="upload-text">点击选择图片</text>
-        <button class="upload-btn" bindtap="chooseImage" size="mini">选择图片</button>
-      </view>
-    </view>
-
     <!-- 装备信息表单 -->
-    <view class="form-section card" wx:if="{{uploadedImage}}">
+    <view class="form-section card">
       <view class="form-header">
         <text class="form-title gold-text">装备信息</text>
       </view>
@@ -100,6 +78,28 @@
           <button class="btn-primary" form-type="submit" disabled="{{!canSubmit}}">提交上传</button>
         </view>
       </form>
+    </view>
+
+    <!-- 图片上传区域 -->
+    <view class="upload-area card">
+      <view class="upload-header">
+        <text class="upload-title gold-text">上传装备图片</text>
+        <text class="upload-tip">支持JPG、PNG格式，最大5MB</text>
+      </view>
+      
+      <view class="image-preview" wx:if="{{uploadedImage}}">
+        <image class="preview-image" src="{{uploadedImage}}" mode="aspectFit"></image>
+        <view class="preview-actions">
+          <button class="btn-secondary" bindtap="removeImage">删除</button>
+          <button class="btn-primary" bindtap="reuploadImage">重新上传</button>
+        </view>
+      </view>
+      
+      <view class="upload-button" wx:else>
+        <view class="upload-icon"><image class="upload-icon-image" src="/images/2.png" mode="aspectFit" /></view>
+        <text class="upload-text">点击选择图片</text>
+        <button class="upload-btn" bindtap="chooseImage" size="mini">选择图片</button>
+      </view>
     </view>
 
     <!-- 上传进度 -->

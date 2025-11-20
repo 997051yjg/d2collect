@@ -169,13 +169,16 @@ Page({
 
   // 删除图片
   removeImage() {
-    this.setData({ uploadedImage: '' })
-    this.resetForm()
+    this.setData({ 
+      uploadedImage: '',
+      canSubmit: false  // 禁用上传按钮
+    })
+    // 只清除图片，不重置装备选择器
   },
 
   // 重新上传
   reuploadImage() {
-    this.removeImage()
+    // 直接调用chooseImage，不删除图片（让chooseImage覆盖当前图片）
     this.chooseImage()
   },
 
@@ -217,10 +220,10 @@ Page({
 
   // 检查表单有效性
   checkFormValidity() {
-    const { name } = this.data.formData
     const { uploadedImage, selectedEquipment } = this.data
     
-    const canSubmit = uploadedImage && name && selectedEquipment
+    // 只有同时选择了图片和装备信息才能上传
+    const canSubmit = uploadedImage && selectedEquipment
     this.setData({ canSubmit })
   },
 

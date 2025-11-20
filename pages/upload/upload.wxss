@@ -167,6 +167,11 @@
   font-weight: 500;
 }
 
+.input {
+  min-height: 80rpx; /* 设置最小高度 */
+  height: auto; /* 高度自适应 */
+}
+
 .input, .textarea, .picker {
   width: 100%;
   background: rgba(10, 10, 10, 0.95);
