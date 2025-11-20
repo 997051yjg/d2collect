@@ -381,9 +381,20 @@ Page({
               duration: 2000
             })
             
+            // 设置刷新标志，通知图鉴页面和主页面刷新数据
+            wx.setStorageSync('shouldRefreshCollection', true)
+            wx.setStorageSync('shouldRefreshStats', true)
+            
             // 重置表单
             this.setData({ uploadedImage: '' })
             this.resetForm()
+            
+            // 延迟切换到图鉴页面，确保用户看到成功提示
+            setTimeout(() => {
+              wx.switchTab({
+                url: '/pages/collection/collection'
+              })
+            }, 1500)
             
             
           } catch (error) {

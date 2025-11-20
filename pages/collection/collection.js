@@ -29,7 +29,14 @@ Page({
   onShow() {
     this.checkLoginStatus()
     if (this.data.isLoggedIn) {
-      this.loadCollectionData()
+      // 检查是否需要强制刷新（从上个页面返回时）
+      const shouldRefresh = wx.getStorageSync('shouldRefreshCollection')
+      if (shouldRefresh) {
+        wx.removeStorageSync('shouldRefreshCollection')
+        this.loadCollectionData(true) // 强制刷新
+      } else {
+        this.loadCollectionData()
+      }
     }
   },
 
@@ -88,7 +95,7 @@ Page({
   },
 
   // 加载图鉴数据（优化版）
-  async loadCollectionData() {
+  async loadCollectionData(forceRefresh = false) {
     try {
       this.setData({ loading: true })
       
@@ -97,8 +104,8 @@ Page({
       const cachedData = wx.getStorageSync(cacheKey)
       const now = Date.now()
       
-      // 缓存有效期为3分钟
-      if (cachedData && (now - cachedData.timestamp < 3 * 60 * 1000)) {
+      // 如果强制刷新或缓存过期，跳过缓存
+      if (!forceRefresh && cachedData && (now - cachedData.timestamp < 3 * 60 * 1000)) {
         this.setData({
           equipmentList: cachedData.equipmentList,
           activatedCount: cachedData.activatedCount,
@@ -593,17 +600,36 @@ Page({
 
   // 长按装备卡片
   onLongPressEquipment(e) {
+    console.log('长按事件触发', e.currentTarget.dataset)
     const { id, name, activated } = e.currentTarget.dataset
     
     if (!activated) {
+      // 未激活装备：显示上传装备按钮
+      console.log('长按未激活装备，显示上传按钮', id, name)
+      wx.showActionSheet({
+        itemList: ['上传装备'],
+        success: (res) => {
+          if (res.tapIndex === 0) {
+            // 跳转到新的快速上传页面
+            wx.navigateTo({
+              url: `/pages/upload-quick/upload-quick?templateId=${id}&equipmentName=${encodeURIComponent(name)}`
+            })
+          }
+        }
+      })
       return
     }
     
+    // 已激活装备：显示操作菜单
+    console.log('长按已激活装备，显示操作菜单', id, name)
     wx.showActionSheet({
-      itemList: ['查看详情', '分享装备'],
+      itemList: ['上传装备', '分享装备'],
       success: (res) => {
         if (res.tapIndex === 0) {
-          this.viewEquipment(e)
+          // 上传装备（已激活装备也可以重新上传）
+          wx.navigateTo({
+            url: `/pages/upload-quick/upload-quick?templateId=${id}&equipmentName=${encodeURIComponent(name)}`
+          })
         } else if (res.tapIndex === 1) {
           this.shareEquipment(id, name)
         }

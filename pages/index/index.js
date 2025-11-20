@@ -22,7 +22,15 @@ Page({
   onShow() {
     this.checkLoginStatus()
     if (this.data.isLoggedIn) {
-      this.loadUserStats()
+      // 检查是否需要强制刷新统计数据
+      const shouldRefreshStats = wx.getStorageSync('shouldRefreshStats')
+      if (shouldRefreshStats) {
+        // 清除标志并强制刷新
+        wx.removeStorageSync('shouldRefreshStats')
+        this.loadUserStats(true)
+      } else {
+        this.loadUserStats()
+      }
       this.loadRecentEquipments()
     }
   },
@@ -39,7 +47,7 @@ Page({
   },
 
   // 加载图鉴统计数据（优化版）
-  async loadUserStats() {
+  async loadUserStats(forceRefresh = false) {
     if (!this.data.isLoggedIn || !app.globalData.openid) {
       console.log('用户未登录，跳过加载统计数据')
       this.setData({
@@ -57,8 +65,8 @@ Page({
     const cachedStats = wx.getStorageSync(cacheKey)
     const now = Date.now()
     
-    // 缓存有效期为5分钟
-    if (cachedStats && (now - cachedStats.timestamp < 5 * 60 * 1000)) {
+    // 缓存有效期为5分钟，但如果是强制刷新则跳过缓存
+    if (!forceRefresh && cachedStats && (now - cachedStats.timestamp < 5 * 60 * 1000)) {
       this.setData({
         collectionStats: cachedStats.data
       })
@@ -211,8 +219,8 @@ Page({
           userInfo: result.userInfo
         })
         
-        // 加载统计数据
-        await this.loadUserStats()
+        // 加载统计数据（强制刷新，确保最新数据）
+        await this.loadUserStats(true)
         await this.loadRecentEquipments()
         
         wx.hideLoading()

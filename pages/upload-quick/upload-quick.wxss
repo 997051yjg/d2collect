@@ -1,0 +1,309 @@
+/* pages/upload-quick/upload-quick.wxss */
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  padding: 20rpx;
+}
+
+/* 登录提示 */
+.login-prompt {
+  margin-top: 100rpx;
+}
+
+.login-prompt-card {
+  text-align: center;
+  padding: 60rpx 40rpx;
+}
+
+.login-prompt-title {
+  font-size: 36rpx;
+  color: #ffd700;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.login-prompt-desc {
+  font-size: 28rpx;
+  color: #ccc;
+  display: block;
+  margin-bottom: 40rpx;
+}
+
+/* 卡片样式 */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* 装备信息卡片 */
+.equipment-info-card .info-header {
+  margin-bottom: 30rpx;
+}
+
+.info-title {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.equipment-preview {
+  display: flex;
+  align-items: center;
+}
+
+.equipment-image {
+  width: 120rpx;
+  height: 120rpx;
+  margin-right: 30rpx;
+  position: relative;
+}
+
+.equipment-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 10rpx;
+}
+
+.equipment-details {
+  flex: 1;
+}
+
+.equipment-name {
+  font-size: 36rpx;
+  color: #ffd700;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.detail-row {
+  display: flex;
+  margin-bottom: 12rpx;
+  align-items: center;
+}
+
+.detail-label {
+  font-size: 26rpx;
+  color: #aaa;
+  min-width: 120rpx;
+}
+
+.detail-value {
+  font-size: 26rpx;
+  color: #fff;
+  flex: 1;
+}
+
+.detail-value.suit {
+  color: #4CAF50;
+}
+
+.detail-value.unique {
+  color: #FF5722;
+}
+
+/* 上传区域 */
+.upload-header {
+  margin-bottom: 30rpx;
+}
+
+.upload-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.upload-tip {
+  font-size: 24rpx;
+  color: #aaa;
+}
+
+/* 图片预览 */
+.image-preview {
+  text-align: center;
+}
+
+.preview-image {
+  width: 300rpx;
+  height: 300rpx;
+  border-radius: 15rpx;
+  margin-bottom: 30rpx;
+}
+
+.preview-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20rpx;
+}
+
+/* 上传按钮区域 */
+.upload-button {
+  text-align: center;
+  padding: 60rpx 0;
+}
+
+.upload-icon {
+  width: 100rpx;
+  height: 100rpx;
+  margin: 0 auto 20rpx;
+}
+
+.upload-icon-image {
+  width: 100%;
+  height: 100%;
+}
+
+.upload-text {
+  font-size: 28rpx;
+  color: #ccc;
+  display: block;
+  margin-bottom: 30rpx;
+}
+
+/* 按钮样式 */
+.btn-primary, .btn-secondary, .btn-submit, .upload-btn {
+  border: none;
+  border-radius: 10rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.btn-primary, .btn-submit {
+  background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+  color: #000;
+}
+
+.btn-primary:not([disabled]):active, .btn-submit:not([disabled]):active {
+  transform: scale(0.95);
+}
+
+.btn-primary[disabled], .btn-submit[disabled] {
+  background: #666;
+  color: #999;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.upload-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+.upload-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* 提交区域 */
+.submit-section {
+  margin-top: 40rpx;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 30rpx;
+  font-size: 32rpx;
+}
+
+/* 上传进度 */
+.upload-progress {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.progress-card {
+  text-align: center;
+  padding: 40rpx;
+}
+
+.progress-title {
+  font-size: 28rpx;
+  color: #fff;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.progress-bar {
+  width: 400rpx;
+  margin-bottom: 20rpx;
+}
+
+.progress-text {
+  font-size: 24rpx;
+  color: #aaa;
+}
+
+/* 加载状态 */
+.loading {
+  text-align: center;
+  padding: 100rpx 0;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #333;
+  border-top: 4rpx solid #ffd700;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #ccc;
+}
+
+/* 金色文字 */
+.gold-text {
+  color: #ffd700;
+}
+
+/* 响应式适配 */
+@media (max-width: 750rpx) {
+  .container {
+    padding: 15rpx;
+  }
+  
+  .card {
+    padding: 25rpx;
+    margin-bottom: 15rpx;
+  }
+  
+  .equipment-preview {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .equipment-image {
+    margin-right: 0;
+    margin-bottom: 20rpx;
+  }
+  
+  .detail-row {
+    justify-content: center;
+  }
+}

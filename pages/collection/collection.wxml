@@ -112,10 +112,10 @@
 
     <!-- 空状态 -->
     <view class="empty-state" wx:else>
-      <view class="empty-icon">📚</view>
+      <view class="empty-icon">...</view>
       <text class="empty-text">暂无图鉴数据</text>
       <text class="empty-subtext" wx:if="{{!isLoggedIn}}">请先登录</text>
-      <text class="empty-subtext" wx:else>快去上传装备激活图鉴吧！</text>
+      <text class="empty-subtext" wx:else>快去收集装备激活图鉴吧！</text>
     </view>
   </view>
 
