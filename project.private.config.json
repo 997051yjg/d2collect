@@ -3,6 +3,19 @@
     "libVersion": "2.19.4",
     "setting": {
         "urlCheck": false,
-        "compileHotReLoad": false
+        "compileHotReLoad": true
+    },
+    "condition": {
+        "miniprogram": {
+            "list": [
+                {
+                    "name": "/pages/test-update/test-update",
+                    "pathName": "/pages/test-update/test-update",
+                    "query": "",
+                    "scene": null,
+                    "launchMode": "default"
+                }
+            ]
+        }
     }
 }

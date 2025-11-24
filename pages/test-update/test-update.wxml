@@ -1,0 +1,32 @@
+<view class="container">
+  <view class="header">
+    <text class="title">数据更新测试</text>
+    <text class="subtitle">调用云函数更新装备模板数据</text>
+  </view>
+
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">操作面板</text>
+    </view>
+    <view class="card-content">
+      <button class="test-btn" bindtap="callUpdateFunction" disabled="{{isLoading}}">
+        {{isLoading ? '执行中...' : '执行更新云函数'}}
+      </button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{result}}">
+    <view class="card-header">
+      <text class="card-title">执行结果</text>
+    </view>
+    <view class="card-content">
+      <text class="result-text">{{result.message}}</text>
+      <text class="result-stats" wx:if="{{result.data}}">
+        总计: {{result.data.total}} 个装备
+        更新: {{result.data.updated}} 个
+        跳过: {{result.data.skipped}} 个
+        错误: {{result.data.errors}} 个
+      </text>
+    </view>
+  </view>
+</view>
