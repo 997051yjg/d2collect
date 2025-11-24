@@ -170,8 +170,9 @@ Page({
       console.error('云函数调用失败:', error)
       this.setData({ recentEquipments: [] })
     } finally {
-       // 如果你在 onLoad 里没有设置 loading: false，这里不需要操作
-       // 但如果有下拉刷新，这里需要停止刷新
+       // 停止加载状态
+       this.setData({ loading: false })
+       // 停止下拉刷新
        wx.stopPullDownRefresh() 
     }
   },
