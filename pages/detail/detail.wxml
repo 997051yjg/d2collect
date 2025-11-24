@@ -8,7 +8,7 @@
   </view>
 
   <!-- 装备详情 -->
-  <view wx:if="{{!loading && equipment}}" class="equipment-detail">
+  <view wx:if="{{!loading && equipment}}" class="equipment-detail animate-enter">
     <!-- 顶部信息布局 - 图片在左上角，文字在左下角，右侧展示属性 -->
     <view class="equipment-header-layout">
       <!-- 左侧区域：图片和基本信息 -->

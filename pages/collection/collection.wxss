@@ -738,3 +738,73 @@
   color: #999;
   font-size: 28rpx;
 }
+
+/* --- ✨ 新增动画效果 ✨ --- */
+
+/* 定义淡入上移动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 应用到每一个装备格子上 */
+.collection-item {
+  /* 默认隐藏 */
+  opacity: 0; 
+  /* 执行动画：时长0.5秒，贝塞尔曲线让运动更自然 */
+  animation: fadeInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* --- ⚡️ 核心：利用 CSS 计数器或 nth-child 制造延迟感 --- */
+/* 这里我们手动写前 20 个元素的延迟，让它们看起来像波浪一样出来 */
+.collection-item:nth-child(1) { animation-delay: 0.05s; }
+.collection-item:nth-child(2) { animation-delay: 0.1s; }
+.collection-item:nth-child(3) { animation-delay: 0.15s; }
+.collection-item:nth-child(4) { animation-delay: 0.2s; }
+.collection-item:nth-child(5) { animation-delay: 0.25s; }
+.collection-item:nth-child(6) { animation-delay: 0.3s; }
+.collection-item:nth-child(7) { animation-delay: 0.35s; }
+.collection-item:nth-child(8) { animation-delay: 0.4s; }
+/* ... 如果需要更多，可以继续写，或者让后续的一起出来 */
+.collection-item:nth-child(n+9) { animation-delay: 0.45s; }
+
+/* --- ✨ 新增动画效果 ✨ --- */
+
+/* 定义淡入上移动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 应用到每一个装备格子上 */
+.collection-item {
+  /* 默认隐藏 */
+  opacity: 0; 
+  /* 执行动画：时长0.5秒，贝塞尔曲线让运动更自然 */
+  animation: fadeInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* --- ⚡️ 核心：利用 CSS 计数器或 nth-child 制造延迟感 --- */
+/* 这里我们手动写前 20 个元素的延迟，让它们看起来像波浪一样出来 */
+.collection-item:nth-child(1) { animation-delay: 0.05s; }
+.collection-item:nth-child(2) { animation-delay: 0.1s; }
+.collection-item:nth-child(3) { animation-delay: 0.15s; }
+.collection-item:nth-child(4) { animation-delay: 0.2s; }
+.collection-item:nth-child(5) { animation-delay: 0.25s; }
+.collection-item:nth-child(6) { animation-delay: 0.3s; }
+.collection-item:nth-child(7) { animation-delay: 0.35s; }
+.collection-item:nth-child(8) { animation-delay: 0.4s; }
+/* ... 如果需要更多，可以继续写，或者让后续的一起出来 */
+.collection-item:nth-child(n+9) { animation-delay: 0.45s; }

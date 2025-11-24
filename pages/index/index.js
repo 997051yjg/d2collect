@@ -1,6 +1,5 @@
 // pages/index/index.js
 const app = getApp()
-const { startTimer, endTimer, debounce } = require('../../utils/performance.js')
 
 Page({
   data: {

@@ -75,7 +75,7 @@
   <view class="collection-section">
     <view class="collection-grid" wx:if="{{filteredList.length > 0}}">
       <view class="collection-item" 
-            wx:for="{{filteredList}}" 
+            wx:for="{{displayList}}" 
             wx:key="id"
             bindtap="viewEquipment" 
             data-id="{{item.id}}"

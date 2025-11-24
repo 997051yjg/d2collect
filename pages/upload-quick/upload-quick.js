@@ -226,82 +226,21 @@ Page({
 
   // 创建装备记录
   async createEquipmentRecord(imageUrl) {
-    const db = wx.cloud.database()
-    const { equipmentInfo } = this.data
-    const now = new Date()
-    
-    // 检查openid是否存在
-    if (!app.globalData.openid) {
-      throw new Error('用户未登录，无法保存装备记录')
-    }
-    
-    // 检查是否已存在相同装备的记录
-    let existingRecord = null
-    let oldImageUrl = null
-    
-    try {
-      // 查询是否已存在相同装备名称的用户记录
-      const { data: existingRecords } = await db.collection('user_warehouse')
-        .where({
-          openid: app.globalData.openid,
-          equipmentName: equipmentInfo.name
-        })
-        .get()
-      
-      if (existingRecords.length > 0) {
-        existingRecord = existingRecords[0]
-        // 保存旧图片URL用于后续删除
-        if (existingRecord.images && existingRecord.images.length > 0) {
-          oldImageUrl = existingRecord.images[0]
-        }
+    // 调用云函数，安全且无权限问题
+    const { result } = await wx.cloud.callFunction({
+      name: 'saveUserEquipment',
+      data: {
+        templateId: this.data.equipmentInfo?._id,
+        equipmentName: this.data.equipmentInfo?.name,
+        imageUrl: imageUrl,
+        attributes: [] // 如果有属性数组也可以传
       }
-    } catch (error) {
-      console.warn('查询现有装备记录失败:', error)
+    })
+
+    if (!result.success) {
+      throw new Error(result.error)
     }
     
-    // 创建或更新用户装备记录
-    if (existingRecord) {
-      // 更新现有记录
-      await db.collection('user_warehouse').doc(existingRecord._id).update({
-        data: {
-          templateId: equipmentInfo._id,
-          equipmentName: equipmentInfo.name,
-          images: [imageUrl],
-          isActive: true,
-          updateTime: now,
-          activationTime: existingRecord.isActive ? existingRecord.activationTime : now
-        }
-      })
-    } else {
-      // 创建新记录
-      await db.collection('user_warehouse').add({
-        data: {
-          openid: app.globalData.openid,
-          templateId: equipmentInfo._id,
-          equipmentName: equipmentInfo.name,
-          images: [imageUrl],
-          attributes: [],
-          notes: '',
-          isActive: true,
-          activationTime: now,
-          createTime: now,
-          updateTime: now
-        }
-      })
-    }
-    
-    // 删除旧图片文件（如果存在）
-    if (oldImageUrl && oldImageUrl.startsWith('cloud://')) {
-      try {
-        await wx.cloud.deleteFile({
-          fileList: [oldImageUrl]
-        })
-        console.log('旧装备图片已删除:', oldImageUrl)
-      } catch (deleteError) {
-        console.warn('删除旧装备图片失败:', deleteError)
-      }
-    }
-    
-    console.log('装备记录创建成功')
+    console.log('装备保存成功:', result.action)
   }
 })

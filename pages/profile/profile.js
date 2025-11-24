@@ -275,24 +275,25 @@ Page({
 
     this.setData({ uploadingAvatar: true })
     
-    // 使用微信API选择图片
-    wx.chooseImage({
+    // 使用更现代的wx.chooseMedia API
+    wx.chooseMedia({
       count: 1,
-      sizeType: ['compressed'],
+      mediaType: ['image'],
       sourceType: ['album', 'camera'],
+      camera: 'front', // 默认前置摄像头拍头像
       success: async (res) => {
         try {
           console.log('选择图片返回结果:', res)
           
           // 检查返回结果结构
-          if (!res.tempFilePaths || res.tempFilePaths.length === 0) {
-            throw new Error('未获取到图片路径')
+          if (!res.tempFiles || res.tempFiles.length === 0) {
+            throw new Error('未获取到图片文件')
           }
           
-          const tempFilePath = res.tempFilePaths[0]
+          const tempFilePath = res.tempFiles[0].tempFilePath
           
           // 检查图片大小（限制2MB）
-          if (res.tempFiles && res.tempFiles[0] && res.tempFiles[0].size > 2 * 1024 * 1024) {
+          if (res.tempFiles[0].size > 2 * 1024 * 1024) {
             wx.showModal({
               title: '图片过大',
               content: '请选择小于2MB的图片',
@@ -302,14 +303,12 @@ Page({
             return
           }
 
-          // 微信没有官方图片安全检测API，直接上传
-
           // 先保存旧头像的文件ID（用于后续删除）
           const oldAvatarUrl = this.data.userInfo.avatarUrl
           
           // 上传新图片到云存储
           const uploadResult = await wx.cloud.uploadFile({
-            cloudPath: `avatars/${Date.now()}-${Math.random().toString(36).substr(2)}.jpg`,
+            cloudPath: `avatars/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`,
             filePath: tempFilePath
           })
 

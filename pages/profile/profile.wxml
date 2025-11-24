@@ -1,7 +1,7 @@
 <!--pages/profile/profile.wxml-->
 <view class="container">
   <!-- 头部区域 -->
-  <view class="header">
+  <view class="header animate-enter">
     <view class="logo-section">
       <view class="logo"><image class="logo-image" src="/images/4.png" mode="aspectFit" /></view>
       <text class="title">我的信息</text>
@@ -20,7 +20,7 @@
   <!-- 已登录状态 -->
   <view wx:if="{{isLoggedIn}}" class="profile-content">
     <!-- 头像区域 -->
-    <view class="avatar-section card">
+    <view class="avatar-section card animate-enter delay-1">
       <view class="avatar-container">
         <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
         <view class="avatar-overlay" bindtap="uploadAvatar">

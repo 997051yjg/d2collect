@@ -1,6 +1,5 @@
 // pages/collection/collection.js
 const app = getApp()
-const { startTimer, endTimer, debounce, throttle } = require('../../utils/performance.js')
 
 Page({
   data: {
@@ -18,6 +17,9 @@ Page({
     searchKeyword: '',
     equipmentList: [],
     filteredList: [],
+    displayList: [], // 真正用于页面渲染的列表（只存部分数据）
+    pageSize: 20,    // 每次渲染多少条
+    pageIndex: 1,    // 当前页码
     sortBy: 'name', // name, type, rarity, activation
     sortOrder: 'asc' // asc, desc
   },
@@ -329,9 +331,9 @@ Page({
     return imagePath
   },
 
-  // 筛选装备列表
+  // 筛选装备列表（分批渲染优化版）
   filterEquipmentList() {
-    const { equipmentList, currentTypeFilter, advancedFilters, searchKeyword, sortBy, sortOrder } = this.data
+    const { equipmentList, currentTypeFilter, advancedFilters, searchKeyword, sortBy, sortOrder, pageSize } = this.data
     
     let filteredList = [...equipmentList]
     
@@ -386,7 +388,19 @@ Page({
     // 排序
     filteredList = this.sortEquipmentList(filteredList, sortBy, sortOrder)
     
-    this.setData({ filteredList })
+    // 1. 保存完整的筛选结果到内存（不渲染）
+    this.fullFilteredList = filteredList; // 把结果存到 this 对象上，而不是 data 里
+    
+    // 2. 重置页码
+    this.data.pageIndex = 1;
+    
+    // 3. 截取第一页数据进行渲染
+    const firstPage = this.fullFilteredList.slice(0, pageSize);
+    
+    this.setData({ 
+      filteredList: this.fullFilteredList, // 依然保存完整列表用于显示数量等
+      displayList: firstPage // 页面上 wx:for 遍历这个 displayList
+    });
   },
 
   // 排序装备列表
@@ -479,39 +493,19 @@ Page({
     }, 300)
   },
 
-  // 图片懒加载处理
+  // 图片懒加载处理 - 优化版：移除频繁的 setData 调用
+  // 图片加载成功不需要更新状态，CSS 会处理显示逻辑
   onImageLoad(e) {
-    const { index } = e.currentTarget.dataset
-    const { filteredList } = this.data
-    
-    if (filteredList[index]) {
-      // 标记图片已加载
-      filteredList[index].imageLoaded = true
-      this.setData({
-        [`filteredList[${index}].imageLoaded`]: true
-      })
-    }
+    // 静默处理，不需要调用 setData
+    // CSS 会通过 opacity 和 transition 处理图片显示
   },
 
-  // 图片加载失败处理
+  // 图片加载失败处理 - 优化版：使用 CSS 默认背景图
   onImageError(e) {
-    const { index } = e.currentTarget.dataset
-    const { filteredList } = this.data
-    
-    if (filteredList[index]) {
-      // 使用默认图标替换
-      filteredList[index].imageError = true
-      // 尝试使用装备类型默认图标
-      const defaultIcon = this.getEquipmentIcon(filteredList[index].type)
-      filteredList[index].icon = defaultIcon
-      
-      this.setData({
-        [`filteredList[${index}].imageError`]: true,
-        [`filteredList[${index}].icon`]: defaultIcon
-      })
-      
-      // 静默处理，不显示错误提示，避免干扰用户体验
-    }
+    // 静默处理，不需要调用 setData
+    // 通过 CSS 的 ::before 伪元素显示默认图标
+    // 或者在 processEquipmentData 阶段已经处理了默认图标
+    console.log('图片加载失败，使用CSS默认图标')
   },
 
   // 查看装备详情或跳转上传
@@ -668,5 +662,25 @@ Page({
       icon: 'none',
       duration: 2000
     })
+  },
+
+  // 触底加载更多功能
+  onReachBottom() {
+    // 如果显示的长度已经等于总筛选长度，说明没数据了
+    if (!this.fullFilteredList || this.data.displayList.length >= this.fullFilteredList.length) {
+      return;
+    }
+    
+    this.setData({ loading: true });
+    
+    // 计算下一页的数据
+    const currentLen = this.data.displayList.length;
+    const nextBatch = this.fullFilteredList.slice(currentLen, currentLen + this.data.pageSize);
+    
+    // 追加数据
+    this.setData({
+      displayList: this.data.displayList.concat(nextBatch),
+      loading: false
+    });
   }
 })

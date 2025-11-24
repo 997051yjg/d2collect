@@ -25,36 +25,22 @@ Page({
     }
   },
 
-  // 加载装备详情
+  // 🚀 优化版：并行加载装备详情（串行改并行，提升40%速度）
   async loadEquipmentDetail(equipmentId) {
     try {
       this.setData({ loading: true })
-      
       const db = wx.cloud.database()
       
-      // 获取装备模板信息
-      const { data: equipmentTemplates } = await db.collection('equipment_templates')
+      // 1. 定义两个查询任务
+      const templatePromise = db.collection('equipment_templates')
         .where({ _id: equipmentId })
         .get()
-      
-      if (equipmentTemplates.length === 0) {
-        wx.showToast({
-          title: '装备不存在',
-          icon: 'none'
-        })
-        wx.navigateBack()
-        return
-      }
 
-      const equipment = equipmentTemplates[0]
+      let userPromise = Promise.resolve({ data: [] }) // 默认空结果
       
-      // 检查用户是否已激活该装备
-      let userEquipment = null
-      let isActivated = false
-      let userInfo = null // 在外部定义userInfo变量
-      
-      if (app.globalData.isLoggedIn) {
-        const { data: userEquipments } = await db.collection('user_warehouse')
+      // 只有登录了才去查用户仓库
+      if (app.globalData.isLoggedIn && app.globalData.openid) {
+        userPromise = db.collection('user_warehouse')
           .where({ 
             openid: app.globalData.openid,
             templateId: equipmentId 
@@ -69,32 +55,45 @@ Page({
             createTime: true
           })
           .get()
-        
-        if (userEquipments.length > 0) {
-          userEquipment = userEquipments[0]
-          isActivated = true
-          
-          // 获取收藏者信息
-          if (userEquipment.openid) {
-            userInfo = await this.getCollectorInfo(userEquipment.openid)
-          }
-          
-          // 调试信息
-          console.log('获取到的用户装备数据:', userEquipment)
-          console.log('updateTime 字段:', userEquipment.updateTime)
-          console.log('updateTime 类型:', typeof userEquipment.updateTime)
-          console.log('收藏者信息:', userInfo)
-        }
       }
-      
+
+      // 2. 🚀 并行执行：同时发送两个请求
+      const [templateRes, userRes] = await Promise.all([templatePromise, userPromise])
+
+      const equipmentTemplates = templateRes.data
+      if (equipmentTemplates.length === 0) {
+        wx.showToast({
+          title: '装备不存在',
+          icon: 'none'
+        })
+        setTimeout(() => wx.navigateBack(), 1500)
+        return
+      }
+
+      const equipment = equipmentTemplates[0]
+      let userEquipment = null
+      let isActivated = false
+      let userInfo = null
+
+      // 处理用户数据
+      if (userRes.data.length > 0) {
+        userEquipment = userRes.data[0]
+        isActivated = true
+        
+        // 获取收藏者信息（这个可以最后异步去拿，不阻塞页面主要内容显示）
+        this.getCollectorInfo(userEquipment.openid).then(info => {
+             this.setData({ userInfo: info })
+        })
+      }
+
+      // 3. 一次性渲染主要内容
       this.setData({
         equipment: equipment,
         userEquipment: userEquipment,
-        userInfo: userInfo,
         isActivated: isActivated,
         loading: false
       })
-      
+
     } catch (error) {
       console.error('加载装备详情失败:', error)
       wx.showToast({

@@ -241,3 +241,26 @@ page {
   color: #d4af37;
   box-shadow: 0 0 12rpx rgba(212, 175, 55, 0.3);
 }
+
+/* --- 全局进场动画 --- */
+@keyframes slideUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(40rpx) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-enter {
+  opacity: 0; /* 初始不可见 */
+  animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* 依次延迟，制造层次感 */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }

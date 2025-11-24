@@ -1,6 +1,5 @@
 // pages/upload/upload.js
 const app = getApp()
-const { startTimer, endTimer, debounce, optimizeImage } = require('../../utils/performance.js')
 
 Page({
   data: {
@@ -195,9 +194,12 @@ Page({
   onInputBlur() {
     // 延迟隐藏，避免点击搜索结果时立即隐藏
     setTimeout(() => {
-      this.setData({
-        showSearchResults: false
-      })
+      // 检查页面是否仍然活跃，避免页面切换时的setData错误
+      if (this && typeof this.setData === 'function') {
+        this.setData({
+          showSearchResults: false
+        })
+      }
     }, 200)
   },
 
@@ -445,97 +447,21 @@ Page({
 
   // 创建装备记录
   async createEquipmentRecord(imageUrl) {
-    const db = wx.cloud.database()
-    const { formData, selectedEquipment } = this.data
-    const now = new Date()
-    
-    // 检查是否已存在相同装备的记录
-    let existingRecord = null
-    let oldImageUrl = null
-    
-    // 检查openid是否存在
-    if (!app.globalData.openid) {
-      throw new Error('用户未登录，无法保存装备记录')
-    }
-    
-    try {
-      // 查询是否已存在相同装备名称的用户记录
-      const { data: existingRecords } = await db.collection('user_warehouse')
-        .where({
-          openid: app.globalData.openid,
-          equipmentName: formData.name
-        })
-        .get()
-      
-      if (existingRecords.length > 0) {
-        existingRecord = existingRecords[0]
-        // 保存旧图片URL用于后续删除
-        if (existingRecord.images && existingRecord.images.length > 0) {
-          oldImageUrl = existingRecord.images[0]
-        }
+    // 调用云函数，安全且无权限问题
+    const { result } = await wx.cloud.callFunction({
+      name: 'saveUserEquipment',
+      data: {
+        templateId: this.data.selectedEquipment?._id,
+        equipmentName: this.data.formData?.name,
+        imageUrl: imageUrl,
+        attributes: [] // 如果有属性数组也可以传
       }
-    } catch (error) {
-      console.warn('查询现有装备记录失败，可能是权限问题:', error)
-      // 如果是权限错误，继续创建新记录
-      if (error.errMsg && error.errMsg.includes('permission denied')) {
-        console.log('权限错误，跳过查询直接创建新记录')
-      } else {
-        throw error
-      }
+    })
+
+    if (!result.success) {
+      throw new Error(result.error)
     }
     
-    // 确保选中的装备模板存在
-    let templateId = selectedEquipment ? selectedEquipment._id : null
-    
-    if (!templateId) {
-      console.error('未选择有效的装备模板')
-      throw new Error('请选择有效的装备')
-    }
-    
-    // 创建或更新用户装备记录
-    if (existingRecord) {
-      // 更新现有记录
-      await db.collection('user_warehouse').doc(existingRecord._id).update({
-        data: {
-          templateId: templateId,
-          equipmentName: formData.name,
-          images: [imageUrl],
-          isActive: true,
-          updateTime: now,
-          activationTime: existingRecord.isActive ? existingRecord.activationTime : now
-        }
-      })
-    } else {
-      // 创建新记录
-      await db.collection('user_warehouse').add({
-        data: {
-          openid: app.globalData.openid,
-          templateId: templateId,
-          equipmentName: formData.name,
-          images: [imageUrl],
-          attributes: [],
-          notes: '',
-          isActive: true,
-          activationTime: now,
-          createTime: now,
-          updateTime: now
-        }
-      })
-    }
-    
-    // 删除旧图片文件（如果存在）
-    if (oldImageUrl && oldImageUrl.startsWith('cloud://')) {
-      try {
-        await wx.cloud.deleteFile({
-          fileList: [oldImageUrl]
-        })
-        console.log('旧装备图片已删除:', oldImageUrl)
-      } catch (deleteError) {
-        console.warn('删除旧装备图片失败:', deleteError)
-        // 删除失败不影响正常使用
-      }
-    }
-    
-    console.log('装备记录创建成功')
+    console.log('装备保存成功:', result.action)
   },
 })

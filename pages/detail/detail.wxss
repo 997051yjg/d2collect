@@ -2,9 +2,10 @@
 
 .detail-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  /* 使用深色径向渐变模拟光源 */
+  background: radial-gradient(circle at 50% 20%, #2a2a2a 0%, #0a0a0a 80%);
   color: #ffffff;
-  padding: 20rpx;
+  padding: 30rpx;
 }
 
 /* 加载状态 */
@@ -36,20 +37,21 @@
   font-size: 28rpx;
 }
 
-/* 顶部信息布局 - 图片在左上角，文字在左下角，右侧展示属性 */
+/* 2. 头部卡片：增加玻璃质感和高级边框 */
 .equipment-header-layout {
   display: flex;
   padding: 40rpx 30rpx;
-  background: rgba(10, 10, 10, 0.95);
-  border: 3rpx solid #d4af37;
-  border-radius: 16rpx;
+  background: rgba(20, 20, 20, 0.8); /* 半透明 */
+  backdrop-filter: blur(20px);        /* 毛玻璃模糊 */
+  border: 2rpx solid rgba(212, 175, 55, 0.3);
+  border-radius: 24rpx;
   margin-bottom: 30rpx;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   box-shadow: 
-    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
+    0 10rpx 40rpx rgba(0, 0, 0, 0.6), /* 深度阴影 */
+    inset 0 0 20rpx rgba(212, 175, 55, 0.05); /* 内部微光 */
   align-items: flex-start;
 }
 
@@ -163,16 +165,20 @@
   gap: 20rpx;
 }
 
+/* 4. 属性列表优化：像羊皮纸一样的条目 */
 .equipment-attributes-right .attribute-item {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8rpx 0;
-  border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8rpx;
+  padding: 12rpx 16rpx;
+  margin-bottom: 12rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.05);
 }
 
 .equipment-attributes-right .attribute-item:last-child {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .equipment-attributes-right .label {
@@ -182,8 +188,10 @@
   white-space: nowrap;
 }
 
+/* 5. 属性值优化 */
 .equipment-attributes-right .value {
-  color: #ffffff;
+  color: #c9b065; /* 使用稍微柔和的暗金色 */
+  font-family: monospace; /* 等宽字体更有数据感 */
   font-size: 28rpx;
   font-weight: bold;
   line-height: 1.4;
@@ -213,16 +221,20 @@
   gap: 20rpx;
 }
 
+/* 4. 属性列表优化：像羊皮纸一样的条目 */
 .equipment-attributes-right .attribute-item {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8rpx 0;
-  border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8rpx;
+  padding: 12rpx 16rpx;
+  margin-bottom: 12rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.05);
 }
 
 .equipment-attributes-right .attribute-item:last-child {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .equipment-attributes-right .label {
@@ -232,8 +244,10 @@
   white-space: nowrap;
 }
 
+/* 5. 属性值优化 */
 .equipment-attributes-right .value {
-  color: #ffffff;
+  color: #c9b065; /* 使用稍微柔和的暗金色 */
+  font-family: monospace; /* 等宽字体更有数据感 */
   font-size: 28rpx;
   font-weight: bold;
   line-height: 1.4;
@@ -263,16 +277,20 @@
   gap: 20rpx;
 }
 
+/* 4. 属性列表优化：像羊皮纸一样的条目 */
 .equipment-attributes-right .attribute-item {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8rpx 0;
-  border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8rpx;
+  padding: 12rpx 16rpx;
+  margin-bottom: 12rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.05);
 }
 
 .equipment-attributes-right .attribute-item:last-child {
-  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .equipment-attributes-right .label {
@@ -282,8 +300,10 @@
   white-space: nowrap;
 }
 
+/* 5. 属性值优化 */
 .equipment-attributes-right .value {
-  color: #ffffff;
+  color: #c9b065; /* 使用稍微柔和的暗金色 */
+  font-family: monospace; /* 等宽字体更有数据感 */
   font-size: 28rpx;
   font-weight: bold;
   line-height: 1.4;
@@ -337,12 +357,15 @@
   align-items: center;
 }
 
-.name {
-  display: block;
-  font-size: 38rpx;
-  font-weight: bold;
-  color: #d4af37;
-  margin-bottom: 12rpx;
+/* 3. 装备名称的大标题优化 */
+.equipment-info-bottom-left .name {
+  font-size: 40rpx;
+  font-weight: 800; /* 更粗的字体 */
+  background: linear-gradient(180deg, #d4af37 0%, #8a7328 100%); /* 金色渐变文字 */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.5);
+  margin-bottom: 16rpx;
 }
 
 .type {
@@ -360,10 +383,14 @@
   font-weight: bold;
 }
 
+/* 6. 激活状态标签美化 */
 .status.activated {
-  background: rgba(184,156,79,0.3);
-  color: #d4af37;
-  border: 1rpx solid #d4af37;
+  background: linear-gradient(90deg, #d4af37, #f2d45c);
+  color: #000;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0 0 15rpx rgba(212, 175, 55, 0.6);
+  padding: 6rpx 24rpx;
 }
 
 .status.not-activated {

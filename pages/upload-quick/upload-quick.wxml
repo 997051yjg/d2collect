@@ -12,7 +12,7 @@
   <!-- 上传界面 -->
   <view class="upload-section" wx:if="{{isLoggedIn}}">
     <!-- 预配置装备信息 -->
-    <view class="equipment-info-card card" wx:if="{{equipmentInfo}}">
+    <view class="equipment-info-card card animate-enter" wx:if="{{equipmentInfo}}">
       <view class="info-header">
         <text class="info-title gold-text">已选择装备</text>
       </view>
@@ -43,7 +43,7 @@
     </view>
 
     <!-- 图片上传区域 -->
-    <view class="upload-area card">
+    <view class="upload-area card animate-enter delay-1">
       <view class="upload-header">
         <text class="upload-title gold-text">上传装备图片</text>
         <text class="upload-tip">支持JPG、PNG格式，最大5MB</text>
@@ -53,7 +53,7 @@
         <image class="preview-image" src="{{uploadedImage}}" mode="aspectFit"></image>
         <view class="preview-actions">
           <button class="btn-secondary" bindtap="removeImage">删除</button>
-          <button class="btn-primary" bindtap="reuploadImage">重新上传</button>
+          <button class="btn-primary" bindtap="reuploadImage">重新选择</button>
         </view>
       </view>
       
