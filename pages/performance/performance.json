@@ -1,8 +1,0 @@
-{
-  "usingComponents": {},
-  "navigationBarTitleText": "性能监控",
-  "navigationBarBackgroundColor": "#1a1a2e",
-  "navigationBarTextStyle": "white",
-  "enablePullDownRefresh": false,
-  "backgroundColor": "#1a1a2e"
-}
