@@ -708,6 +708,59 @@
   color: #666;
 }
 
+/* upload.wxss 新增样式 */
+.attributes-section {
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid rgba(212, 175, 55, 0.2);
+}
+
+.attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.attr-row.variable {
+  border: 1rpx solid rgba(212, 175, 55, 0.3);
+}
+
+.attr-label {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.attr-range {
+  font-size: 22rpx;
+  color: #666;
+  margin-left: 8rpx;
+}
+
+.attr-input {
+  width: 120rpx;
+  text-align: right;
+  color: #fff;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #666;
+}
+
+.input-placeholder {
+  color: #444;
+}
+
+.attr-text {
+  font-size: 28rpx;
+}
+
 /* 独立装备模板卡片区域 */
 .templates-section {
   margin-top: 30rpx;
@@ -889,6 +942,59 @@
   color: #666;
 }
 
+/* upload.wxss 新增样式 */
+.attributes-section {
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid rgba(212, 175, 55, 0.2);
+}
+
+.attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.attr-row.variable {
+  border: 1rpx solid rgba(212, 175, 55, 0.3);
+}
+
+.attr-label {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.attr-range {
+  font-size: 22rpx;
+  color: #666;
+  margin-left: 8rpx;
+}
+
+.attr-input {
+  width: 120rpx;
+  text-align: right;
+  color: #fff;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #666;
+}
+
+.input-placeholder {
+  color: #444;
+}
+
+.attr-text {
+  font-size: 28rpx;
+}
+
 /* 独立装备模板卡片区域 */
 .templates-section {
   margin-top: 30rpx;
@@ -1070,6 +1176,59 @@
   color: #666;
 }
 
+/* upload.wxss 新增样式 */
+.attributes-section {
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid rgba(212, 175, 55, 0.2);
+}
+
+.attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.attr-row.variable {
+  border: 1rpx solid rgba(212, 175, 55, 0.3);
+}
+
+.attr-label {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.attr-range {
+  font-size: 22rpx;
+  color: #666;
+  margin-left: 8rpx;
+}
+
+.attr-input {
+  width: 120rpx;
+  text-align: right;
+  color: #fff;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #666;
+}
+
+.input-placeholder {
+  color: #444;
+}
+
+.attr-text {
+  font-size: 28rpx;
+}
+
 /* 独立装备模板卡片区域 */
 .templates-section {
   margin-top: 30rpx;
@@ -1249,6 +1408,59 @@
   display: block;
   font-size: 24rpx;
   color: #666;
+}
+
+/* upload.wxss 新增样式 */
+.attributes-section {
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid rgba(212, 175, 55, 0.2);
+}
+
+.attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.attr-row.variable {
+  border: 1rpx solid rgba(212, 175, 55, 0.3);
+}
+
+.attr-label {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.attr-range {
+  font-size: 22rpx;
+  color: #666;
+  margin-left: 8rpx;
+}
+
+.attr-input {
+  width: 120rpx;
+  text-align: right;
+  color: #fff;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #666;
+}
+
+.input-placeholder {
+  color: #444;
+}
+
+.attr-text {
+  font-size: 28rpx;
 }
 
 /* 搜索相关样式 */
@@ -1691,6 +1903,59 @@
   color: #666;
 }
 
+/* upload.wxss 新增样式 */
+.attributes-section {
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid rgba(212, 175, 55, 0.2);
+}
+
+.attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.attr-row.variable {
+  border: 1rpx solid rgba(212, 175, 55, 0.3);
+}
+
+.attr-label {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.attr-range {
+  font-size: 22rpx;
+  color: #666;
+  margin-left: 8rpx;
+}
+
+.attr-input {
+  width: 120rpx;
+  text-align: right;
+  color: #fff;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #666;
+}
+
+.input-placeholder {
+  color: #444;
+}
+
+.attr-text {
+  font-size: 28rpx;
+}
+
 /* 独立装备模板卡片区域 */
 .templates-section {
   margin-top: 30rpx;
@@ -1872,6 +2137,59 @@
   color: #666;
 }
 
+/* upload.wxss 新增样式 */
+.attributes-section {
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid rgba(212, 175, 55, 0.2);
+}
+
+.attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.attr-row.variable {
+  border: 1rpx solid rgba(212, 175, 55, 0.3);
+}
+
+.attr-label {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.attr-range {
+  font-size: 22rpx;
+  color: #666;
+  margin-left: 8rpx;
+}
+
+.attr-input {
+  width: 120rpx;
+  text-align: right;
+  color: #fff;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #666;
+}
+
+.input-placeholder {
+  color: #444;
+}
+
+.attr-text {
+  font-size: 28rpx;
+}
+
 /* 独立装备模板卡片区域 */
 .templates-section {
   margin-top: 30rpx;
@@ -2053,6 +2371,59 @@
   color: #666;
 }
 
+/* upload.wxss 新增样式 */
+.attributes-section {
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid rgba(212, 175, 55, 0.2);
+}
+
+.attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.attr-row.variable {
+  border: 1rpx solid rgba(212, 175, 55, 0.3);
+}
+
+.attr-label {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.attr-range {
+  font-size: 22rpx;
+  color: #666;
+  margin-left: 8rpx;
+}
+
+.attr-input {
+  width: 120rpx;
+  text-align: right;
+  color: #fff;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #666;
+}
+
+.input-placeholder {
+  color: #444;
+}
+
+.attr-text {
+  font-size: 28rpx;
+}
+
 /* 独立装备模板卡片区域 */
 .templates-section {
   margin-top: 30rpx;
@@ -2232,4 +2603,57 @@
   display: block;
   font-size: 24rpx;
   color: #666;
+}
+
+/* upload.wxss 新增样式 */
+.attributes-section {
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid rgba(212, 175, 55, 0.2);
+}
+
+.attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12rpx 20rpx;
+  border-radius: 8rpx;
+}
+
+.attr-row.variable {
+  border: 1rpx solid rgba(212, 175, 55, 0.3);
+}
+
+.attr-label {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.attr-range {
+  font-size: 22rpx;
+  color: #666;
+  margin-left: 8rpx;
+}
+
+.attr-input {
+  width: 120rpx;
+  text-align: right;
+  color: #fff;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #666;
+}
+
+.input-placeholder {
+  color: #444;
+}
+
+.attr-text {
+  font-size: 28rpx;
 }

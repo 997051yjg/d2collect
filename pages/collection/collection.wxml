@@ -95,8 +95,7 @@
           <!-- 装备信息 -->
           <view class="equipment-info">
             <text class="equipment-name">{{item.name}}</text>
-            <text class="equipment-type">{{item.type}}</text>
-            <view class="equipment-rarity {{item.rarity === '套装' ? 'suit' : 'unique'}}">
+            <view class="equipment-rarity {{item.rarityValue === 7 ? 'suit' : item.rarityValue === 0 ? 'rune' : 'unique'}}">
               {{item.rarity}}
             </view>
           </view>

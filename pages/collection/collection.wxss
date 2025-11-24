@@ -610,14 +610,16 @@
 }
 
 .equipment-name {
-  display: block;
   font-size: 28rpx;
   font-weight: 600;
-  margin-bottom: 8rpx;
-  white-space: nowrap;
+  margin-bottom: 12rpx;
+  display: block;
+  /* 限制为最多显示2行，防止名字太长撑破卡片 */
   overflow: hidden;
   text-overflow: ellipsis;
-  position: relative;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 /* 未激活装备名称 */

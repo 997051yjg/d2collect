@@ -36,9 +36,41 @@
           </view>
           <view class="detail-row" wx:if="{{equipmentInfo.attributes && equipmentInfo.attributes.length > 0}}">
             <text class="detail-label">属性：</text>
-            <text class="detail-value">{{equipmentInfo.attributes.join(', ')}}</text>
+            <text class="detail-value">{{equipmentInfo.attributes.length}} 个属性</text>
           </view>
         </view>
+      </view>
+    </view>
+
+    <!-- 属性编辑区域 -->
+    <view class="attributes-section" wx:if="{{equipmentInfo.attributes && equipmentInfo.attributes.length > 0}}">
+      <view class="section-divider"></view>
+      <view class="attr-list">
+        <block wx:for="{{equipmentInfo.attributes}}" wx:key="code">
+          
+          <view class="attr-row variable" wx:if="{{item.isVariable}}">
+            <view class="attr-label" style="color: {{item.displayColor}}">
+              {{item.label}}
+              <text class="attr-range">({{item.min}}-{{item.max}})</text>
+            </view>
+            <input 
+              class="attr-input" 
+              type="number" 
+              placeholder="{{item.min}}" 
+              placeholder-class="input-placeholder"
+              bindinput="onAttributeInput" 
+              data-code="{{item.code}}"
+              value="{{formData.attributes[item.code]}}"
+            />
+          </view>
+
+          <view class="attr-row fixed" wx:else>
+            <text class="attr-text" style="color: {{item.displayColor}}">
+              {{item.displayText}}
+            </text>
+          </view>
+
+        </block>
       </view>
     </view>
 

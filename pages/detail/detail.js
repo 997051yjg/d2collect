@@ -695,6 +695,39 @@ Page({
     }
   },
 
+  // 处理用户保存的属性数据
+  processUserAttributes() {
+    const { userEquipment, equipment } = this.data
+    
+    if (!userEquipment.attributes || !equipment.attributes) return
+    
+    // 将用户保存的属性值与装备模板的显示文本结合
+    const processedAttributes = []
+    
+    equipment.attributes.forEach(attr => {
+      const userValue = userEquipment.attributes[attr.code]
+      if (userValue !== undefined && userValue !== null) {
+        let displayText = attr.displayText
+        
+        // 如果是可变属性，替换显示文本中的数值
+        if (attr.isVariable && displayText) {
+          // 查找并替换数值占位符
+          displayText = displayText.replace(/\d+(\.\d+)?/g, userValue.toString())
+        }
+        
+        processedAttributes.push({
+          ...attr,
+          userValue: userValue,
+          displayText: displayText || `${attr.label}: ${userValue}`
+        })
+      }
+    })
+    
+    this.setData({
+      processedAttributes: processedAttributes
+    })
+  },
+
   // 分享到朋友圈
   onShareTimeline() {
     const { equipment, isActivated } = this.data

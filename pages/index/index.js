@@ -1,5 +1,6 @@
 // pages/index/index.js
 const app = getApp()
+const { getRarityText, getRarityClass } = require('../../utils/rarityMap.js')
 
 Page({
   data: {
@@ -152,10 +153,12 @@ Page({
             const icon = template.image || this.getEquipmentIcon(template.type)
             return {
               id: template._id,
-              name: template.name,
+              // ✅ 适配中文名：优先显示中文，没有则显示英文
+              name: template.name_zh || template.name, 
               type: template.type,
               icon: icon,
-              rarity: template.rarity || '普通',
+              rarity: getRarityText(template.rarity), // 修复：将数值转换为中文文本
+              rarityValue: template.rarity, // 保留原始数值用于CSS类名判断
               activationTime: item.activationTime
             }
           }

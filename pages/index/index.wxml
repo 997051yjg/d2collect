@@ -89,8 +89,8 @@
               
               <!-- 装备信息 -->
               <view class="equipment-info-recent">
-                <text class="equipment-name-recent {{item.rarity === '套装' ? 'suit' : item.rarity === '符文之语' ? 'rune' : 'unique'}}">{{item.name}}</text>
-                <view class="equipment-rarity-recent {{item.rarity === '套装' ? 'suit' : item.rarity === '符文之语' ? 'rune' : 'unique'}}">
+                <text class="equipment-name-recent {{item.rarityValue === 7 ? 'suit' : item.rarityValue === 0 ? 'rune' : 'unique'}}">{{item.name}}</text>
+                <view class="equipment-rarity-recent {{item.rarityValue === 7 ? 'suit' : item.rarityValue === 0 ? 'rune' : 'unique'}}">
                   {{item.rarity}}
                 </view>
               </view>

@@ -5,11 +5,11 @@ const db = cloud.database()
 
 exports.main = async (event, context) => {
   const { openid } = cloud.getWXContext()
+  // ✅ 新增 attributes 参数接收
   const { templateId, equipmentName, imageUrl, attributes } = event
   const now = new Date()
 
   try {
-    // 1. 检查是否已存在该装备记录 (根据 openid + 装备名称)
     const { data: records } = await db.collection('user_warehouse').where({
       openid: openid,
       equipmentName: equipmentName
@@ -19,9 +19,7 @@ exports.main = async (event, context) => {
     let result = null
 
     if (records.length > 0) {
-      // --- 更新现有记录 ---
       const record = records[0]
-      // 记录旧图路径以便删除
       if (record.images && record.images.length > 0) {
         oldImageUrl = record.images[0]
       }
@@ -29,23 +27,24 @@ exports.main = async (event, context) => {
       await db.collection('user_warehouse').doc(record._id).update({
         data: {
           templateId,
-          images: [imageUrl], // 覆盖旧图
+          images: [imageUrl],
+          // ✅ 保存用户填写的属性对象 (e.g. { "dmg%": 198, "lifesteal": 5 })
+          attributes: attributes || {}, 
           isActive: true,
           updateTime: now,
-          // 如果之前未激活，更新激活时间
           activationTime: record.isActive ? record.activationTime : now
         }
       })
       result = { action: 'update', id: record._id }
     } else {
-      // --- 创建新记录 ---
       const res = await db.collection('user_warehouse').add({
         data: {
           openid,
           templateId,
           equipmentName,
           images: [imageUrl],
-          attributes: attributes || [],
+          // ✅ 保存属性
+          attributes: attributes || {}, 
           isActive: true,
           activationTime: now,
           createTime: now,
@@ -55,14 +54,8 @@ exports.main = async (event, context) => {
       result = { action: 'create', id: res._id }
     }
 
-    // 2. 尝试删除旧图片 (清理垃圾文件)
     if (oldImageUrl && oldImageUrl !== imageUrl && oldImageUrl.startsWith('cloud://')) {
-      try {
-        await cloud.deleteFile({ fileList: [oldImageUrl] })
-      } catch (e) {
-        // 删除失败不影响主流程，忽略
-        console.warn('旧图删除失败', e)
-      }
+      try { await cloud.deleteFile({ fileList: [oldImageUrl] }) } catch (e) {}
     }
 
     return { success: true, ...result }

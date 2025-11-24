@@ -1,5 +1,9 @@
 // pages/upload-quick/upload-quick.js
 const app = getApp()
+// ✅ 引入属性配置
+const { getPropertyConfig } = require('../../utils/propertyMap.js')
+// ✅ 引入品质判断函数
+const { getRarityText } = require('../../utils/rarityMap.js')
 
 Page({
   data: {
@@ -8,6 +12,9 @@ Page({
     uploading: false,
     uploadProgress: 0,
     equipmentInfo: null, // 预配置的装备信息
+    formData: {
+      attributes: {} // ✅ 新增：用于存储属性值
+    },
     canSubmit: false
   },
 
@@ -30,7 +37,7 @@ Page({
     this.setData({ isLoggedIn })
   },
 
-  // 加载装备信息
+  // 修改：加载装备信息
   async loadEquipmentInfo(templateId, equipmentName) {
     try {
       const db = wx.cloud.database()
@@ -41,26 +48,46 @@ Page({
         .get()
       
       if (equipment) {
+        // ✅ 核心适配：处理属性列表
+        const processedAttributes = (equipment.attributes || []).map(attr => {
+          const config = getPropertyConfig(attr.code)
+          
+          let displayText = ''
+          if (!attr.isVariable) {
+            displayText = config.format.replace('{0}', attr.min)
+            if (attr.param) displayText = displayText.replace('{p}', attr.param)
+          }
+
+          return {
+            ...attr,
+            label: config.label,
+            displayColor: config.color,
+            displayText: displayText
+          }
+        })
+
+        // ✅ 优先使用数据库里的 image 和 name_zh
         this.setData({
           equipmentInfo: {
             ...equipment,
-            name: equipmentName
-          }
+            name: equipment.name_zh || equipmentName || equipment.name, // 优先中文
+            image: equipment.image || equipment.image, // 优先云图片
+            attributes: processedAttributes, // 设置处理后的属性
+            rarity: getRarityText(equipment) // ✅ 修复品质显示
+          },
+          // 重置输入
+          'formData.attributes': {}
         })
         
         wx.showToast({
-          title: `已选择装备：${equipmentName}`,
+          title: `已选择装备：${equipment.name_zh || equipmentName}`,
           icon: 'none',
           duration: 2000
         })
       }
     } catch (error) {
-      console.error('加载装备信息失败:', error)
-      wx.showToast({
-        title: '加载装备信息失败',
-        icon: 'none',
-        duration: 2000
-      })
+      console.error('加载装备信息失败', error)
+      wx.showToast({ title: '加载失败', icon: 'none' })
     }
   },
 
@@ -224,16 +251,28 @@ Page({
     })
   },
 
-  // 创建装备记录
+  // ✅ 新增：监听属性输入
+  onAttributeInput(e) {
+    const { code } = e.currentTarget.dataset
+    const value = parseInt(e.detail.value)
+    
+    const key = `formData.attributes.${code}`
+    this.setData({
+      [key]: isNaN(value) ? null : value
+    })
+  },
+
+  // 修改：创建记录 (发送 attributes)
   async createEquipmentRecord(imageUrl) {
-    // 调用云函数，安全且无权限问题
+    // 调用云函数
     const { result } = await wx.cloud.callFunction({
       name: 'saveUserEquipment',
       data: {
-        templateId: this.data.equipmentInfo?._id,
-        equipmentName: this.data.equipmentInfo?.name,
+        templateId: this.data.equipmentInfo._id,
+        equipmentName: this.data.equipmentInfo.name,
         imageUrl: imageUrl,
-        attributes: [] // 如果有属性数组也可以传
+        // ✅ 传递用户填写的属性
+        attributes: this.data.formData.attributes 
       }
     })
 

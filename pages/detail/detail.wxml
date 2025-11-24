@@ -20,7 +20,8 @@
         
         <!-- 基本信息（左下角） -->
         <view class="equipment-info-bottom-left">
-          <text class="name">{{equipment.name}}</text>
+          <text class="name">{{equipment.name_zh || equipment.name}}</text>
+          <text class="en-name" style="font-size: 24rpx; color: #666;" wx:if="{{equipment.name_zh && equipment.name_zh !== equipment.name}}">{{equipment.name}}</text>
           <text class="type">{{equipment.type}} · {{equipment.rarity}}</text>
           <view class="status {{isActivated ? 'activated' : 'not-activated'}}">
             {{isActivated ? '已激活' : '未激活'}}
@@ -43,7 +44,19 @@
       </view>
     </view>
 
-        <!-- 多图片预览卡片 - 横向布局 -->
+        <!-- 用户属性显示区域 -->
+    <view class="user-attributes-section" wx:if="{{isActivated && processedAttributes && processedAttributes.length > 0}}">
+      <view class="section-title">我的属性</view>
+      <view class="user-attributes-list">
+        <block wx:for="{{processedAttributes}}" wx:key="code">
+          <view class="user-attribute-item" style="color: {{item.displayColor}}">
+            <text class="attribute-text">{{item.displayText}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 多图片预览卡片 - 横向布局 -->
     <view class="images-section" wx:if="{{isActivated && userEquipment && userEquipment.images && userEquipment.images.length > 0}}">
       <view class="section-title">装备图片</view>
       <view class="images-container">

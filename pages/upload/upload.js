@@ -1,5 +1,9 @@
 // pages/upload/upload.js
 const app = getApp()
+// ✅ 引入属性配置
+const { getPropertyConfig } = require('../../utils/propertyMap.js')
+// ✅ 引入品质判断函数
+const { getRarityText } = require('../../utils/rarityMap.js')
 
 Page({
   data: {
@@ -9,7 +13,8 @@ Page({
     uploadProgress: 0,
     loading: false,
     formData: {
-      name: ''
+      name: '',
+      attributes: {}
     },
     canSubmit: false,
     // 名称搜索相关
@@ -49,49 +54,32 @@ Page({
         .get()
       
       if (equipment) {
-        // 设置表单数据
-        this.setData({
-          'formData.name': equipmentName,
-          searchKeyword: equipmentName,
-          selectedEquipment: equipment,
-          searchResults: [equipment]
-        })
-        
-        this.checkFormValidity()
-        
-        // 显示提示信息
-        wx.showToast({
-          title: `已自动选择装备：${equipmentName}`,
-          icon: 'none',
-          duration: 2000
-        })
-      }
-    } catch (error) {
-      console.error('自动选择装备失败:', error)
-      wx.showToast({
-        title: '自动选择失败，请手动选择装备',
-        icon: 'none',
-        duration: 2000
-      })
-    }
-  },
+        // ✅ 核心适配：处理属性列表（参考快速上传页面）
+        const processedAttributes = (equipment.attributes || []).map(attr => {
+          const config = getPropertyConfig(attr.code)
+          
+          let displayText = ''
+          if (!attr.isVariable) {
+            displayText = config.format.replace('{0}', attr.min)
+            if (attr.param) displayText = displayText.replace('{p}', attr.param)
+          }
 
-  // 自动选择装备
-  async autoSelectEquipment(templateId, equipmentName) {
-    try {
-      const db = wx.cloud.database()
-      
-      // 根据templateId获取装备信息
-      const { data: equipment } = await db.collection('equipment_templates')
-        .doc(templateId)
-        .get()
-      
-      if (equipment) {
-        // 设置表单数据
+          return {
+            ...attr,
+            label: config.label,
+            displayColor: config.color,
+            displayText: displayText
+          }
+        })
+
+        // 设置表单数据（包含处理后的属性）
         this.setData({
           'formData.name': equipmentName,
           searchKeyword: equipmentName,
-          selectedEquipment: equipment,
+          selectedEquipment: {
+            ...equipment,
+            attributes: processedAttributes
+          },
           searchResults: [equipment]
         })
         
@@ -281,20 +269,30 @@ Page({
     try {
       const db = wx.cloud.database()
       
-      // 搜索装备模板库，只查询已存在的模板
+      // ✅ 修改查询条件：同时搜中文名和英文名
+      const _ = db.command
       const { data: results } = await db.collection('equipment_templates')
-        .where({
-          name: db.RegExp({
-            regexp: keyword,
-            options: 'i'
-          })
-        })
+        .where(_.or([
+          {
+            name_zh: db.RegExp({ regexp: keyword, options: 'i' })
+          },
+          {
+            name: db.RegExp({ regexp: keyword, options: 'i' })
+          }
+        ]))
         .limit(10)
         .get()
       
+      // ✅ 处理结果：优先显示中文名，使用新的品质判断
+      const processedResults = results.map(item => ({
+        ...item,
+        name: item.name_zh || item.name, // 优先显示中文名
+        rarity: getRarityText(item) // 使用新的品质判断
+      }))
+      
       this.setData({
-        searchResults: results,
-        showSearchResults: results.length > 0
+        searchResults: processedResults,
+        showSearchResults: processedResults.length > 0
       })
     } catch (error) {
       console.error('搜索装备失败:', error)
@@ -314,17 +312,67 @@ Page({
     if (this.data.selectedEquipment && this.data.selectedEquipment._id === equipment._id) {
       this.setData({
         selectedEquipment: null,
-        'formData.name': ''
+        'formData.name': '',
+        'formData.attributes': {}
       })
     } else {
-      // 否则选中新装备
+      // ✅ 核心适配：处理属性列表（参考快速上传页面）
+      const processedAttributes = (equipment.attributes || []).map(attr => {
+        const config = getPropertyConfig(attr.code)
+        
+        let displayText = ''
+        if (!attr.isVariable) {
+          displayText = config.format.replace('{0}', attr.min)
+          if (attr.param) displayText = displayText.replace('{p}', attr.param)
+        }
+
+        return {
+          ...attr,
+          label: config.label,
+          displayColor: config.color,
+          displayText: displayText
+        }
+      })
+      
+      // 否则选中新装备（包含处理后的属性）
       this.setData({
-        selectedEquipment: equipment,
-        'formData.name': equipment.name
+        selectedEquipment: {
+          ...equipment,
+          attributes: processedAttributes,
+          rarity: getRarityText(equipment) // ✅ 修复品质显示
+        },
+        'formData.name': equipment.name_zh || equipment.name,
+        'formData.attributes': {}
       })
     }
     
     this.checkFormValidity()
+  },
+
+  // 属性输入变化
+  onAttributeInput(e) {
+    const { code } = e.currentTarget.dataset
+    const value = e.detail.value
+    
+    // 获取装备属性配置
+    const attribute = this.data.selectedEquipment.attributes.find(attr => attr.code === code)
+    if (!attribute) return
+    
+    // 验证数值范围
+    let validatedValue = value
+    if (value !== '') {
+      const numValue = parseInt(value)
+      if (numValue < attribute.min) {
+        validatedValue = attribute.min.toString()
+      } else if (numValue > attribute.max) {
+        validatedValue = attribute.max.toString()
+      }
+    }
+    
+    // 更新属性数据
+    this.setData({
+      [`formData.attributes.${code}`]: validatedValue
+    })
   },
 
   // 隐藏搜索结果
@@ -447,6 +495,16 @@ Page({
 
   // 创建装备记录
   async createEquipmentRecord(imageUrl) {
+    // 处理属性数据
+    const attributes = {}
+    if (this.data.selectedEquipment?.attributes && this.data.formData?.attributes) {
+      this.data.selectedEquipment.attributes.forEach(attr => {
+        if (this.data.formData.attributes[attr.code] && this.data.formData.attributes[attr.code] !== '') {
+          attributes[attr.code] = parseInt(this.data.formData.attributes[attr.code])
+        }
+      })
+    }
+    
     // 调用云函数，安全且无权限问题
     const { result } = await wx.cloud.callFunction({
       name: 'saveUserEquipment',
@@ -454,7 +512,7 @@ Page({
         templateId: this.data.selectedEquipment?._id,
         equipmentName: this.data.formData?.name,
         imageUrl: imageUrl,
-        attributes: [] // 如果有属性数组也可以传
+        attributes: attributes
       }
     })
 

@@ -30,8 +30,11 @@ exports.main = async (event, context) => {
         .field({
           _id: true,
           name: true,
+          name_zh: true, // ✅ 必须加上这个！否则列表页全是英文
           type: true,
           rarity: true,
+          set: true,      // ✅ 必须加上用于套装判断
+          rune: true,      // ✅ 必须加上用于符文之语判断
           image: true,    // 如果是 cloud:// 路径
           createTime: true
         })

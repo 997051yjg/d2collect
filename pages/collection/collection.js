@@ -1,5 +1,6 @@
 // pages/collection/collection.js
 const app = getApp()
+const { getRarityText, getRarityClass } = require('../../utils/rarityMap.js')
 
 Page({
   data: {
@@ -257,6 +258,19 @@ Page({
     }
   },
 
+  // 获取品质数值（用于兼容现有筛选逻辑）
+  getRarityValue(equipment) {
+    // 根据新的字段判断标准转换为数值
+    if (equipment.rune) {
+      return 0 // 符文之语对应数值0
+    } else if (equipment.set) {
+      return 7 // 套装对应数值7
+    } else if (equipment.rarity) {
+      return 1 // 暗金对应数值1
+    }
+    return -1 // 普通装备
+  },
+
   // 处理装备数据
   processEquipmentData(templates, userEquipment) {
     // 去重：确保每个装备模板只显示一次
@@ -278,11 +292,19 @@ Page({
       const fixedImage = template.image ? this.fixImagePath(template.image) : null
       const icon = fixedImage || this.getEquipmentIcon(template.type)
       
+      // ✅ 核心修复 1：优先显示中文名
+      // 如果有 name_zh 就用 name_zh，否则用 name (英文)
+      const displayName = template.name_zh || template.name
+      
       return {
         id: template._id,
-        name: template.name,
+        // ✅ 核心修复 1：优先显示中文名
+        name: displayName,
+        name_zh: template.name_zh || '', // ⚠️ 修复：确保不为 undefined
+        name_en: template.name,     // 保留英文名用于搜索
         type: template.type,
-        rarity: template.rarity,
+        rarity: getRarityText(template), // 修复：使用新的品质判断逻辑
+        rarityValue: this.getRarityValue(template), // 保留原始数值用于CSS类名判断
         icon: icon,
         isActivated: isActivated,
         image: fixedImage || '',
@@ -356,12 +378,12 @@ Page({
     if (advancedFilters) {
       // 稀有度筛选
       const rarityFilters = []
-      if (advancedFilters.unique) rarityFilters.push('暗金')
-      if (advancedFilters.suit) rarityFilters.push('套装')
-      if (advancedFilters.runeWord) rarityFilters.push('符文之语')
+      if (advancedFilters.unique) rarityFilters.push(1) // 暗金对应数值1
+      if (advancedFilters.suit) rarityFilters.push(7)   // 套装对应数值7
+      if (advancedFilters.runeWord) rarityFilters.push(0) // 符文之语对应数值0
       
       if (rarityFilters.length > 0) {
-        filteredList = filteredList.filter(item => rarityFilters.includes(item.rarity))
+        filteredList = filteredList.filter(item => rarityFilters.includes(item.rarityValue))
       }
       
       // 激活状态筛选
@@ -378,11 +400,20 @@ Page({
     
     // 第一行：关键词搜索
     if (searchKeyword) {
-      filteredList = filteredList.filter(item => 
-        item.name.includes(searchKeyword) || 
-        item.type.includes(searchKeyword) || 
-        item.rarity.includes(searchKeyword)
-      )
+      // 转换为小写进行不区分大小写的搜索
+      const keywordLower = searchKeyword.toLowerCase()
+      
+      filteredList = filteredList.filter(item => {
+        // ✅ 核心修复 3：同时匹配 中文名(name) 和 英文名(name_en)
+        const nameMatch = (item.name && item.name.toLowerCase().includes(keywordLower)) || 
+                          (item.name_en && item.name_en.toLowerCase().includes(keywordLower))
+        
+        // 类型和稀有度匹配
+        const typeMatch = item.type.includes(searchKeyword)
+        const rarityMatch = item.rarity.includes(searchKeyword)
+        
+        return nameMatch || typeMatch || rarityMatch
+      })
     }
     
     // 排序

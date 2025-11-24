@@ -50,7 +50,7 @@
               
               <!-- 装备信息 -->
               <view class="template-info">
-                <text class="template-name">{{item.name}}</text>
+                <text class="template-name">{{item.name_zh || item.name}}</text>
                 <text class="template-type">{{item.type}}</text>
                 <view class="template-rarity {{item.rarity === '套装' ? 'suit' : 'unique'}}">
                   {{item.rarity}}
@@ -71,6 +71,39 @@
           <view class="empty-icon">🔍</view>
           <text class="empty-text">未找到匹配的装备</text>
           <text class="empty-subtext">请尝试其他关键字</text>
+        </view>
+        
+        <!-- 属性编辑区域 -->
+        <view class="attributes-section" wx:if="{{selectedEquipment && selectedEquipment.attributes.length > 0}}">
+          <view class="section-title gold-text">装备属性</view>
+          
+          <view class="attr-list">
+            <block wx:for="{{selectedEquipment.attributes}}" wx:key="code">
+              
+              <view class="attr-row variable" wx:if="{{item.isVariable}}">
+                <view class="attr-label" style="color: {{item.displayColor}}">
+                  {{item.label}}
+                  <text class="attr-range">({{item.min}}-{{item.max}})</text>
+                </view>
+                <input 
+                  class="attr-input" 
+                  type="number" 
+                  placeholder="{{item.min}}" 
+                  placeholder-class="input-placeholder"
+                  bindinput="onAttributeInput" 
+                  data-code="{{item.code}}"
+                  value="{{formData.attributes[item.code]}}"
+                />
+              </view>
+
+              <view class="attr-row fixed" wx:else>
+                <text class="attr-text" style="color: {{item.displayColor}}">
+                  {{item.displayText}}
+                </text>
+              </view>
+
+            </block>
+          </view>
         </view>
         
         <view class="form-actions">
