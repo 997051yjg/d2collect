@@ -51,7 +51,6 @@
               <!-- 装备信息 -->
               <view class="template-info">
                 <text class="template-name">{{item.name_zh || item.name}}</text>
-                <text class="template-type">{{item.type}}</text>
                 <view class="template-rarity {{item.rarity === '套装' ? 'suit' : 'unique'}}">
                   {{item.rarity}}
                 </view>

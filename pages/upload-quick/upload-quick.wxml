@@ -27,10 +27,6 @@
         <view class="equipment-details">
           <text class="equipment-name">{{equipmentInfo.name}}</text>
           <view class="detail-row">
-            <text class="detail-label">装备类型：</text>
-            <text class="detail-value">{{equipmentInfo.type}}</text>
-          </view>
-          <view class="detail-row">
             <text class="detail-label">稀有度：</text>
             <text class="detail-value {{equipmentInfo.rarity === '套装' ? 'suit' : 'unique'}}">{{equipmentInfo.rarity}}</text>
           </view>
