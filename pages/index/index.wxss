@@ -732,3 +732,37 @@
   border: none;
   border-radius: 8rpx;
 }
+
+/* --- ✨ 新增动画效果 ✨ --- */
+
+/* 定义淡入上移动画 */
+@keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(40rpx);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* 基础动画类 */
+  .animate-enter {
+    opacity: 0; /* 初始隐藏 */
+    animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+  
+  /* 依次延迟，制造层次感 */
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+  
+  /* 给最近收获列表加一个更平滑的滚动条隐藏（美化） */
+  .recent-list ::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+    color: transparent;
+  }

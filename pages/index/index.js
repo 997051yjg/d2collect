@@ -132,30 +132,23 @@ Page({
     }
   },
 
-  // 加载最近收获的装备
+  // 🚀 最终优化版：调用云函数获取数据（解决权限问题 + 速度最快）
   async loadRecentEquipments() {
     try {
-      const db = wx.cloud.database()
-      
-      // 获取用户最近收获的装备
-      const { data: userEquipments } = await db.collection('user_warehouse')
-        .where({ openid: app.globalData.openid })
-        .orderBy('activationTime', 'desc')
-        .limit(5)
-        .get()
-      
-      if (userEquipments.length > 0) {
-        // 获取装备模板信息
-        const templateIds = userEquipments.map(item => item.templateId)
-        const { data: equipmentTemplates } = await db.collection('equipment_templates')
-          .where({
-            _id: db.command.in(templateIds)
-          })
-          .get()
+      this.setData({ loading: true }) // 可选：如果你想显示加载状态
+
+      // 调用刚才写的云函数 'getRecentEquipments'
+      const { result } = await wx.cloud.callFunction({
+        name: 'getRecentEquipments'
+      })
+
+      if (result && result.success && result.data.length > 0) {
+        const list = result.data
         
-        // 构建最近装备列表
-        const recentEquipments = userEquipments.map(userEquip => {
-          const template = equipmentTemplates.find(t => t._id === userEquip.templateId)
+        // 数据格式化（把云端返回的原始数据转成页面需要的格式）
+        const recentEquipments = list.map(item => {
+          const template = item.templateDetail[0]
+          
           if (template) {
             const icon = template.image || this.getEquipmentIcon(template.type)
             return {
@@ -164,25 +157,23 @@ Page({
               type: template.type,
               icon: icon,
               rarity: template.rarity || '普通',
-              activationTime: userEquip.activationTime
+              activationTime: item.activationTime
             }
           }
           return null
         }).filter(item => item !== null)
-        
-        this.setData({
-          recentEquipments: recentEquipments
-        })
+
+        this.setData({ recentEquipments })
       } else {
-        this.setData({
-          recentEquipments: []
-        })
+        this.setData({ recentEquipments: [] })
       }
     } catch (error) {
-      console.error('加载最近装备失败:', error)
-      this.setData({
-        recentEquipments: []
-      })
+      console.error('云函数调用失败:', error)
+      this.setData({ recentEquipments: [] })
+    } finally {
+       // 如果你在 onLoad 里没有设置 loading: false，这里不需要操作
+       // 但如果有下拉刷新，这里需要停止刷新
+       wx.stopPullDownRefresh() 
     }
   },
 
