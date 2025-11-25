@@ -1,6 +1,6 @@
 // pages/collection/collection.js
 const app = getApp()
-const { getRarityText, getRarityClass } = require('../../utils/rarityMap.js')
+const { getRarityText } = require('../../utils/rarityMap.js')
 // ✅ 1. 引入 typeMap 配置
 const { typeMapping, chineseCategoryMap } = require('../../utils/typeMap.js')
 
@@ -297,6 +297,19 @@ Page({
     return -1 // 普通装备
   },
 
+  // ✅ 新增：获取品质CSS类名（统一使用语义化类名）
+  getRarityClass(equipment) {
+    const rarity = getRarityText(equipment)
+    if (rarity === '套装') {
+      return 'suit'
+    } else if (rarity === '暗金') {
+      return 'unique'
+    } else if (rarity === '符文之语') {
+      return 'runeword'
+    }
+    return ''
+  },
+
   // 处理装备数据
   processEquipmentData(templates, userEquipment) {
     // 去重：确保每个装备模板只显示一次
@@ -322,20 +335,22 @@ Page({
       // 如果有 name_zh 就用 name_zh，否则用 name (英文)
       const displayName = template.name_zh || template.name
       
-      return {
-        id: template._id,
-        // ✅ 核心修复 1：优先显示中文名
-        name: displayName,
-        name_zh: template.name_zh || '', // ⚠️ 修复：确保不为 undefined
-        name_en: template.name,     // 保留英文名用于搜索
-        type: template.type,
-        rarity: getRarityText(template), // 修复：使用新的品质判断逻辑
-        rarityValue: this.getRarityValue(template), // 保留原始数值用于CSS类名判断
-        icon: icon,
-        isActivated: isActivated,
-        image: fixedImage || '',
-        activationTime: userEquipment.find(item => item.templateId === template._id)?.activationTime || null
-      }
+        return {
+          id: template._id,
+          // ✅ 核心修复 1：优先显示中文名
+          name: displayName,
+          name_zh: template.name_zh || '', // ⚠️ 修复：确保不为 undefined
+          name_en: template.name,     // 保留英文名用于搜索
+          type: template.type,
+          rarity: getRarityText(template), // 修复：使用新的品质判断逻辑
+          rarityValue: this.getRarityValue(template), // 保留原始数值用于CSS类名判断
+          icon: icon,
+          isActivated: isActivated,
+          image: fixedImage || '',
+          activationTime: userEquipment.find(item => item.templateId === template._id)?.activationTime || null,
+          // ✅ 新增：添加品质CSS类名，与其他页面保持一致
+          rarityClass: this.getRarityClass(template)
+        }
     })
     
     const stats = {
@@ -391,16 +406,16 @@ Page({
       // 稀有度筛选（使用新的字段判断逻辑）
       if (advancedFilters.unique || advancedFilters.suit || advancedFilters.runeWord) {
         filteredList = filteredList.filter(item => {
-          // 根据新的字段判断标准
-          const isUnique = !!item.rune
-          const isSuit = !!item.set
-          const isRuneWord = !!item.rune
+          // 根据新的字段判断标准 - 修复逻辑错误
+          const isUnique = !!item.rarity  // 暗金：有rarity字段
+          const isSuit = !!item.set       // 套装：有set字段
+          const isRuneWord = !!item.rune  // 符文之语：有rune字段
           
           // 根据筛选条件进行匹配
           let match = false
           if (advancedFilters.unique && isUnique) match = true
-          else if (advancedFilters.suit && isSuit) match = true
-          else if (advancedFilters.runeWord && isRuneWord) match = true
+          if (advancedFilters.suit && isSuit) match = true
+          if (advancedFilters.runeWord && isRuneWord) match = true
           
           return match
         })

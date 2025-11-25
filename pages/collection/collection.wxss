@@ -668,6 +668,21 @@
   color: #b89c4f;
 }
 
+.equipment-rarity.runeword {
+  background: rgba(212, 175, 55, 0.3);
+  color: #d4af37;
+}
+
+.equipment-rarity.runeword {
+  background: rgba(212, 175, 55, 0.3);
+  color: #d4af37;
+}
+
+.equipment-rarity.runeword {
+  background: rgba(212, 175, 55, 0.3);
+  color: #d4af37;
+}
+
 .activation-status {
   text-align: center;
 }

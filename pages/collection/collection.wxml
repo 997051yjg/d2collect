@@ -94,7 +94,7 @@
           <!-- 装备信息 -->
           <view class="equipment-info">
             <text class="equipment-name">{{item.name}}</text>
-            <view class="equipment-rarity {{getRarityClass(item)}}">
+            <view class="equipment-rarity {{item.rarityClass}}">
               {{item.rarity}}
             </view>
           </view>
