@@ -151,15 +151,20 @@ Page({
           
           if (template) {
             const icon = template.image || this.getEquipmentIcon(template.type)
+            const rarityClass = getRarityClass(template) // 获取品质类名
+            
             return {
               id: template._id,
               // ✅ 适配中文名：优先显示中文，没有则显示英文
               name: template.name_zh || template.name, 
               type: template.type,
               icon: icon,
-            rarity: getRarityText(template), // 使用新的字段判断逻辑
-            rarityValue: template.rarity, // 保留原始数值用于CSS类名判断
-              activationTime: item.activationTime
+              rarity: getRarityText(template), // 使用新的字段判断逻辑
+              rarityValue: template.rarity, // 保留原始数值用于CSS类名判断
+              rarityClass: rarityClass, // 直接存储品质类名
+              activationTime: item.activationTime,
+              // 直接传递模板数据，让WXML可以调用getRarityClass函数
+              template: template
             }
           }
           return null

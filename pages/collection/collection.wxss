@@ -576,11 +576,25 @@
   color: rgba(255, 255, 255, 0.2);
 }
 
-/* 已激活装备名称 - 金色光晕效果 */
+/* 已激活装备名称 - 根据品质赋色 */
 .equipment-card.activated .equipment-name {
-  color: #b89c4f;
   text-shadow: 0 0 10rpx rgba(184, 156, 79, 0.6);
   animation: goldGlow 2s ease-in-out infinite alternate;
+}
+
+/* 套装装备名称 - 绿色 */
+.equipment-card.activated .equipment-name.suit {
+  color: #00ff00;
+}
+
+/* 暗金装备名称 - 金色 */
+.equipment-card.activated .equipment-name.unique {
+  color: #b89c4f;
+}
+
+/* 符文之语装备名称 - 橙色 */
+.equipment-card.activated .equipment-name.runeword {
+  color: #ffa500;
 }
 
 @keyframes goldGlow {

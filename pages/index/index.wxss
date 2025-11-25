@@ -382,22 +382,27 @@
   white-space: nowrap;
 }
 
-/* 暗金装备名称颜色 */
-.equipment-name-recent.unique {
-  color: #d4af37;
-  text-shadow: 0 0 8rpx rgba(212, 175, 55, 0.6);
+/* 默认颜色为白色 */
+.equipment-name-recent {
+  color: #ffffff;
 }
 
-/* 套装装备名称颜色 */
-.equipment-name-recent.suit {
-  color: #4a90e2;
-  text-shadow: 0 0 8rpx rgba(74, 144, 226, 0.6);
+/* 套装装备名称颜色（绿色） - 提高优先级 */
+.equipment-card-recent .equipment-name-recent.suit {
+  color: #00ff00 !important;
+  text-shadow: 0 0 8rpx rgba(0, 255, 0, 0.6) !important;
 }
 
-/* 符文之语装备名称颜色 */
-.equipment-name-recent.rune {
-  color: #d4af37;
-  text-shadow: 0 0 8rpx rgba(212, 175, 55, 0.6);
+/* 暗金装备名称颜色（金色） - 提高优先级 */
+.equipment-card-recent .equipment-name-recent.unique {
+  color: #b89c4f !important;
+  text-shadow: 0 0 8rpx rgba(184, 156, 79, 0.6) !important;
+}
+
+/* 符文之语装备名称颜色（橙色） - 提高优先级 */
+.equipment-card-recent .equipment-name-recent.runeword {
+  color: #ffa500 !important;
+  text-shadow: 0 0 8rpx rgba(255, 165, 0, 0.6) !important;
 }
 
 .equipment-rarity-recent {
@@ -420,8 +425,8 @@
   text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.5);
 }
 
-.equipment-rarity-recent.rune {
-  background: linear-gradient(135deg, #b89c4f, #d4af37);
+.equipment-rarity-recent.runeword {
+  background: linear-gradient(135deg, #ffa500, #ff8c00);
   color: #000000;
   text-shadow: 0 1rpx 2rpx rgba(255, 255, 255, 0.5);
 }

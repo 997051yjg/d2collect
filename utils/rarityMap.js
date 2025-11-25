@@ -23,7 +23,7 @@ function getRarityClass(equipment) {
   switch (rarityText) {
     case '暗金': return 'unique'
     case '套装': return 'suit'
-    case '符文之语': return 'rune'
+    case '符文之语': return 'runeword'
     default: return ''
   }
 }

@@ -66,6 +66,15 @@ Page({
           }
         })
 
+        // ✅ 自动为固定属性设置默认值
+        const initialAttributes = {}
+        processedAttributes.forEach(attr => {
+          if (!attr.isVariable) {
+            // 固定属性使用默认值
+            initialAttributes[attr.code] = attr.min
+          }
+        })
+
         // ✅ 优先使用数据库里的 image 和 name_zh
         this.setData({
           equipmentInfo: {
@@ -75,8 +84,8 @@ Page({
             attributes: processedAttributes, // 设置处理后的属性
             rarity: getRarityText(equipment) // ✅ 修复品质显示
           },
-          // 重置输入
-          'formData.attributes': {}
+          // 设置初始属性值（包括固定属性）
+          'formData.attributes': initialAttributes
         })
         
         wx.showToast({
@@ -272,7 +281,9 @@ Page({
         equipmentName: this.data.equipmentInfo.name,
         imageUrl: imageUrl,
         // ✅ 传递用户填写的属性
-        attributes: this.data.formData.attributes 
+        attributes: this.data.formData.attributes,
+        item_id: this.data.equipmentInfo._id, // 新增 item_id 字段，对应模板库的装备ID
+        openid: app.globalData.openid // 修复：添加 openid 参数
       }
     })
 

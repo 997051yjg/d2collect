@@ -43,7 +43,7 @@ Page({
         userPromise = db.collection('user_warehouse')
           .where({ 
             openid: app.globalData.openid,
-            templateId: equipmentId 
+            templateId: equipmentId  // 现在 templateId 存储的是 item_id
           })
           .field({
             _id: true,
@@ -93,6 +93,11 @@ Page({
         isActivated: isActivated,
         loading: false
       })
+      
+      // ✅ 处理用户属性数据
+      if (isActivated) {
+        this.processUserAttributes()
+      }
 
     } catch (error) {
       console.error('加载装备详情失败:', error)
@@ -699,29 +704,50 @@ Page({
   processUserAttributes() {
     const { userEquipment, equipment } = this.data
     
-    if (!userEquipment.attributes || !equipment.attributes) return
+    if (!userEquipment || !userEquipment.attributes || !equipment || !equipment.attributes) {
+      console.log('用户装备或装备模板属性为空')
+      return
+    }
+    
+    console.log('用户装备属性:', userEquipment.attributes)
+    console.log('装备模板属性:', equipment.attributes)
     
     // 将用户保存的属性值与装备模板的显示文本结合
     const processedAttributes = []
     
+    // 使用propertyMap来处理属性显示
+    const { getPropertyConfig } = require('../../utils/propertyMap.js')
+    
     equipment.attributes.forEach(attr => {
       const userValue = userEquipment.attributes[attr.code]
+      console.log(`处理属性 ${attr.code}: 用户值=${userValue}`)
+      
       if (userValue !== undefined && userValue !== null) {
-        let displayText = attr.displayText
+        const config = getPropertyConfig(attr.code)
+        let displayText = ''
         
-        // 如果是可变属性，替换显示文本中的数值
-        if (attr.isVariable && displayText) {
-          // 查找并替换数值占位符
-          displayText = displayText.replace(/\d+(\.\d+)?/g, userValue.toString())
+        // 根据属性类型生成显示文本
+        if (!attr.isVariable) {
+          // 固定属性直接使用配置格式
+          displayText = config.format.replace('{0}', userValue.toString())
+          if (attr.param) displayText = displayText.replace('{p}', attr.param)
+        } else {
+          // 可变属性使用用户输入的值
+          displayText = config.format.replace('{0}', userValue.toString())
+          if (attr.param) displayText = displayText.replace('{p}', attr.param)
         }
         
         processedAttributes.push({
           ...attr,
           userValue: userValue,
-          displayText: displayText || `${attr.label}: ${userValue}`
+          label: config.label,
+          displayColor: config.color,
+          displayText: displayText || `${config.label}: ${userValue}`
         })
       }
     })
+    
+    console.log('处理后的属性:', processedAttributes)
     
     this.setData({
       processedAttributes: processedAttributes

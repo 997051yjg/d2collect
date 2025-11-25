@@ -74,7 +74,7 @@
         
         <!-- 属性编辑区域 -->
         <view class="attributes-section" wx:if="{{selectedEquipment && selectedEquipment.attributes.length > 0}}">
-          <view class="section-title gold-text">装备属性</view>
+          <view class="section-title gold-text">装备属性（完整属性将自动上传）</view>
           
           <view class="attr-list">
             <block wx:for="{{selectedEquipment.attributes}}" wx:key="code">
@@ -96,9 +96,21 @@
               </view>
 
               <view class="attr-row fixed" wx:else>
+                <view class="attr-label" style="color: {{item.displayColor}}">
+                  {{item.label}}
+                </view>
                 <text class="attr-text" style="color: {{item.displayColor}}">
                   {{item.displayText}}
+                  <text class="attr-hint">（固定属  性）</text>
                 </text>
+                <!-- 隐藏的固定属性值 -->
+                <input 
+                  class="attr-input hidden" 
+                  type="hidden" 
+                  value="{{item.min}}" 
+                  bindinput="onAttributeInput" 
+                  data-code="{{item.code}}"
+                />
               </view>
 
             </block>
