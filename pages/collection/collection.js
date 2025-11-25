@@ -1,6 +1,8 @@
 // pages/collection/collection.js
 const app = getApp()
 const { getRarityText, getRarityClass } = require('../../utils/rarityMap.js')
+// ✅ 1. 引入 typeMap 配置
+const { typeMapping, chineseCategoryMap } = require('../../utils/typeMap.js')
 
 Page({
   data: {
@@ -22,11 +24,16 @@ Page({
     pageSize: 20,    // 每次渲染多少条
     pageIndex: 1,    // 当前页码
     sortBy: 'name', // name, type, rarity, activation
-    sortOrder: 'asc' // asc, desc
+    sortOrder: 'asc', // asc, desc
+    
+    // ✅ 2. 新增：用于渲染筛选按钮的数组
+    filterCategories: []
   },
 
   onLoad() {
     this.checkLoginStatus()
+    // ✅ 3. 初始化筛选菜单
+    this.initFilterCategories()
   },
 
   onShow() {
@@ -57,6 +64,25 @@ Page({
   checkLoginStatus() {
     const isLoggedIn = app.globalData.isLoggedIn
     this.setData({ isLoggedIn })
+  },
+
+  // ✅ 4. 新增：生成筛选菜单数据
+  initFilterCategories() {
+    // 默认包含"全部"
+    const categories = [
+      { key: 'all', label: '全部' }
+    ]
+    
+    // 遍历 typeMapping 生成选项
+    // key 是英文 (如 helmet)，label 是中文 (如 头部)
+    Object.keys(typeMapping).forEach(key => {
+      categories.push({
+        key: key,
+        label: chineseCategoryMap[key] || key // 如果没配置中文就显示英文
+      })
+    })
+    
+    this.setData({ filterCategories: categories })
   },
 
   // 设置类型筛选条件（第二行，单选）
@@ -345,21 +371,19 @@ Page({
     
     let filteredList = [...equipmentList]
     
-    // 第二行：类型筛选（单选）
+    // ✅ 5. 重写：类型筛选 (重构版)
     if (currentTypeFilter !== 'all') {
-      const typeMap = {
-        'helmet': '头部',
-        'armor': '盔甲',
-        'belt': '腰带',
-        'boots': '鞋子',
-        'gloves': '手套',
-        'ring': '戒指',
-        'amulet': '项链',
-        'weapon': '手持',
-        'charm': '护身符',
-        'jewel': '珠宝'
-      }
-      filteredList = filteredList.filter(item => item.type === typeMap[currentTypeFilter])
+      // 从配置中获取该大类包含的所有子类型 (例如 helmet -> ['Shako', 'Armet'...])
+      const targetSubTypes = typeMapping[currentTypeFilter] || []
+      
+      // 转换为小写以进行不区分大小写的匹配 (防御性编程)
+      const lowerTargetSubTypes = targetSubTypes.map(t => t.toLowerCase())
+      
+      filteredList = filteredList.filter(item => {
+        if (!item.type) return false
+        // 判断装备的具体类型 (item.type) 是否属于当前选中的大类
+        return lowerTargetSubTypes.includes(item.type.toLowerCase())
+      })
     }
     
     // 第三行：高级筛选（多选）

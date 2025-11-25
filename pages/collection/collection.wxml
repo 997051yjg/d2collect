@@ -23,24 +23,14 @@
         <view class="filter-group">
           <text class="filter-label">装备类型</text>
           <view class="type-filters">
-            <view class="type-filter {{currentTypeFilter === 'all' ? 'active' : ''}}" 
-                  bindtap="setTypeFilter" data-type="all">全部</view>
-            <view class="type-filter {{currentTypeFilter === 'helmet' ? 'active' : ''}}" 
-                  bindtap="setTypeFilter" data-type="helmet">头部</view>
-            <view class="type-filter {{currentTypeFilter === 'armor' ? 'active' : ''}}" 
-                  bindtap="setTypeFilter" data-type="armor">盔甲</view>
-            <view class="type-filter {{currentTypeFilter === 'belt' ? 'active' : ''}}" 
-                  bindtap="setTypeFilter" data-type="belt">腰带</view>
-            <view class="type-filter {{currentTypeFilter === 'boots' ? 'active' : ''}}" 
-                  bindtap="setTypeFilter" data-type="boots">鞋子</view>
-            <view class="type-filter {{currentTypeFilter === 'gloves' ? 'active' : ''}}" 
-                  bindtap="setTypeFilter" data-type="gloves">手套</view>
-            <view class="type-filter {{currentTypeFilter === 'ring' ? 'active' : ''}}" 
-                  bindtap="setTypeFilter" data-type="ring">戒指</view>
-            <view class="type-filter {{currentTypeFilter === 'amulet' ? 'active' : ''}}" 
-                  bindtap="setTypeFilter" data-type="amulet">项链</view>
-            <view class="type-filter {{currentTypeFilter === 'weapon' ? 'active' : ''}}" 
-                  bindtap="setTypeFilter" data-type="weapon">手持</view>
+            <view 
+              class="type-filter {{currentTypeFilter === item.key ? 'active' : ''}}" 
+              wx:for="{{filterCategories}}" 
+              wx:key="key"
+              bindtap="setTypeFilter" 
+              data-type="{{item.key}}">
+              {{item.label}}
+            </view>
           </view>
         </view>
         
