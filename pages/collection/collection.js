@@ -364,14 +364,22 @@ Page({
     
     // 第三行：高级筛选（多选）
     if (advancedFilters) {
-      // 稀有度筛选
-      const rarityFilters = []
-      if (advancedFilters.unique) rarityFilters.push(1) // 暗金对应数值1
-      if (advancedFilters.suit) rarityFilters.push(7)   // 套装对应数值7
-      if (advancedFilters.runeWord) rarityFilters.push(0) // 符文之语对应数值0
-      
-      if (rarityFilters.length > 0) {
-        filteredList = filteredList.filter(item => rarityFilters.includes(item.rarityValue))
+      // 稀有度筛选（使用新的字段判断逻辑）
+      if (advancedFilters.unique || advancedFilters.suit || advancedFilters.runeWord) {
+        filteredList = filteredList.filter(item => {
+          // 根据新的字段判断标准
+          const isUnique = !!item.rune
+          const isSuit = !!item.set
+          const isRuneWord = !!item.rune
+          
+          // 根据筛选条件进行匹配
+          let match = false
+          if (advancedFilters.unique && isUnique) match = true
+          else if (advancedFilters.suit && isSuit) match = true
+          else if (advancedFilters.runeWord && isRuneWord) match = true
+          
+          return match
+        })
       }
       
       // 激活状态筛选

@@ -157,8 +157,8 @@ Page({
               name: template.name_zh || template.name, 
               type: template.type,
               icon: icon,
-              rarity: getRarityText(template.rarity), // 修复：将数值转换为中文文本
-              rarityValue: template.rarity, // 保留原始数值用于CSS类名判断
+            rarity: getRarityText(template), // 使用新的字段判断逻辑
+            rarityValue: template.rarity, // 保留原始数值用于CSS类名判断
               activationTime: item.activationTime
             }
           }

@@ -104,7 +104,7 @@
           <!-- 装备信息 -->
           <view class="equipment-info">
             <text class="equipment-name">{{item.name}}</text>
-            <view class="equipment-rarity {{item.rarityValue === 7 ? 'suit' : item.rarityValue === 0 ? 'rune' : 'unique'}}">
+            <view class="equipment-rarity {{getRarityClass(item)}}">
               {{item.rarity}}
             </view>
           </view>
