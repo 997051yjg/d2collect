@@ -1,21 +1,23 @@
 <!--pages/collection/collection.wxml-->
 <view class="container">
-  <!-- 顶部筛选栏 -->
-  <view class="filter-section">
-    <!-- 搜索栏 -->
-    <view class="search-bar">
+  <!-- 顶部搜索和筛选栏 -->
+  <view class="search-filter-section">
+    <!-- 搜索框 -->
+    <view class="search-container">
       <input class="search-input" 
              placeholder="搜索装备名称、类型或稀有度..." 
              bindinput="onSearchInput" 
              value="{{searchKeyword}}" />
     </view>
     
-    <!-- 筛选下拉卡片 -->
-    <view class="filter-dropdown">
-      <view class="filter-toggle" bindtap="toggleFilterPanel">
-        <text class="filter-toggle-text">筛选</text>
-        <text class="filter-toggle-icon {{showFilterPanel ? 'active' : ''}}">▼</text>
+    <!-- 筛选按钮 -->
+    <view class="filter-button-container">
+      <view class="filter-button" bindtap="toggleFilterPanel">
+        <text class="filter-button-text">筛选</text>
+        <text class="filter-button-icon {{showFilterPanel ? 'active' : ''}}">▼</text>
       </view>
+    </view>
+  </view>
       
       <!-- 筛选面板 -->
       <view class="filter-panel {{showFilterPanel ? 'show' : ''}}">
@@ -56,8 +58,6 @@
           <view class="filter-btn reset" bindtap="resetFilters">重置</view>
         </view>
       </view>
-    </view>
-  </view>
 
 
 
