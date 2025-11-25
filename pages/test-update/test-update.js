@@ -1,42 +1,66 @@
 // pages/test-update/test-update.js
 Page({
-  data: {
-    isLoading: false,
-    result: null
-  },
 
-  // 调用更新云函数
-  callUpdateFunction() {
-    this.setData({ isLoading: true })
-    
-    wx.cloud.callFunction({
-      name: 'updateEquipmentTemplates',
-      data: {}
-    }).then(res => {
-      console.log('云函数执行结果:', res)
-      this.setData({
-        isLoading: false,
-        result: res.result
-      })
-      
-      wx.showToast({
-        title: '执行成功',
-        icon: 'success'
-      })
-    }).catch(err => {
-      console.error('云函数执行失败:', err)
-      this.setData({
-        isLoading: false,
-        result: {
-          success: false,
-          message: '执行失败: ' + err.errMsg
-        }
-      })
-      
-      wx.showToast({
-        title: '执行失败',
-        icon: 'error'
-      })
-    })
-  }
+    /**
+     * 页面的初始数据
+     */
+    data: {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面加载
+     */
+    onLoad(options) {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面初次渲染完成
+     */
+    onReady() {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面显示
+     */
+    onShow() {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面隐藏
+     */
+    onHide() {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面卸载
+     */
+    onUnload() {
+
+    },
+
+    /**
+     * 页面相关事件处理函数--监听用户下拉动作
+     */
+    onPullDownRefresh() {
+
+    },
+
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom() {
+
+    },
+
+    /**
+     * 用户点击右上角分享
+     */
+    onShareAppMessage() {
+
+    }
 })
