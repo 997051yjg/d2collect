@@ -87,7 +87,16 @@
         <view class="equipment-card {{item.isActivated ? 'activated' : ''}}">
           <!-- 装备图片 -->
           <view class="equipment-image">
-            <image class="equipment-icon" src="{{item.icon}}" mode="aspectFit" />
+            <image 
+              class="equipment-icon" 
+              src="{{item.icon}}" 
+              mode="aspectFit" 
+              lazy-load="true"
+              binderror="onImageError" 
+              data-id="{{item.id}}" 
+              data-name="{{item.name}}" 
+              data-src="{{item.icon}}"
+            />
             <!-- 已激活光晕效果 -->
             <view class="glow-effect" wx:if="{{item.isActivated}}"></view>
           </view>

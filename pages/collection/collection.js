@@ -327,20 +327,6 @@ Page({
     if (this.data.equipment && this.data.equipment.image) {
       return this.data.equipment.image
     }
-    
-    // 默认图标路径映射
-    const iconMap = {
-      '头部': '/images/equipment-icons/helmet.png',
-      '盔甲': '/images/equipment-icons/armor.png',
-      '腰带': '/images/equipment-icons/belt.png',
-      '鞋子': '/images/equipment-icons/boots.png',
-      '手套': '/images/equipment-icons/gloves.png',
-      '戒指': '/images/equipment-icons/ring.png',
-      '项链': '/images/equipment-icons/amulet.png',
-      '手持': '/images/equipment-icons/weapon.png'
-    }
-    
-    return iconMap[type] || '/images/equipment-icons/default.png'
   },
 
   // 修复图片路径格式
@@ -369,7 +355,9 @@ Page({
         'gloves': '手套',
         'ring': '戒指',
         'amulet': '项链',
-        'weapon': '手持'
+        'weapon': '手持',
+        'charm': '护身符',
+        'jewel': '珠宝'
       }
       filteredList = filteredList.filter(item => item.type === typeMap[currentTypeFilter])
     }
@@ -531,12 +519,25 @@ Page({
     // CSS 会通过 opacity 和 transition 处理图片显示
   },
 
-  // 图片加载失败处理 - 优化版：使用 CSS 默认背景图
+  // ⚠️ 替换原有的 onImageError 函数
   onImageError(e) {
-    // 静默处理，不需要调用 setData
-    // 通过 CSS 的 ::before 伪元素显示默认图标
-    // 或者在 processEquipmentData 阶段已经处理了默认图标
-    console.log('图片加载失败，使用CSS默认图标')
+    const { id, name, src } = e.currentTarget.dataset
+    
+    // 1. 在控制台直接打印当前失败的这一条（方便实时看）
+    console.warn(`❌ 图片加载失败 | ID: ${id} | 名称: ${name} | 路径: ${src}`)
+    
+    // 2. 收集所有失败的 ID（方便最后复制）
+    if (!this.failedImages) {
+      this.failedImages = []
+    }
+    
+    // 避免重复添加
+    if (!this.failedImages.find(item => item.id === id)) {
+      this.failedImages.push({ id, name, src })
+    }
+    
+    // 3. 打印当前的失败清单汇总
+    console.log('📊 目前累计失败清单:', JSON.stringify(this.failedImages, null, 2))
   },
 
   // 查看装备详情或跳转上传

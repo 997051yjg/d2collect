@@ -3,7 +3,7 @@
     "libVersion": "2.19.4",
     "setting": {
         "urlCheck": false,
-        "compileHotReLoad": false
+        "compileHotReLoad": true
     },
     "condition": {}
 }

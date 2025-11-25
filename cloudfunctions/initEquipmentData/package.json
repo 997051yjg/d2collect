@@ -1,0 +1,14 @@
+{
+  "name": "initEquipmentData",
+  "version": "1.0.0",
+  "description": "装备数据初始化云函数 - 批量修正图片路径",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  },
+  "author": "",
+  "license": "ISC"
+}
