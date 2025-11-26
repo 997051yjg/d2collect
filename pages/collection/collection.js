@@ -39,13 +39,28 @@ Page({
   onShow() {
     this.checkLoginStatus()
     if (this.data.isLoggedIn) {
-      // 检查是否需要强制刷新（从上个页面返回时）
-      const shouldRefresh = wx.getStorageSync('shouldRefreshCollection')
-      if (shouldRefresh) {
-        wx.removeStorageSync('shouldRefreshCollection')
-        this.loadCollectionData(true) // 强制刷新
+      // 检查是否有来自主页的筛选设置
+      const filterSettings = wx.getStorageSync('collectionFilterSettings')
+      if (filterSettings) {
+        // 应用筛选设置
+        this.setData({
+          advancedFilters: filterSettings.advancedFilters,
+          currentTypeFilter: filterSettings.currentTypeFilter,
+          searchKeyword: filterSettings.searchKeyword
+        })
+        // 清除设置，避免重复应用
+        wx.removeStorageSync('collectionFilterSettings')
+        // 加载数据并应用筛选
+        this.loadCollectionData(true)
       } else {
-        this.loadCollectionData()
+        // 检查是否需要强制刷新（从上个页面返回时）
+        const shouldRefresh = wx.getStorageSync('shouldRefreshCollection')
+        if (shouldRefresh) {
+          wx.removeStorageSync('shouldRefreshCollection')
+          this.loadCollectionData(true) // 强制刷新
+        } else {
+          this.loadCollectionData()
+        }
       }
     }
   },

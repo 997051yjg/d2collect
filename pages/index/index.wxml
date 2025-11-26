@@ -8,7 +8,7 @@
       </view>
     </view>
 
-    <view class="user-pill" wx:if="{{isLoggedIn}}">
+    <view class="user-pill" wx:if="{{isLoggedIn}}" bindtap="goToProfile">
       <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
       <text class="username">{{userInfo.nickName}}</text>
     </view>
@@ -23,11 +23,11 @@
     </view>
     
     <view class="stats-grid">
-      <view class="stat-box">
+      <view class="stat-box" bindtap="goToActivatedCollection">
         <text class="stat-num gold">{{collectionStats.activatedCount}}</text>
         <text class="stat-label">已点亮</text>
       </view>
-      <view class="stat-box">
+      <view class="stat-box" bindtap="goToCollection">
         <text class="stat-num">{{collectionStats.totalCount}}</text>
         <text class="stat-label">总图鉴</text>
       </view>

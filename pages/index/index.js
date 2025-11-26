@@ -155,6 +155,7 @@ Page({
             
             return {
               id: template._id,
+              templateId: template._id, // 添加templateId字段，用于点击跳转
               // ✅ 适配中文名：优先显示中文，没有则显示英文
               name: template.name_zh || template.name, 
               type: template.type,
@@ -275,10 +276,18 @@ Page({
 
   // 查看装备详情
   viewEquipment(e) {
-    const { id } = e.currentTarget.dataset
+    const { templateid } = e.currentTarget.dataset
+    
+    if (!templateid) {
+      wx.showToast({
+        title: '装备信息异常',
+        icon: 'none'
+      })
+      return
+    }
     
     wx.navigateTo({
-      url: `/pages/detail/detail?id=${id}`
+      url: `/pages/detail/detail?id=${templateid}`
     })
   },
 
@@ -297,8 +306,8 @@ Page({
     })
   },
 
-  // 跳转到图鉴页面
-  goToCollection() {
+  // 跳转到个人信息页面
+  goToProfile() {
     if (!this.data.isLoggedIn) {
       wx.showToast({
         title: '请先登录',
@@ -307,6 +316,62 @@ Page({
       return
     }
     
+    wx.switchTab({
+      url: '/pages/profile/profile'
+    })
+  },
+
+  // 跳转到图鉴页面（只显示已激活装备）
+  goToActivatedCollection() {
+    if (!this.data.isLoggedIn) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      })
+      return
+    }
+    
+    // 设置筛选条件：只显示已激活装备，取消未激活筛选
+    wx.setStorageSync('collectionFilterSettings', {
+      advancedFilters: {
+        unique: true,
+        suit: true,
+        runeWord: true,
+        activated: true,
+        notActivated: false // 取消未激活筛选
+      },
+      currentTypeFilter: 'all',
+      searchKeyword: ''
+    })
+    
+    wx.switchTab({
+      url: '/pages/collection/collection'
+    })
+  },
+
+  // 跳转到图鉴页面（默认筛选）
+  goToCollection() {
+    if (!this.data.isLoggedIn) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      })
+      return
+    }
+
+    //重置筛选器 
+    wx.setStorageSync('collectionFilterSettings', {
+        advancedFilters: {
+          unique: true,
+          suit: true,
+          runeWord: true,
+          activated: true,
+          notActivated: true // 取消未激活筛选
+        },
+        currentTypeFilter: 'all',
+        searchKeyword: ''
+    })
+
     wx.switchTab({
       url: '/pages/collection/collection'
     })
