@@ -1,5 +1,7 @@
 // pages/detail/detail.js
 const app = getApp()
+// ✅ 引入品质判断函数
+const { getRarityText, getRarityClass } = require('../../utils/rarityMap.js')
 
 Page({
   data: {
@@ -70,7 +72,11 @@ Page({
         return
       }
 
-      const equipment = equipmentTemplates[0]
+      // ✅ 使用品质判断函数处理装备信息
+      const equipment = {
+        ...equipmentTemplates[0],
+        rarity: getRarityText(equipmentTemplates[0]) // 使用统一的品质判断
+      }
       let userEquipment = null
       let isActivated = false
       let userInfo = null
@@ -84,6 +90,38 @@ Page({
         this.getCollectorInfo(userEquipment.openid).then(info => {
              this.setData({ userInfo: info })
         })
+      }
+
+      // 处理装备属性数据 - 参考上传页面的处理方式
+      if (equipment.attributes) {
+        // 使用propertyMap来处理属性显示
+        const { getPropertyConfig } = require('../../utils/propertyMap.js')
+        
+        const processedAttributes = equipment.attributes.map(attr => {
+          const config = getPropertyConfig(attr.code)
+          
+          let displayText = ''
+          
+          // 参考上传页面：固定属性使用min值
+          if (!attr.isVariable) {
+            // 固定属性直接使用配置格式和min值
+            displayText = config.format.replace('{0}', attr.min.toString())
+            if (attr.param) displayText = displayText.replace('{p}', attr.param)
+          } else {
+            // 可变属性使用min值作为默认显示
+            displayText = config.format.replace('{0}', attr.min.toString())
+            if (attr.param) displayText = displayText.replace('{p}', attr.param)
+          }
+          
+          return {
+            ...attr,
+            label: config.label,
+            displayColor: config.color,
+            displayText: displayText
+          }
+        })
+        
+        equipment.attributes = processedAttributes
       }
 
       // 3. 一次性渲染主要内容

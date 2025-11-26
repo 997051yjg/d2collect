@@ -22,7 +22,9 @@
         <view class="equipment-info-bottom-left">
           <text class="name">{{equipment.name_zh || equipment.name}}</text>
           <text class="en-name" style="font-size: 24rpx; color: #666;" wx:if="{{equipment.name_zh && equipment.name_zh !== equipment.name}}">{{equipment.name}}</text>
-          <text class="type">{{equipment.type}} · {{equipment.rarity}}</text>
+          <view class="equipment-rarity {{equipment.rarity === '套装' ? 'suit' : 'unique'}}">
+            {{equipment.rarity}}
+          </view>
           <view class="status {{isActivated ? 'activated' : 'not-activated'}}">
             {{isActivated ? '已激活' : '未激活'}}
           </view>
@@ -39,6 +41,24 @@
           <view class="attribute-item" wx:if="{{equipment.requiredLevel}}">
             <text class="label">需求等级：</text>
             <text class="value">{{equipment.requiredLevel}}</text>
+          </view>
+          
+          <!-- 进一步简化：只显示属性值，不显示标签 -->
+          <view class="attributes-section" wx:if="{{equipment.attributes && equipment.attributes.length > 0}}">
+            <view class="attr-list">
+              <block wx:for="{{equipment.attributes}}" wx:key="code">
+                <view class="attr-row {{item.isVariable ? 'variable' : 'fixed'}}">
+                  <text class="attr-text" style="color: {{item.displayColor}}">
+                    {{item.displayText}}
+                  </text>
+                </view>
+              </block>
+            </view>
+          </view>
+          
+          <!-- 如果没有属性数据，显示提示 -->
+          <view class="attribute-item" wx:if="{{!equipment.stats && !equipment.requiredLevel && (!equipment.attributes || equipment.attributes.length === 0)}}">
+            <text class="value" style="color: #999;">暂无属性数据</text>
           </view>
         </view>
       </view>

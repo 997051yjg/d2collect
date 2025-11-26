@@ -37,66 +37,24 @@
   font-size: 28rpx;
 }
 
-/* 2. 头部卡片：增加玻璃质感和高级边框 */
+/* 2. 头部卡片：统一使用和其他卡片相同的样式 */
 .equipment-header-layout {
   display: flex;
   padding: 40rpx 30rpx;
-  background: rgba(20, 20, 20, 0.8); /* 半透明 */
-  backdrop-filter: blur(20px);        /* 毛玻璃模糊 */
-  border: 2rpx solid rgba(212, 175, 55, 0.3);
-  border-radius: 24rpx;
+  background: rgba(10, 10, 10, 0.95);
+  border: 2rpx solid #d4af37;
+  border-radius: 16rpx;
   margin-bottom: 30rpx;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
   box-shadow: 
-    0 10rpx 40rpx rgba(0, 0, 0, 0.6), /* 深度阴影 */
-    inset 0 0 20rpx rgba(212, 175, 55, 0.05); /* 内部微光 */
+    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
   align-items: flex-start;
 }
 
-/* 左右内容之间的金色竖线 */
-.equipment-header-layout::after {
-  content: '';
-  position: absolute;
-  top: 40rpx;
-  bottom: 40rpx;
-  left: calc(50% - 1rpx);
-  width: 2rpx;
-  background: linear-gradient(to bottom, 
-    transparent 0%, 
-    #d4af37 20%, 
-    #d4af37 80%, 
-    transparent 100%);
-}
+/* 取消头部区域的流光效果 */
 
-/* 左右内容之间的金色竖线 */
-.equipment-header-layout::after {
-  content: '';
-  position: absolute;
-  top: 40rpx;
-  bottom: 40rpx;
-  left: calc(50% - 1rpx);
-  width: 2rpx;
-  background: linear-gradient(to bottom, 
-    transparent 0%, 
-    #d4af37 20%, 
-    #d4af37 80%, 
-    transparent 100%);
-}
-
-/* 头部区域的流光效果 */
-.equipment-header-layout::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
-  animation: shimmer 3s infinite;
-}
-
+/* 第一张卡片的active状态样式 */
 .equipment-header-layout:active {
   transform: scale(0.98);
   border-color: #ffd700;
@@ -114,15 +72,30 @@
   align-items: center;
   justify-content: flex-start;
   margin-top: 10rpx;
+  position: relative;
 }
 
-/* 装备图片（左上角） */
+/* 左侧区域右侧的金线分隔 */
+.equipment-left-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -20rpx;
+  width: 2rpx;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, #d4af37, transparent);
+}
+
+/* 装备图片（居中） */
 .equipment-image-top-left {
   width: 150rpx;
   height: 150rpx;
   margin-bottom: 20rpx;
   display: flex;
   justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .main-equipment-image {
@@ -165,7 +138,7 @@
   gap: 20rpx;
 }
 
-/* 4. 属性列表优化：像羊皮纸一样的条目 */
+/* 4. 属性列表优化：取消边框 */
 .equipment-attributes-right .attribute-item {
   display: flex;
   flex-direction: row;
@@ -174,7 +147,6 @@
   border-radius: 8rpx;
   padding: 12rpx 16rpx;
   margin-bottom: 12rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.05);
 }
 
 .equipment-attributes-right .attribute-item:last-child {
@@ -199,134 +171,9 @@
   flex: 1;
 }
 
-/* 右侧区域：装备属性 */
-.equipment-attributes-right {
-  flex: 1;
-  min-width: 200rpx;
-  padding-left: 30rpx;
-}
+/* 取消头部区域的流光效果 */
 
-.equipment-attributes-right .section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #d4af37;
-  margin-bottom: 25rpx;
-  border-bottom: 1rpx solid rgba(212, 175, 55, 0.3);
-  padding-bottom: 8rpx;
-}
-
-.equipment-attributes-right .attributes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-
-/* 4. 属性列表优化：像羊皮纸一样的条目 */
-.equipment-attributes-right .attribute-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8rpx;
-  padding: 12rpx 16rpx;
-  margin-bottom: 12rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.05);
-}
-
-.equipment-attributes-right .attribute-item:last-child {
-  margin-bottom: 0;
-}
-
-.equipment-attributes-right .label {
-  color: #cccccc;
-  font-size: 28rpx;
-  margin-right: 12rpx;
-  white-space: nowrap;
-}
-
-/* 5. 属性值优化 */
-.equipment-attributes-right .value {
-  color: #c9b065; /* 使用稍微柔和的暗金色 */
-  font-family: monospace; /* 等宽字体更有数据感 */
-  font-size: 28rpx;
-  font-weight: bold;
-  line-height: 1.4;
-  text-align: left;
-  flex: 1;
-}
-
-/* 右侧区域：装备属性 */
-.equipment-attributes-right {
-  flex: 1;
-  min-width: 200rpx;
-  padding-left: 30rpx;
-}
-
-.equipment-attributes-right .section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #d4af37;
-  margin-bottom: 25rpx;
-  border-bottom: 1rpx solid rgba(212, 175, 55, 0.3);
-  padding-bottom: 8rpx;
-}
-
-.equipment-attributes-right .attributes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-
-/* 4. 属性列表优化：像羊皮纸一样的条目 */
-.equipment-attributes-right .attribute-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8rpx;
-  padding: 12rpx 16rpx;
-  margin-bottom: 12rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.05);
-}
-
-.equipment-attributes-right .attribute-item:last-child {
-  margin-bottom: 0;
-}
-
-.equipment-attributes-right .label {
-  color: #cccccc;
-  font-size: 28rpx;
-  margin-right: 12rpx;
-  white-space: nowrap;
-}
-
-/* 5. 属性值优化 */
-.equipment-attributes-right .value {
-  color: #c9b065; /* 使用稍微柔和的暗金色 */
-  font-family: monospace; /* 等宽字体更有数据感 */
-  font-size: 28rpx;
-  font-weight: bold;
-  line-height: 1.4;
-  text-align: left;
-  flex: 1;
-}
-
-/* 头部区域的流光效果 */
-.equipment-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
-  animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
+/* 取消流光动画定义 */
 
 .equipment-header:active {
   transform: scale(0.98);
@@ -360,12 +207,37 @@
 /* 3. 装备名称的大标题优化 */
 .equipment-info-bottom-left .name {
   font-size: 40rpx;
-  font-weight: 800; /* 更粗的字体 */
-  background: linear-gradient(180deg, #d4af37 0%, #8a7328 100%); /* 金色渐变文字 */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.5);
+  font-weight: 600; /* 普通字体粗细 */
+  color: #d4af37; /* 普通金色文字 */
   margin-bottom: 16rpx;
+}
+
+/* 暗金装备品质样式 - 参考图鉴页面 */
+.equipment-rarity {
+  font-size: 20rpx;
+  font-weight: 500;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  text-align: center;
+  margin-bottom: 18rpx;
+}
+
+.equipment-rarity.unique {
+  background: linear-gradient(135deg, #b89c4f, #d4af37);
+  color: #000000;
+  text-shadow: 0 1rpx 2rpx rgba(255, 255, 255, 0.5);
+}
+
+.equipment-rarity.suit {
+  background: linear-gradient(135deg, #5d9cec, #4a7bc8);
+  color: #ffffff;
+  text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.5);
+}
+
+.equipment-rarity.runeword {
+  background: linear-gradient(135deg, #ff8c00, #e67e22);
+  color: #000000;
+  text-shadow: 0 1rpx 2rpx rgba(255, 255, 255, 0.5);
 }
 
 .type {
@@ -863,16 +735,7 @@
   overflow: hidden;
 }
 
-.user-attribute-item:before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
-  animation: shimmer 3s infinite;
-}
+/* 取消用户属性区域的流光效果 */
 
 .user-attribute-item:active {
   transform: scale(0.95);
@@ -887,4 +750,55 @@
   line-height: 1.4;
   flex: 1;
   text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.5);
+}
+
+/* 参考上传页面的属性显示样式 */
+.equipment-attributes-right .attributes-section {
+  margin-top: 20rpx;
+}
+
+.equipment-attributes-right .attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.equipment-attributes-right .attr-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12rpx 0;
+  transition: all 0.3s ease;
+}
+
+.equipment-attributes-right .attr-row:last-child {
+  border-bottom: none;
+}
+
+.equipment-attributes-right .attr-row:active {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.equipment-attributes-right .attr-label {
+  font-size: 28rpx;
+  font-weight: bold;
+  min-width: 120rpx;
+  line-height: 1.4;
+}
+
+.equipment-attributes-right .attr-text {
+  font-size: 28rpx;
+  font-weight: bold;
+  font-family: monospace;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.equipment-attributes-right .attr-row.fixed .attr-text {
+  color: #c9b065;
+}
+
+.equipment-attributes-right .attr-row.variable .attr-text {
+  color: #ffffff;
 }
