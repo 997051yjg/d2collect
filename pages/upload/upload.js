@@ -21,7 +21,14 @@ Page({
     searchKeyword: '',
     searchResults: [],
     showSearchResults: false,
-    selectedEquipment: null
+    showResultCard: false, // 新增：控制卡片显示/隐藏
+    selectedEquipment: null,
+    // 新增：搜索状态和交互优化
+    isSearching: false,
+    searchHistory: [],
+    activeSearchIndex: -1,
+    searchError: '',
+    searchPlaceholder: '输入装备中文名/英文名'
   },
 
   onLoad(options) {
@@ -35,6 +42,8 @@ Page({
 
   onShow() {
     this.checkLoginStatus()
+    // 加载搜索历史
+    this.loadSearchHistory()
   },
 
   // 检查登录状态
@@ -256,20 +265,28 @@ Page({
     }
   },
 
-  // 搜索装备
+  // 优化搜索功能
   async searchEquipment(keyword) {
     if (!keyword || keyword.trim().length === 0) {
       this.setData({
         searchResults: [],
-        showSearchResults: false
+        showSearchResults: false,
+        isSearching: false,
+        searchError: ''
       })
       return
     }
 
+    // 显示搜索状态
+    this.setData({
+      isSearching: true,
+      searchError: ''
+    })
+
     try {
       const db = wx.cloud.database()
       
-      // ✅ 修改查询条件：同时搜中文名和英文名
+      // 智能搜索：同时搜中文名和英文名，支持模糊匹配
       const _ = db.command
       const { data: results } = await db.collection('equipment_templates')
         .where(_.or([
@@ -278,27 +295,44 @@ Page({
           },
           {
             name: db.RegExp({ regexp: keyword, options: 'i' })
+          },
+          {
+            type: db.RegExp({ regexp: keyword, options: 'i' })
           }
         ]))
-        .limit(10)
+        .limit(15) // 增加结果数量
         .get()
       
-      // ✅ 处理结果：优先显示中文名，使用新的品质判断
-      const processedResults = results.map(item => ({
-        ...item,
-        name: item.name_zh || item.name, // 优先显示中文名
-        rarity: getRarityText(item) // 使用新的品质判断
-      }))
+      // 智能排序：完全匹配优先，中文名匹配优先
+      const processedResults = results
+        .map(item => ({
+          ...item,
+          name: item.name_zh || item.name,
+          rarity: getRarityText(item),
+          // 计算匹配度
+          matchScore: this.calculateMatchScore(item, keyword)
+        }))
+        .sort((a, b) => b.matchScore - a.matchScore)
       
       this.setData({
         searchResults: processedResults,
-        showSearchResults: processedResults.length > 0
+        showSearchResults: processedResults.length > 0,
+        showResultCard: processedResults.length > 0, // 有结果时自动显示卡片
+        isSearching: false,
+        searchError: processedResults.length === 0 ? '未找到相关装备' : ''
       })
+      
+      // 保存搜索历史
+      if (processedResults.length > 0) {
+        this.saveSearchHistory(keyword)
+      }
     } catch (error) {
       console.error('搜索装备失败:', error)
       this.setData({
         searchResults: [],
-        showSearchResults: false
+        showSearchResults: false,
+        isSearching: false,
+        searchError: '搜索失败，请检查网络连接'
       })
     }
   },
@@ -356,6 +390,9 @@ Page({
     }
     
     this.checkFormValidity()
+    
+    // 修改：选中装备后不自动隐藏卡片，保持卡片显示
+    // 只在用户主动点击外部区域或三角形按钮时隐藏
   },
 
   // 属性输入变化
@@ -533,4 +570,212 @@ Page({
     
     console.log('装备保存成功:', result.action)
   },
+
+  // === 新增：搜索交互优化功能 ===
+
+  // 加载搜索历史
+  loadSearchHistory() {
+    try {
+      const history = wx.getStorageSync('uploadSearchHistory') || []
+      this.setData({
+        searchHistory: history.slice(0, 5) // 只显示最近5条
+      })
+    } catch (error) {
+      console.error('加载搜索历史失败:', error)
+    }
+  },
+
+  // 保存搜索历史
+  saveSearchHistory(keyword) {
+    if (!keyword.trim()) return
+    
+    try {
+      let history = wx.getStorageSync('uploadSearchHistory') || []
+      // 移除重复项
+      history = history.filter(item => item !== keyword)
+      // 添加到开头
+      history.unshift(keyword)
+      // 限制最多保存10条
+      history = history.slice(0, 10)
+      wx.setStorageSync('uploadSearchHistory', history)
+      this.setData({
+        searchHistory: history.slice(0, 5)
+      })
+    } catch (error) {
+      console.error('保存搜索历史失败:', error)
+    }
+  },
+
+  // 清空搜索
+  clearSearch() {
+    this.setData({
+      'formData.name': '',
+      searchKeyword: '',
+      searchResults: [],
+      showSearchResults: false,
+      searchError: '',
+      activeSearchIndex: -1
+    })
+  },
+
+  // 清空搜索结果
+  clearSearchResults() {
+    this.setData({
+      searchResults: [],
+      showSearchResults: false
+    })
+  },
+
+  // 清空搜索历史
+  clearSearchHistory() {
+    wx.removeStorageSync('uploadSearchHistory')
+    this.setData({
+      searchHistory: []
+    })
+  },
+
+  // 选择历史记录
+  selectHistoryItem(e) {
+    const keyword = e.currentTarget.dataset.item
+    this.setData({
+      'formData.name': keyword,
+      searchKeyword: keyword
+    })
+    this.searchEquipment(keyword)
+  },
+
+  // 搜索确认（回车键）
+  onSearchConfirm(e) {
+    const keyword = e.detail.value.trim()
+    if (keyword) {
+      this.saveSearchHistory(keyword)
+      this.searchEquipment(keyword)
+    }
+  },
+
+  // 输入框获得焦点
+  onFocus() {
+    this.setData({
+      isFocused: true,
+      searchError: ''
+    })
+  },
+
+  // 输入框失去焦点
+  onBlur() {
+    setTimeout(() => {
+      if (this && typeof this.setData === 'function') {
+        this.setData({
+          isFocused: false,
+          showSearchResults: false,
+          activeSearchIndex: -1
+        })
+        // 修改：选中装备后不自动隐藏卡片，只在用户主动操作时隐藏
+        // 只有当没有选中装备时才延迟隐藏卡片
+        if (!this.data.selectedEquipment) {
+          setTimeout(() => {
+            this.hideResultCard()
+          }, 300)
+        }
+      }
+    }, 200)
+  },
+
+  // 切换卡片显示/隐藏
+  toggleResultCard(e) {
+    // 使用catchtap后，无需手动阻止事件冒泡
+    if (this.data.searchResults.length === 0) {
+      return
+    }
+    
+    const showResultCard = !this.data.showResultCard
+    this.setData({
+      showResultCard: showResultCard
+    })
+  },
+
+  // 显示卡片
+  showResultCard() {
+    if (this.data.searchResults.length > 0) {
+      this.setData({
+        showResultCard: true
+      })
+    }
+  },
+
+  // 隐藏卡片
+  hideResultCard() {
+    this.setData({
+      showResultCard: false
+    })
+  },
+
+  // 阻止卡片隐藏（点击卡片内部时）
+  preventCardHide(e) {
+    // 阻止事件冒泡，避免触发外部点击隐藏
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation()
+    }
+  },
+
+  // 计算匹配度
+  calculateMatchScore(item, keyword) {
+    let score = 0
+    const lowerKeyword = keyword.toLowerCase()
+    
+    // 中文名完全匹配
+    if (item.name_zh && item.name_zh.toLowerCase().includes(lowerKeyword)) {
+      score += 100
+    }
+    
+    // 英文名完全匹配
+    if (item.name && item.name.toLowerCase().includes(lowerKeyword)) {
+      score += 80
+    }
+    
+    // 类型匹配
+    if (item.type && item.type.toLowerCase().includes(lowerKeyword)) {
+      score += 50
+    }
+    
+    // 前缀匹配加分
+    if (item.name_zh && item.name_zh.toLowerCase().startsWith(lowerKeyword)) {
+      score += 30
+    }
+    
+    return score
+  },
+
+  // 键盘导航功能
+  onSearchKeyDown(e) {
+    const { keyCode } = e.detail
+    const { searchResults, activeSearchIndex } = this.data
+    
+    if (searchResults.length === 0) return
+    
+    // 下箭头
+    if (keyCode === 40) {
+      const newIndex = activeSearchIndex < searchResults.length - 1 ? activeSearchIndex + 1 : 0
+      this.setData({ activeSearchIndex: newIndex })
+    }
+    
+    // 上箭头
+    if (keyCode === 38) {
+      const newIndex = activeSearchIndex > 0 ? activeSearchIndex - 1 : searchResults.length - 1
+      this.setData({ activeSearchIndex: newIndex })
+    }
+    
+    // 回车键选择
+    if (keyCode === 13 && activeSearchIndex >= 0) {
+      this.selectEquipment({ currentTarget: { dataset: { index: activeSearchIndex } } })
+    }
+    
+    // ESC键关闭
+    if (keyCode === 27) {
+      this.setData({
+        showSearchResults: false,
+        activeSearchIndex: -1
+      })
+    }
+  }
 })

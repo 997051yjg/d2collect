@@ -1,160 +1,152 @@
 <!--pages/upload/upload.wxml-->
 <view class="container">
-  <!-- 登录提示 -->
-  <view class="login-prompt" wx:if="{{!isLoggedIn}}">
-    <view class="login-prompt-card card">
-      <text class="login-prompt-title">需要登录</text>
-      <text class="login-prompt-desc">请先登录后才能上传装备</text>
-      <button class="btn-primary login-btn" bindtap="goToLogin">去登录</button>
+  <!-- 搜索栏（粘性定位） -->
+  <view class="search-wrapper animate-enter" bindtap="hideResultCard">
+    <view class="search-bar {{isFocused ? 'focused' : ''}}" bindtap="preventCardHide">
+      <icon type="search" size="20" color="{{isFocused ? 'var(--gold)' : '#666'}}"/>
+      <input class="search-input" 
+             placeholder="{{searchPlaceholder}}" 
+             placeholder-class="ph"
+             bindinput="onNameInput" 
+             bindfocus="onFocus"
+             bindblur="onBlur"
+             bindconfirm="onSearchConfirm"
+             bindkeydown="onSearchKeyDown"
+             value="{{formData.name}}" />
+    </view>
+    
+    <!-- 三角形切换按钮（使用catchtap阻止事件冒泡） -->
+    <view class="toggle-btn {{searchResults.length > 0 ? 'active' : ''}}" 
+          catchtap="toggleResultCard">
+      <view class="triangle {{showResultCard ? 'up' : 'down'}}"></view>
+    </view>
+
+    <!-- 搜索状态指示器 -->
+    <view class="search-status" wx:if="{{isSearching || searchError}}">
+      <view class="search-loading" wx:if="{{isSearching}}">
+        <view class="loading-dot"></view>
+        <text class="status-text">搜索中...</text>
+      </view>
+      <view class="search-error" wx:if="{{searchError}}">
+        <icon type="warn" size="16" color="var(--red-error)"/>
+        <text class="status-text">{{searchError}}</text>
+      </view>
+    </view>
+
+    <!-- 空状态提示 -->
+    <view class="empty-state" wx:if="{{searchKeyword && searchResults.length === 0 && !isSearching}}">
+      <icon type="search" size="48" color="#666"/>
+      <text class="empty-text">未找到相关装备</text>
+      <text class="empty-desc">尝试搜索其他关键词</text>
+    </view>
+
+    <!-- 搜索历史 -->
+    <view class="search-history" wx:if="{{searchHistory.length > 0 && !searchKeyword && !isFocused}}">
+      <view class="history-header">
+        <text class="history-title">搜索历史</text>
+        <text class="history-clear" bindtap="clearSearchHistory">清空</text>
+      </view>
+      <view class="history-list">
+        <view class="history-item" 
+              wx:for="{{searchHistory}}" 
+              wx:key="*this"
+              bindtap="selectHistoryItem"
+              data-item="{{item}}">
+          <icon type="time" size="16" color="#666"/>
+          <text class="history-text">{{item}}</text>
+        </view>
+      </view>
     </view>
   </view>
 
-  <!-- 上传界面 -->
-  <view class="upload-section" wx:if="{{isLoggedIn}}">
-    <!-- 装备信息表单 -->
-    <view class="form-section card animate-enter">
-      <view class="form-header">
-        <text class="form-title gold-text">装备信息</text>
-      </view>
-      
-      <form bindsubmit="submitForm">
-        <!-- 装备名称搜索 -->
-        <view class="form-group">
-          <label class="form-label">装备名称</label>
-          <view class="search-container">
-            <input 
-              class="input search-input" 
-              name="name" 
-              placeholder="输入装备名称关键字搜索" 
-              value="{{formData.name}}" 
-              bindinput="onNameInput"
-            />
-          </view>
-        </view>
-        
-        <!-- 独立装备模板卡片区域 -->
-        <view class="templates-section" wx:if="{{searchResults.length > 0}}">
-          
-          <view class="templates-grid">
-            <view 
-              class="template-card {{selectedEquipment && selectedEquipment._id === item._id ? 'selected' : ''}}" 
+  <!-- 搜索结果卡片 -->
+  <view wx:if="{{showResultCard && searchResults.length > 0}}" class="result-card show" 
+        bindtap="preventCardHide">
+    <scroll-view class="card-content" scroll-y>
+      <view class="equipment-grid">
+        <view class="equipment-card {{selectedEquipment && selectedEquipment._id === item._id ? 'selected' : ''}} {{activeSearchIndex === index ? 'active' : ''}}" 
               wx:for="{{searchResults}}" 
               wx:key="_id"
               bindtap="selectEquipment"
-              data-index="{{index}}"
-            >
-              <!-- 装备图标 -->
-              <view class="template-image">
-                <image class="equipment-icon" src="{{item.image || getEquipmentIcon(item.type)}}" mode="aspectFit" />
-              </view>
-              
-              <!-- 装备信息 -->
-              <view class="template-info">
-                <text class="template-name">{{item.name_zh || item.name}}</text>
-                <view class="template-rarity {{item.rarity === '套装' ? 'suit' : 'unique'}}">
-                  {{item.rarity}}
-                </view>
-              </view>
-              
-              <!-- 激活状态 -->
-              <view class="activation-status">
-                <text class="status-text" wx:if="{{selectedEquipment && selectedEquipment._id === item._id}}">已选中</text>
-                <text class="status-text default" wx:else>未选中</text>
-              </view>
+              data-index="{{index}}">
+          
+          <!-- 竖向布局：图片、名称、品质、激活状态 -->
+          <view class="card-layout">
+            <!-- 装备图片 -->
+            <view class="card-image">
+              <image src="{{item.image || '/images/equipment-icons/default.png'}}" 
+                     class="equipment-img" 
+                     mode="aspectFit" />
+            </view>
+            
+            <!-- 装备信息 - 竖向排列 -->
+            <view class="card-info">
+              <text class="equipment-name">{{item.name_zh || item.name}}</text>
+              <text class="equipment-rarity {{item.rarity === '套装' ? 'suit' : 'unique'}}">{{item.rarity}}</text>
+              <text class="status {{item.isActive ? 'activated' : 'not-activated'}}">{{item.isActive ? '已激活' : '未激活'}}</text>
             </view>
           </view>
-        </view>
-        
-        <!-- 空状态 -->
-        <view class="empty-templates" wx:if="{{searchKeyword && searchResults.length === 0}}">
-          <view class="empty-icon">🔍</view>
-          <text class="empty-text">未找到匹配的装备</text>
-          <text class="empty-subtext">请尝试其他关键字</text>
-        </view>
-        
-        <!-- 属性编辑区域 -->
-        <view class="attributes-section" wx:if="{{selectedEquipment && selectedEquipment.attributes.length > 0}}">
-          <view class="section-title gold-text">装备属性（完整属性将自动上传）</view>
           
-          <view class="attr-list">
-            <block wx:for="{{selectedEquipment.attributes}}" wx:key="code">
-              
-              <view class="attr-row variable" wx:if="{{item.isVariable}}">
-                <view class="attr-label" style="color: {{item.displayColor}}">
-                  {{item.label}}
-                  <text class="attr-range">({{item.min}}-{{item.max}})</text>
-                </view>
-                <input 
-                  class="attr-input" 
-                  type="number" 
-                  placeholder="{{item.min}}" 
-                  placeholder-class="input-placeholder"
-                  bindinput="onAttributeInput" 
-                  data-code="{{item.code}}"
-                  value="{{formData.attributes[item.code]}}"
-                />
-              </view>
-
-              <view class="attr-row fixed" wx:else>
-                <view class="attr-label" style="color: {{item.displayColor}}">
-                  {{item.label}}
-                </view>
-                <text class="attr-text" style="color: {{item.displayColor}}">
-                  {{item.displayText}}
-                  <text class="attr-hint">（固定属  性）</text>
-                </text>
-                <!-- 隐藏的固定属性值 -->
-                <input 
-                  class="attr-input hidden" 
-                  type="hidden" 
-                  value="{{item.min}}" 
-                  bindinput="onAttributeInput" 
-                  data-code="{{item.code}}"
-                />
-              </view>
-
-            </block>
+          <!-- 选中效果 -->
+          <view class="selection-indicator">
+            <icon type="success" size="20" color="var(--gold)" />
           </view>
         </view>
-        
-        <view class="form-actions">
-          <button class="btn-secondary" form-type="reset" bindtap="resetForm">重置</button>
-          <button class="btn-primary" form-type="submit" disabled="{{!canSubmit}}">提交上传</button>
-        </view>
-      </form>
-    </view>
+      </view>
+    </scroll-view>
+  </view>
 
-    <!-- 图片上传区域 -->
-    <view class="upload-area card animate-enter delay-1">
-      <view class="upload-header">
-        <text class="upload-title gold-text">上传装备图片</text>
-        <text class="upload-tip">支持JPG、PNG格式，最大5MB</text>
-      </view>
-      
-      <view class="image-preview" wx:if="{{uploadedImage}}">
-        <image class="preview-image" src="{{uploadedImage}}" mode="aspectFit"></image>
-        <view class="preview-actions">
-          <button class="btn-secondary" bindtap="removeImage">删除</button>
-          <button class="btn-primary" bindtap="reuploadImage">重新选择</button>
-        </view>
-      </view>
-      
-      <view class="upload-button" wx:else>
-        <view class="upload-icon"><image class="upload-icon-image" src="/images/2.png" mode="aspectFit" /></view>
-        <text class="upload-text">点击选择图片</text>
-        <button class="upload-btn" bindtap="chooseImage" size="mini">选择图片</button>
-      </view>
-    </view>
-
-    <!-- 上传进度 -->
-    <view class="upload-progress" wx:if="{{uploading}}">
-      <view class="progress-card card">
-        <text class="progress-title">上传中...</text>
-        <progress class="progress-bar" percent="{{uploadProgress}}" show-info />
-        <text class="progress-text">{{uploadProgress}}%</text>
-      </view>
+  <!-- 登录提示 -->
+  <view class="login-prompt" wx:if="{{!isLoggedIn}}">
+    <view class="login-prompt-card luxury-card animate-enter">
+      <text class="login-prompt-title">需要登录</text>
+      <text class="login-prompt-desc">请先登录后才能上传装备</text>
+      <button class="btn-gold login-btn" bindtap="goToLogin">去登录</button>
     </view>
   </view>
+
+  <block wx:if="{{selectedEquipment && isLoggedIn}}">
+    <!-- 属性鉴定卡片 -->
+    <view class="luxury-card animate-enter delay-1">
+      <view class="card-header">
+        <text class="card-title gold-text">属性鉴定</text>
+        <text class="card-sub">{{selectedEquipment.name_zh || selectedEquipment.name}}</text>
+      </view>
+      
+      <view class="attr-list">
+        <block wx:for="{{selectedEquipment.attributes}}" wx:key="code">
+          <view class="attr-row">
+            <text class="attr-label">{{item.label}}</text>
+            
+            <view class="attr-input-box" wx:if="{{item.isVariable}}">
+              <input class="attr-input" 
+                     type="number" 
+                     placeholder="{{item.min}}-{{item.max}}" 
+                     placeholder-class="ph-small"
+                     bindinput="onAttributeInput" 
+                     data-code="{{item.code}}" />
+            </view>
+            <text class="attr-fixed" wx:else>{{item.min}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 底部上传区域 -->
+    <view class="footer-section animate-enter delay-2">
+      <view class="upload-slot" bindtap="chooseImage">
+        <image wx:if="{{uploadedImage}}" src="{{uploadedImage}}" class="slot-img" mode="aspectFit" />
+        <view wx:else class="slot-placeholder">
+          <text class="slot-icon">+</text>
+          <text class="slot-text">上传截图</text>
+        </view>
+      </view>
+      
+      <button class="btn-gold submit-btn" bindtap="submitForm" loading="{{uploading}}">
+        确认收录
+      </button>
+    </view>
+  </block>
 
   <!-- 加载状态 -->
   <view class="loading" wx:if="{{loading}}">

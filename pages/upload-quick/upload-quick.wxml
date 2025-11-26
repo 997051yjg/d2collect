@@ -26,10 +26,8 @@
         <!-- 装备详细信息 -->
         <view class="equipment-details">
           <text class="equipment-name">{{equipmentInfo.name}}</text>
-          <view class="detail-row">
-            <text class="detail-label">稀有度：</text>
-            <text class="detail-value {{equipmentInfo.rarity === '套装' ? 'suit' : 'unique'}}">{{equipmentInfo.rarity}}</text>
-          </view>
+          <text class="equipment-rarity {{equipmentInfo.rarity === '套装' ? 'suit' : 'unique'}}">{{equipmentInfo.rarity}}</text>
+          <text class="status {{equipmentInfo.isActive ? 'activated' : 'not-activated'}}">{{equipmentInfo.isActive ? '已激活' : '未激活'}}</text>
           <view class="detail-row" wx:if="{{equipmentInfo.attributes && equipmentInfo.attributes.length > 0}}">
             <text class="detail-label">属性：</text>
             <text class="detail-value">{{equipmentInfo.attributes.length}} 个属性</text>

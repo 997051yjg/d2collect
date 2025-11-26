@@ -1,89 +1,71 @@
 /* app.wxss */
 
 page {
-  /* iOS 深色模式基调 */
-  background-color: #000000;
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, sans-serif;
-  font-size: 28rpx;
-  line-height: 1.5;
+  background-color: #000000; /* 真黑背景，省电且深邃 */
+  color: #E5E5E5; /* 次白文字，阅读舒适 */
+  font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
   
-  /* 全局变量 */
-  --gold: #D4AF37;       /* 经典暗金 */
-  --gold-dim: #8c7220;   /* 暗淡金（用于辅助） */
-  --gold-rgb: 212, 175, 55; /* 金色RGB值，用于rgba */
-  --surface: #1C1C1E;    /* iOS 标准层级背景色 */
-  --surface-light: #2C2C2E;
-  --text-secondary: #8E8E93;
-  --border-radius: 24rpx; /* 现代大圆角 */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* 苹果风弹性动画曲线 */
+  /* --- 调色板 --- */
+  --gold: #D4AF37;       /* 暗金装备色 */
+  --gold-dim: #8C7226;   /* 暗淡金（边框/次要） */
+  --blue-magic: #4850B8; /* 魔法词条蓝 */
+  --red-error: #FF453A;  /* 错误/退出 */
+  --green-success: #32D74B; /* 成功/激活 */
+  
+  /* --- 材质与层级 --- */
+  --surface: #1C1C1E;    /* 标准卡片背景 (iOS Dark Gray) */
+  --surface-elevated: #2C2C2E; /* 悬浮层/输入框背景 */
+  --border: 1rpx solid rgba(212, 175, 55, 0.15); /* 极细微的金色边框 */
+  
+  /* --- 动效 --- */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* 苹果弹性曲线 */
 }
 
 .container {
   padding: 32rpx;
-  padding-bottom: 120rpx; /* 底部留白，防遮挡 */
   box-sizing: border-box;
   min-height: 100vh;
+  padding-bottom: 120rpx; /* 底部安全距 */
 }
 
-/* Apple 风格卡片：无边框，重阴影，柔和圆角 */
-.ios-card {
-  background-color: var(--surface);
-  border-radius: var(--border-radius);
+/* 通用卡片：黑金质感 + iOS圆角 */
+.luxury-card {
+  background: var(--surface);
+  border-radius: 24rpx;
   padding: 32rpx;
   margin-bottom: 32rpx;
-  /* 极细的顶部高光，增加立体感 */
-  box-shadow: 
-    0 1px 0 rgba(255, 255, 255, 0.05) inset,
-    0 10rpx 40rpx rgba(0, 0, 0, 0.5);
+  border: var(--border);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
 }
 
-/* 金色标题 */
-.gold-title {
-  color: var(--gold);
-  font-size: 34rpx;
-  font-weight: 600;
-  margin-bottom: 24rpx;
-  letter-spacing: 1rpx;
-}
-
-/* 交互按钮：弹性缩放 */
-.btn-primary {
+/* 按钮：流金渐变 + 弹性按压 */
+.btn-gold {
   background: linear-gradient(135deg, #D4AF37 0%, #B48F25 100%);
   color: #000;
   font-weight: 600;
-  font-size: 30rpx;
+  border-radius: 44rpx;
   height: 88rpx;
-  border-radius: 44rpx; /* 胶囊按钮 */
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  box-shadow: 0 8rpx 24rpx rgba(212, 175, 55, 0.3);
+  box-shadow: 0 8rpx 20rpx rgba(212, 175, 55, 0.25);
   transition: transform 0.4s var(--ease-spring), opacity 0.2s;
 }
+.btn-gold:active { transform: scale(0.94); opacity: 0.9; }
 
-.btn-primary:active {
-  transform: scale(0.94); /* 点击时的回弹质感 */
-  opacity: 0.9;
-}
-
-/* 进场动画：丝滑上浮 */
+/* 进场动画 */
 .animate-enter {
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  opacity: 0;
-  transform: translateY(20px);
+  animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0; transform: translateY(30rpx);
 }
-
-@keyframes slideUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-
+@keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
 .delay-1 { animation-delay: 0.1s; }
 .delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
 
 /* 金色文字 */
 .gold-text {
   color: var(--gold);
+  text-shadow: 0 0 8rpx rgba(212, 175, 55, 0.3);
 }
