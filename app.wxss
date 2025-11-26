@@ -87,3 +87,227 @@ page {
 .gold-text {
   color: var(--gold);
 }
+
+/* 底部导航栏样式增强 - 苹果风格 */
+/* 导航栏背景光效 */
+.tab-bar {
+  position: relative;
+}
+
+.tab-bar::before {
+  content: '';
+  position: absolute;
+  top: -2rpx;
+  left: 0;
+  right: 0;
+  height: 2rpx;
+  background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), 0.3), transparent);
+}
+
+/* 导航项选中状态增强 */
+.tab-bar-item {
+  position: relative;
+  transition: all 0.3s var(--ease-spring);
+}
+
+.tab-bar-item.active::before {
+  content: '';
+  position: absolute;
+  top: -8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24rpx;
+  height: 4rpx;
+  background: var(--gold);
+  border-radius: 2rpx;
+  animation: tabIndicator 0.3s ease-out;
+}
+
+@keyframes tabIndicator {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  100% {
+    width: 24rpx;
+    opacity: 1;
+  }
+}
+
+/* 导航图标动画 */
+.tab-bar-icon {
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.tab-bar-item.active .tab-bar-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10rpx rgba(var(--gold-rgb), 0.4));
+}
+
+/* 导航文字动画 */
+.tab-bar-text {
+  transition: all 0.3s ease;
+}
+
+.tab-bar-item.active .tab-bar-text {
+  font-weight: 600;
+  text-shadow: 0 0 15rpx rgba(var(--gold-rgb), 0.3);
+}
+
+/* 页面切换动画 */
+.page-transition {
+  animation: pageSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pageSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(20rpx);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 页面加载动画 */
+.page-loading {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* 滚动加载动画 */
+.scroll-load {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 底部导航栏样式增强 - 苹果风格 */
+/* 导航栏背景光效 */
+.tab-bar {
+  position: relative;
+}
+
+.tab-bar::before {
+  content: '';
+  position: absolute;
+  top: -2rpx;
+  left: 0;
+  right: 0;
+  height: 2rpx;
+  background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), 0.3), transparent);
+}
+
+/* 导航项选中状态增强 */
+.tab-bar-item {
+  position: relative;
+  transition: all 0.3s var(--ease-spring);
+}
+
+.tab-bar-item.active::before {
+  content: '';
+  position: absolute;
+  top: -8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24rpx;
+  height: 4rpx;
+  background: var(--gold);
+  border-radius: 2rpx;
+  animation: tabIndicator 0.3s ease-out;
+}
+
+@keyframes tabIndicator {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  100% {
+    width: 24rpx;
+    opacity: 1;
+  }
+}
+
+/* 导航图标动画 */
+.tab-bar-icon {
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.tab-bar-item.active .tab-bar-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10rpx rgba(var(--gold-rgb), 0.4));
+}
+
+/* 导航文字动画 */
+.tab-bar-text {
+  transition: all 0.3s ease;
+}
+
+.tab-bar-item.active .tab-bar-text {
+  font-weight: 600;
+  text-shadow: 0 0 15rpx rgba(var(--gold-rgb), 0.3);
+}
+
+/* 页面切换动画 */
+.page-transition {
+  animation: pageSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pageSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(20rpx);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 页面加载动画 */
+.page-loading {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* 滚动加载动画 */
+.scroll-load {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

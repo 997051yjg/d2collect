@@ -1,60 +1,88 @@
-<view class="container">
-  <view class="header animate-enter">
-    <view class="logo-area">
-      <image class="logo" src="/images/1.png" mode="aspectFit" />
-      <view class="titles">
-        <text class="main-title">Diablo 2</text>
-        <text class="sub-title">Resurrected</text>
-      </view>
-    </view>
-
-    <view class="user-pill" wx:if="{{isLoggedIn}}" bindtap="goToProfile">
-      <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
-      <text class="username">{{userInfo.nickName}}</text>
-    </view>
-    <view class="user-pill login" wx:else bindtap="wxLogin">
-      <text>点击登录 / 开启旅程</text>
-    </view>
-  </view>
-
-  <view class="section animate-enter delay-1" wx:if="{{isLoggedIn}}">
-    <view class="section-header">
-      <text class="section-title">收集进度</text>
-    </view>
-    
-    <view class="stats-grid">
-      <view class="stat-box" bindtap="goToActivatedCollection">
-        <text class="stat-num gold">{{collectionStats.activatedCount}}</text>
-        <text class="stat-label">已点亮</text>
-      </view>
-      <view class="stat-box" bindtap="goToCollection">
-        <text class="stat-num">{{collectionStats.totalCount}}</text>
-        <text class="stat-label">总图鉴</text>
-      </view>
-      <view class="stat-box">
-        <text class="stat-num">{{collectionStats.completionRate}}%</text>
-        <text class="stat-label">完成度</text>
-      </view>
-    </view>
-  </view>
-
-  <view class="section animate-enter delay-2" wx:if="{{isLoggedIn && recentEquipments.length > 0}}">
-    <view class="section-header">
-      <text class="section-title">最近掉落</text>
-    </view>
-    
-    <scroll-view class="recent-scroll" scroll-x enable-flex>
-      <view class="recent-card" 
-            wx:for="{{recentEquipments}}" 
-            wx:key="id" 
-            bindtap="viewEquipment" 
-            data-templateid="{{item.templateId}}">
-        <image class="recent-img" src="{{item.icon}}" mode="aspectFit" />
-        <view class="recent-info">
-          <text class="recent-name">{{item.name}}</text>
-          <text class="recent-rarity">{{item.rarity}}</text>
+<view class="container page-loading">
+  <view class="page-content">
+    <!-- 头部区域 -->
+    <view class="header animate-enter scroll-fade" data-animation="true">
+      <view class="logo-area">
+        <view class="logo-container">
+          <image class="logo" src="/images/1.png" mode="aspectFit" />
+        </view>
+        <view class="titles">
+          <text class="main-title">Diablo 2</text>
+          <text class="sub-title">Resurrected</text>
         </view>
       </view>
-    </scroll-view>
+
+      <view class="user-pill" wx:if="{{isLoggedIn}}" bindtap="goToProfile">
+        <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+        <text class="username">{{userInfo.nickName}}</text>
+      </view>
+      <view class="user-pill login" wx:else bindtap="wxLogin">
+        <text>点击登录 / 开启旅程</text>
+      </view>
+    </view>
+
+    <!-- 统计区域 -->
+    <view class="section animate-enter delay-1 scroll-fade" wx:if="{{isLoggedIn}}" data-animation="true">
+      <view class="section-header">
+        <text class="section-title">收集进度</text>
+      </view>
+      
+      <view class="stats-grid">
+        <view class="stat-box" bindtap="goToActivatedCollection">
+          <text class="stat-num gold">{{collectionStats.activatedCount}}</text>
+          <text class="stat-label">已点亮</text>
+        </view>
+        <view class="stat-box" bindtap="goToCollection">
+          <text class="stat-num">{{collectionStats.totalCount}}</text>
+          <text class="stat-label">总图鉴</text>
+        </view>
+        <view class="stat-box">
+          <text class="stat-num">{{collectionStats.completionRate}}%</text>
+          <text class="stat-label">完成度</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 最近掉落区域 -->
+    <view class="section animate-enter delay-2 scroll-fade" wx:if="{{isLoggedIn && recentEquipments.length > 0}}" data-animation="true">
+      <view class="section-header">
+        <text class="section-title">最近掉落</text>
+      </view>
+      
+      <scroll-view class="recent-scroll" scroll-x enable-flex>
+        <view class="recent-card scroll-load" 
+              wx:for="{{recentEquipments}}" 
+              wx:key="id" 
+              bindtap="viewEquipment" 
+              data-templateid="{{item.templateId}}">
+          <image class="recent-img" src="{{item.icon}}" mode="aspectFit" />
+          <view class="recent-info">
+            <text class="recent-name">{{item.name}}</text>
+            <text class="recent-rarity">{{item.rarity}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 空状态显示 -->
+    <view class="empty-state" wx:if="{{isLoggedIn && recentEquipments.length === 0}}">
+      <image class="empty-icon" src="/images/empty-state.png" mode="aspectFit" />
+      <text class="empty-title">暂无掉落记录</text>
+      <text class="empty-desc">上传装备来开始你的收集之旅</text>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 未登录提示 -->
+    <view class="empty-state" wx:if="{{!isLoggedIn}}">
+      <image class="empty-icon" src="/images/login-prompt.png" mode="aspectFit" />
+      <text class="empty-title">欢迎来到暗黑2图鉴</text>
+      <text class="empty-desc">登录后开始记录你的装备收集</text>
+    </view>
   </view>
+
 </view>

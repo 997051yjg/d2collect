@@ -17,6 +17,8 @@ Page({
 
   onLoad() {
     this.checkLoginStatus()
+    // 初始化滚动动画
+    this.initScrollAnimation()
   },
 
   onShow() {
@@ -291,20 +293,7 @@ Page({
     })
   },
 
-  // 跳转到上传页面
-  goToUpload() {
-    if (!this.data.isLoggedIn) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      return
-    }
-    
-    wx.switchTab({
-      url: '/pages/upload/upload'
-    })
-  },
+
 
   // 跳转到个人信息页面
   goToProfile() {
@@ -392,5 +381,36 @@ Page({
     })
   },
 
+  // 初始化滚动动画
+  initScrollAnimation() {
+    // 创建页面滚动监听器
+    const query = wx.createSelectorQuery()
+    query.select('.page-content').boundingClientRect()
+    query.selectViewport().scrollOffset()
+    query.exec((res) => {
+      if (res[0]) {
+        // 页面加载完成后触发滚动动画
+        setTimeout(() => {
+          this.triggerScrollAnimation()
+        }, 100)
+      }
+    })
+  },
+
+  // 触发滚动动画
+  triggerScrollAnimation() {
+    const elements = document.querySelectorAll('.scroll-fade')
+    elements.forEach((element, index) => {
+      setTimeout(() => {
+        element.classList.add('visible')
+      }, index * 100)
+    })
+  },
+
+  // 页面滚动事件处理
+  onPageScroll(e) {
+    // 简单的滚动动画触发
+    this.triggerScrollAnimation()
+  }
 
 })
