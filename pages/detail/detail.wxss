@@ -3,7 +3,7 @@
 .detail-container {
   min-height: 100vh;
   /* 使用深色径向渐变模拟光源 */
-  background: radial-gradient(circle at 50% 20%, #2a2a2a 0%, #0a0a0a 80%);
+  background: radial-gradient(circle at 50% 20%, var(--surface-light) 0%, #000000 80%);
   color: #ffffff;
   padding: 30rpx;
 }
@@ -20,7 +20,7 @@
 .loading-spinner {
   width: 60rpx;
   height: 60rpx;
-  border: 4rpx solid #d4af37;
+  border: 4rpx solid var(--gold);
   border-top: 4rpx solid transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -33,7 +33,7 @@
 }
 
 .loading-text {
-  color: #cccccc;
+  color: var(--text-secondary);
   font-size: 28rpx;
 }
 
@@ -41,8 +41,8 @@
 .equipment-header-layout {
   display: flex;
   padding: 40rpx 30rpx;
-  background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid #d4af37;
+  background: rgba(0, 0, 0, 0.95);
+  border: 2rpx solid var(--gold);
   border-radius: 16rpx;
   margin-bottom: 30rpx;
   transition: all 0.3s ease;
@@ -83,7 +83,7 @@
   right: -20rpx;
   width: 2rpx;
   height: 100%;
-  background: linear-gradient(to bottom, transparent, #d4af37, transparent);
+  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
 }
 
 /* 装备图片（居中） */
@@ -103,8 +103,8 @@
   height: 100%;
   object-fit: contain;
   border-radius: 12rpx;
-  border: 1rpx solid #d4af37;
-  box-shadow: 0 2rpx 8rpx rgba(212, 175, 55, 0.2);
+  border: 1rpx solid var(--gold);
+  box-shadow: 0 2rpx 8rpx rgba(var(--gold-rgb), 0.2);
 }
 
 /* 基本信息（左下角） */
@@ -126,9 +126,9 @@
 .equipment-attributes-right .section-title {
   font-size: 32rpx;
   font-weight: bold;
-  color: #d4af37;
+  color: var(--gold);
   margin-bottom: 25rpx;
-  border-bottom: 1rpx solid rgba(212, 175, 55, 0.3);
+  border-bottom: 1rpx solid rgba(var(--gold-rgb), 0.3);
   padding-bottom: 8rpx;
 }
 
@@ -154,7 +154,7 @@
 }
 
 .equipment-attributes-right .label {
-  color: #cccccc;
+  color: var(--text-secondary);
   font-size: 28rpx;
   margin-right: 12rpx;
   white-space: nowrap;
@@ -162,7 +162,7 @@
 
 /* 5. 属性值优化 */
 .equipment-attributes-right .value {
-  color: #c9b065; /* 使用稍微柔和的暗金色 */
+  color: var(--gold); /* 使用稍微柔和的暗金色 */
   font-family: monospace; /* 等宽字体更有数据感 */
   font-size: 28rpx;
   font-weight: bold;
@@ -208,7 +208,7 @@
 .equipment-info-bottom-left .name {
   font-size: 40rpx;
   font-weight: 600; /* 普通字体粗细 */
-  color: #d4af37; /* 普通金色文字 */
+  color: var(--gold); /* 普通金色文字 */
   margin-bottom: 16rpx;
 }
 
@@ -243,7 +243,7 @@
 .type {
   display: block;
   font-size: 30rpx;
-  color: #cccccc;
+  color: var(--text-secondary);
   margin-bottom: 18rpx;
 }
 
@@ -285,7 +285,7 @@
   height: 300rpx;
   border-radius: 16rpx;
   transition: all 0.3s ease;
-  border: 2rpx solid #d4af37;
+  border: 2rpx solid var(--gold);
 }
 
 .image-controls {
@@ -322,45 +322,6 @@
   transform: none !important;
 }
 
-/* 禁用按钮样式 */
-.btn-disabled {
-  background: linear-gradient(135deg, #666666 0%, #555555 100%) !important;
-  color: #999999 !important;
-  cursor: not-allowed !important;
-  opacity: 0.6 !important;
-}
-
-.btn-disabled:active {
-  opacity: 0.6 !important;
-  transform: none !important;
-}
-
-/* 禁用按钮样式 */
-.btn-disabled {
-  background: linear-gradient(135deg, #666666 0%, #555555 100%) !important;
-  color: #999999 !important;
-  cursor: not-allowed !important;
-  opacity: 0.6 !important;
-}
-
-.btn-disabled:active {
-  opacity: 0.6 !important;
-  transform: none !important;
-}
-
-/* 禁用按钮样式 */
-.btn-disabled {
-  background: linear-gradient(135deg, #666666 0%, #555555 100%) !important;
-  color: #999999 !important;
-  cursor: not-allowed !important;
-  opacity: 0.6 !important;
-}
-
-.btn-disabled:active {
-  opacity: 0.6 !important;
-  transform: none !important;
-}
-
 .no-image {
   text-align: center;
   padding: 60rpx 30rpx;
@@ -376,7 +337,7 @@
 
 .no-image-text {
   display: block;
-  color: #999999;
+  color: var(--text-secondary);
   font-size: 28rpx;
   margin-bottom: 30rpx;
 }
@@ -384,7 +345,7 @@
 /* 属性区域 */
 .attributes-section, .activation-info, .description-section {
   background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid #d4af37;
+  border: 2rpx solid var(--gold);
   border-radius: 16rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
@@ -405,9 +366,9 @@
 .section-title {
   font-size: 32rpx;
   font-weight: bold;
-  color: #d4af37;
+  color: var(--gold);
   margin-bottom: 20rpx;
-  border-bottom: 1rpx solid rgba(212, 175, 55, 0.3);
+  border-bottom: 1rpx solid rgba(var(--gold-rgb), 0.3);
   padding-bottom: 10rpx;
 }
 
@@ -430,7 +391,7 @@
 }
 
 .label {
-  color: #cccccc;
+  color: var(--text-secondary);
   font-size: 28rpx;
 }
 
@@ -443,7 +404,7 @@
 /* 收藏者区域 */
 .collector-section {
   background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid #d4af37;
+  border: 2rpx solid var(--gold);
   border-radius: 16rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
@@ -476,7 +437,7 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  border: 2rpx solid #d4af37;
+  border: 2rpx solid var(--gold);
 }
 
 .collector-nickname {
@@ -488,7 +449,7 @@
 /* 收藏者区域 */
 .collector-section {
   background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid #d4af37;
+  border: 2rpx solid var(--gold);
   border-radius: 16rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
@@ -521,7 +482,7 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  border: 2rpx solid #d4af37;
+  border: 2rpx solid var(--gold);
 }
 
 .collector-nickname {
@@ -532,7 +493,7 @@
 
 /* 描述区域 */
 .description-content {
-  color: #cccccc;
+  color: var(--text-secondary);
   font-size: 28rpx;
   line-height: 1.6;
 }
@@ -550,7 +511,7 @@
 
 .not-found-text {
   display: block;
-  color: #999999;
+  color: var(--text-secondary);
   font-size: 32rpx;
   margin-bottom: 40rpx;
 }
@@ -567,7 +528,7 @@
 /* 所有卡片都使用横向布局 */
 .attributes-section, .images-section, .collector-section {
   background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid #d4af37;
+  border: 2rpx solid var(--gold);
   border-radius: 16rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
@@ -622,7 +583,7 @@
   height: 120rpx;
   border-radius: 12rpx;
   overflow: hidden;
-  border: 3rpx solid #d4af37;
+  border: 3rpx solid var(--gold);
   transition: all 0.3s ease;
   cursor: pointer;
   background: rgba(0, 0, 0, 0.3);
@@ -645,7 +606,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(212, 175, 55, 0.9);
+  background: rgba(var(--gold-rgb), 0.9);
   padding: 2rpx;
   text-align: center;
   height: 20rpx;
@@ -670,8 +631,8 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  border: 3rpx solid #d4af37;
-  box-shadow: 0 4rpx 15rpx rgba(212, 175, 55, 0.3);
+  border: 3rpx solid var(--gold);
+  box-shadow: 0 4rpx 15rpx rgba(var(--gold-rgb), 0.3);
 }
 
 .collector-info {
@@ -689,17 +650,17 @@
 
 .collector-badge {
   font-size: 24rpx;
-  color: #d4af37;
-  background: rgba(212, 175, 55, 0.1);
+  color: var(--gold);
+  background: rgba(var(--gold-rgb), 0.1);
   padding: 6rpx 12rpx;
   border-radius: 15rpx;
-  border: 1rpx solid rgba(212, 175, 55, 0.3);
+  border: 1rpx solid rgba(var(--gold-rgb), 0.3);
 }
 
 /* 用户属性区域样式 */
 .user-attributes-section {
   background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid #d4af37;
+  border: 2rpx solid var(--gold);
   border-radius: 16rpx;
   padding: 30rpx;
   margin-bottom: 30rpx;
@@ -729,7 +690,7 @@
   background: rgba(255, 255, 255, 0.03);
   border-radius: 12rpx;
   padding: 20rpx;
-  border: 1rpx solid rgba(212, 175, 55, 0.2);
+  border: 1rpx solid rgba(var(--gold-rgb), 0.2);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;

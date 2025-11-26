@@ -1,109 +1,60 @@
-<!--pages/index/index.wxml-->
 <view class="container">
-  <!-- 头部区域 -->
   <view class="header animate-enter">
-    <view class="logo-section">
-      <image class="logo-image" src="/images/1.png" mode="aspectFit" />
-      <text class="title">暗黑2装备图鉴</text>
-      <text class="subtitle">❇ 基德祝福你 ❇</text>
+    <view class="logo-area">
+      <image class="logo" src="/images/1.png" mode="aspectFit" />
+      <view class="titles">
+        <text class="main-title">Diablo 2</text>
+        <text class="sub-title">Resurrected</text>
+      </view>
+    </view>
+
+    <view class="user-pill" wx:if="{{isLoggedIn}}">
+      <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+      <text class="username">{{userInfo.nickName}}</text>
+    </view>
+    <view class="user-pill login" wx:else bindtap="wxLogin">
+      <text>点击登录 / 开启旅程</text>
+    </view>
+  </view>
+
+  <view class="section animate-enter delay-1" wx:if="{{isLoggedIn}}">
+    <view class="section-header">
+      <text class="section-title">收集进度</text>
     </view>
     
-    <!-- 用户登录状态 -->
-    <view class="user-section" wx:if="{{isLoggedIn}}">
-      <view class="user-avatar">
-        <image wx:if="{{userInfo.avatarUrl}}" class="avatar-image" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
-        <text wx:else class="avatar-placeholder">👤</text>
+    <view class="stats-grid">
+      <view class="stat-box">
+        <text class="stat-num gold">{{collectionStats.activatedCount}}</text>
+        <text class="stat-label">已点亮</text>
       </view>
-      <text class="user-name">{{userInfo.nickName}}</text>
+      <view class="stat-box">
+        <text class="stat-num">{{collectionStats.totalCount}}</text>
+        <text class="stat-label">总图鉴</text>
+      </view>
+      <view class="stat-box">
+        <text class="stat-num">{{collectionStats.completionRate}}%</text>
+        <text class="stat-label">完成度</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section animate-enter delay-2" wx:if="{{isLoggedIn && recentEquipments.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">最近掉落</text>
     </view>
     
-    <view class="login-section" wx:else>
-      <text class="login-tip">请登录以使用完整功能</text>
-      <button class="btn-primary login-btn" bindtap="wxLogin">
-        微信登录
-      </button>
-      <text class="login-alternative">使用微信账号登录</text>
-    </view>
-  </view>
-
-  <!-- 图鉴统计长条 -->
-  <view class="stats-section animate-enter delay-1" wx:if="{{isLoggedIn}}" bindtap="goToCollection">
-    <view class="stats-bar">
-      <view class="stats-item">
-        <text class="stats-number">{{collectionStats.activatedCount}}</text>
-        <text class="stats-label">已激活</text>
-      </view>
-      <view class="stats-divider"></view>
-      <view class="stats-item">
-        <text class="stats-number">{{collectionStats.totalCount}}</text>
-        <text class="stats-label">总数量</text>
-      </view>
-      <view class="stats-divider"></view>
-      <view class="stats-item">
-        <text class="stats-number">{{collectionStats.completionRate}}%</text>
-        <text class="stats-label">完成度</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 快速操作 -->
-  <view class="quick-actions-section animate-enter delay-2">
-    <view class="quick-actions-bar">
-      <view class="action-item" bindtap="goToUpload">
-        <view class="action-icon"><image class="icon-image" src="/images/2.png" mode="aspectFit" /></view>
-        <text class="action-text">上传装备</text>
-      </view>
-      <view class="action-divider"></view>
-      <view class="action-item" bindtap="goToCollection">
-        <view class="action-icon"><image class="icon-image" src="/images/3.png" mode="aspectFit" /></view>
-        <text class="action-text">装备图鉴</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 登录提示 -->
-  <view class="login-tip-section" wx:if="{{!isLoggedIn}}">
-    <view class="login-tip card">
-      <text class="login-tip-text">登录后可解锁完整功能：装备上传、图鉴收藏等</text>
-    </view>
-  </view>
-
-  <!-- 最近收获 -->
-  <view class="recent-section animate-enter delay-3" wx:if="{{isLoggedIn && recentEquipments.length > 0}}" bindtap="goToCollection">
-    <view class="recent-bar">
-      <view class="recent-header">
-        <text class="recent-title">最近收获</text>
-      </view>
-      <scroll-view class="recent-list" scroll-x="true">
-        <view class="recent-items">
-          <view class="recent-item" wx:for="{{recentEquipments}}" wx:key="id" bindtap="viewEquipment" data-id="{{item.id}}">
-            
-            <!-- 装备卡片（放大版，显示名称和品质） -->
-            <view class="equipment-card-recent activated">
-              <!-- 装备图片 -->
-              <view class="equipment-image-recent">
-                <image class="equipment-icon-recent" src="{{item.icon}}" mode="aspectFit" />
-                <!-- 已激活光晕效果 -->
-                <view class="glow-effect-recent"></view>
-              </view>
-              
-              <!-- 装备信息 -->
-              <view class="equipment-info-recent">
-            <text class="equipment-name-recent {{item.rarityClass}}">{{item.name}}</text>
-            <view class="equipment-rarity-recent {{item.rarityClass}}">
-                  {{item.rarity}}
-                </view>
-              </view>
-            </view>
-          </view>
+    <scroll-view class="recent-scroll" scroll-x enable-flex>
+      <view class="recent-card" 
+            wx:for="{{recentEquipments}}" 
+            wx:key="id" 
+            bindtap="viewEquipment" 
+            data-templateid="{{item.templateId}}">
+        <image class="recent-img" src="{{item.icon}}" mode="aspectFit" />
+        <view class="recent-info">
+          <text class="recent-name">{{item.name}}</text>
+          <text class="recent-rarity">{{item.rarity}}</text>
         </view>
-      </scroll-view>
-    </view>
-  </view>
-
-  <!-- 加载状态 -->
-  <view class="loading" wx:if="{{loading}}">
-    <view class="loading-spinner"></view>
-    <text class="loading-text">加载中...</text>
+      </view>
+    </scroll-view>
   </view>
 </view>
