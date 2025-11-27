@@ -152,7 +152,7 @@ Page({
           const template = item.templateDetail[0]
           
           if (template) {
-            const icon = template.image || this.getEquipmentIcon(template.type)
+            const icon = template.image
             const rarityClass = getRarityClass(template) // 获取品质类名
             
             return {
@@ -186,23 +186,6 @@ Page({
        // 停止下拉刷新
        wx.stopPullDownRefresh() 
     }
-  },
-
-  // 获取装备类型的图标
-  getEquipmentIcon(type) {
-    // 默认图标路径映射
-    const iconMap = {
-      '头部': '/images/equipment-icons/helmet.png',
-      '盔甲': '/images/equipment-icons/armor.png',
-      '腰带': '/images/equipment-icons/belt.png',
-      '鞋子': '/images/equipment-icons/boots.png',
-      '手套': '/images/equipment-icons/gloves.png',
-      '戒指': '/images/equipment-icons/ring.png',
-      '项链': '/images/equipment-icons/amulet.png',
-      '手持': '/images/equipment-icons/weapon.png'
-    }
-    
-    return iconMap[type] || '/images/equipment-icons/default.png'
   },
 
   // 微信登录
@@ -399,11 +382,15 @@ Page({
 
   // 触发滚动动画
   triggerScrollAnimation() {
-    const elements = document.querySelectorAll('.scroll-fade')
-    elements.forEach((element, index) => {
-      setTimeout(() => {
-        element.classList.add('visible')
-      }, index * 100)
+    // 微信小程序中使用 wx.createSelectorQuery() 来获取元素
+    const query = wx.createSelectorQuery()
+    query.selectAll('.scroll-fade').boundingClientRect()
+    query.exec((res) => {
+      if (res[0]) {
+        // 获取到所有滚动元素后，可以通过设置数据来触发动画
+        // 这里简化处理，因为微信小程序的动画主要依赖CSS和WXML
+        console.log('找到滚动动画元素:', res[0].length)
+      }
     })
   },
 

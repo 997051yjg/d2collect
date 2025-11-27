@@ -66,7 +66,7 @@
 
     <!-- 空状态显示 -->
     <view class="empty-state" wx:if="{{isLoggedIn && recentEquipments.length === 0}}">
-      <image class="empty-icon" src="/images/empty-state.png" mode="aspectFit" />
+      <image class="empty-icon" src="/images/4.png" mode="aspectFit" />
       <text class="empty-title">暂无掉落记录</text>
       <text class="empty-desc">上传装备来开始你的收集之旅</text>
     </view>
@@ -79,7 +79,7 @@
 
     <!-- 未登录提示 -->
     <view class="empty-state" wx:if="{{!isLoggedIn}}">
-      <image class="empty-icon" src="/images/login-prompt.png" mode="aspectFit" />
+      <image class="empty-icon" src="/images/1.png" mode="aspectFit" />
       <text class="empty-title">欢迎来到暗黑2图鉴</text>
       <text class="empty-desc">登录后开始记录你的装备收集</text>
     </view>
