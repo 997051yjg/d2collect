@@ -12,11 +12,11 @@
         </view>
       </view>
 
-      <view class="user-pill" wx:if="{{isLoggedIn}}" bindtap="goToProfile">
+      <view class="user-pill glass-pill" wx:if="{{isLoggedIn}}" bindtap="goToProfile">
         <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
         <text class="username">{{userInfo.nickName}}</text>
       </view>
-      <view class="user-pill login" wx:else bindtap="wxLogin">
+      <view class="user-pill glass-pill login" wx:else bindtap="wxLogin">
         <text>点击登录 / 开启旅程</text>
       </view>
     </view>
@@ -24,19 +24,19 @@
     <!-- 统计区域 -->
     <view class="section animate-enter delay-1 scroll-fade" wx:if="{{isLoggedIn}}" data-animation="true">
       <view class="section-header">
-        <text class="section-title">收集进度</text>
+        <text class="section-title decorative-line">收集进度</text>
       </view>
       
-      <view class="stats-grid">
-        <view class="stat-box" bindtap="goToActivatedCollection">
-          <text class="stat-num gold">{{collectionStats.activatedCount}}</text>
+      <view class="stats-grid grid-3">
+        <view class="stat-box glass-card" bindtap="goToActivatedCollection">
+          <text class="stat-num gold-pulse">{{collectionStats.activatedCount}}</text>
           <text class="stat-label">已点亮</text>
         </view>
-        <view class="stat-box" bindtap="goToCollection">
+        <view class="stat-box glass-card" bindtap="goToCollection">
           <text class="stat-num">{{collectionStats.totalCount}}</text>
           <text class="stat-label">总图鉴</text>
         </view>
-        <view class="stat-box">
+        <view class="stat-box glass-card">
           <text class="stat-num">{{collectionStats.completionRate}}%</text>
           <text class="stat-label">完成度</text>
         </view>
@@ -46,7 +46,7 @@
     <!-- 最近掉落区域 -->
     <view class="section animate-enter delay-2 scroll-fade" wx:if="{{isLoggedIn && recentEquipments.length > 0}}" data-animation="true">
       <view class="section-header">
-        <text class="section-title">最近掉落</text>
+        <text class="section-title decorative-line">最近掉落</text>
       </view>
       
       <scroll-view class="recent-scroll" scroll-x enable-flex>
