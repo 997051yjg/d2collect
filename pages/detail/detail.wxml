@@ -30,7 +30,7 @@
           <view class="rarity-pill {{equipment.rarity === '套装' ? 'suit' : (equipment.rarity === '符文之语' ? 'runeword' : 'unique')}}">
             {{equipment.rarity}}
           </view>
-          <view class="rarity-pill {{equipment.rarity === '套装' ? 'suit' : (equipment.rarity === '符文之语' ? 'runeword' : 'unique')}}">
+          <view class="rarity-pill {{isActivated ? equipment.rarity === '套装' ? 'suit' : (equipment.rarity === '符文之语' ? 'runeword' : 'unique') : ''}}">
             {{isActivated ? '已点亮' : '未点亮'}}
           </view>
         </view>
@@ -103,16 +103,22 @@
   <view class="action-bar glass-bar animate-slide-up" wx:if="{{!loading && equipment}}">
     <view class="action-btn icon-btn" bindtap="goToHome">
       <text class="action-icon">🏠</text>
-      <text>首页</text>
+      <text>大厅</text>
     </view>
     
     <view class="action-btn icon-btn" bindtap="generateShareImage" wx:if="{{isActivated}}">
-      <text class="action-icon">📤</text>
+      <text class="action-icon">📸</text>
+      <text>海报</text>
+    </view>
+
+    <view class="action-btn icon-btn" style="position: relative;" wx:if="{{isActivated}}">
+      <button open-type="share" style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0;"></button>
+      <text class="action-icon">💬</text>
       <text>分享</text>
     </view>
 
-    <view class="action-main-btn {{isActivated ? 'edit-mode' : 'upload-mode'}}" bindtap="goToUpload">
-      <text class="main-btn-text">{{isActivated ? '重新铭刻' : '点亮图鉴'}}</text>
+    <view class="action-main-btn {{isOwner ? 'edit-mode' : 'upload-mode'}}" bindtap="goToUpload">
+      <text class="main-btn-text">{{isActivated ? isOwner ? '重新铭刻' : '我也要点亮' : isOwner ? '铭刻装备' : '我也要点亮'}}</text>
     </view>
   </view>
 

@@ -321,9 +321,6 @@ Page({
 viewEquipment(e) {
     const { id, activated, name } = e.currentTarget.dataset
 
-    //未激活装备显示模态属性玻璃浮窗
-    if(!activated)return
-
     // 已激活装备保持不变
     wx.navigateTo({
       url: `/pages/detail/detail?id=${id}`
@@ -356,7 +353,7 @@ viewEquipment(e) {
     
     // ... 已激活的逻辑保持不变 ...
     wx.showActionSheet({
-      itemList: ['重新上传', '分享装备'],
+      itemList: ['重新上传',],
       success: (res) => {
         if (res.tapIndex === 0) {
           // --- 修改开始 ---
@@ -368,8 +365,6 @@ viewEquipment(e) {
             url: '/pages/upload/upload'
           })
           // --- 修改结束 ---
-        } else if (res.tapIndex === 1) {
-          this.shareEquipment(id, name)
         }
       }
     })
