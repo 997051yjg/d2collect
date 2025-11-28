@@ -322,7 +322,7 @@ viewEquipment(e) {
     const { id, activated, name } = e.currentTarget.dataset
 
     //未激活装备显示模态属性玻璃浮窗
-    return
+    if(!activated)return
 
     // 已激活装备保持不变
     wx.navigateTo({

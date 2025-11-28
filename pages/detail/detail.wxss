@@ -1,765 +1,245 @@
 /* pages/detail/detail.wxss */
 
-.detail-container {
-  min-height: 100vh;
-  /* 使用深色径向渐变模拟光源 */
-  background: radial-gradient(circle at 50% 20%, var(--surface-light) 0%, #000000 80%);
-  color: #ffffff;
-  padding: 30rpx;
+/* 布局容器 */
+.detail-content {
+  padding-bottom: 40rpx;
 }
 
-/* 加载状态 */
-.loading-container {
+.center-screen {
+  height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 60vh;
 }
 
-.loading-spinner {
-  width: 60rpx;
-  height: 60rpx;
-  border: 4rpx solid var(--gold);
-  border-top: 4rpx solid transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20rpx;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-  color: var(--text-secondary);
-  font-size: 28rpx;
-}
-
-/* 2. 头部卡片：统一使用和其他卡片相同的样式 */
-.equipment-header-layout {
-  display: flex;
-  padding: 40rpx 30rpx;
-  background: rgba(0, 0, 0, 0.95);
-  border: 2rpx solid var(--gold);
-  border-radius: 16rpx;
-  margin-bottom: 30rpx;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
-  align-items: flex-start;
-}
-
-/* 取消头部区域的流光效果 */
-
-/* 第一张卡片的active状态样式 */
-.equipment-header-layout:active {
-  transform: scale(0.98);
-  border-color: #ffd700;
-  box-shadow: 
-    0 0 30rpx rgba(255, 215, 0, 0.4),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
-}
-
-/* 左侧区域：图片和基本信息 */
-.equipment-left-section {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  margin-right: 40rpx;
-  align-items: center;
-  justify-content: flex-start;
-  margin-top: 10rpx;
-  position: relative;
-}
-
-/* 左侧区域右侧的金线分隔 */
-.equipment-left-section::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -20rpx;
-  width: 2rpx;
-  height: 100%;
-  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
-}
-
-/* 装备图片（居中） */
-.equipment-image-top-left {
-  width: 150rpx;
-  height: 150rpx;
-  margin-bottom: 20rpx;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.main-equipment-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 12rpx;
-  border: 1rpx solid var(--gold);
-  box-shadow: 0 2rpx 8rpx rgba(var(--gold-rgb), 0.2);
-}
-
-/* 基本信息（左下角） */
-.equipment-info-bottom-left {
+/* =========================================
+   1. 圣物展示区 (Relic Showcase)
+   ========================================= */
+.relic-showcase {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  width: 100%;
-}
-
-/* 右侧区域：装备属性 */
-.equipment-attributes-right {
-  flex: 1;
-  min-width: 200rpx;
-  padding-left: 30rpx;
-}
-
-.equipment-attributes-right .section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: var(--gold);
-  margin-bottom: 25rpx;
-  border-bottom: 1rpx solid rgba(var(--gold-rgb), 0.3);
-  padding-bottom: 8rpx;
-}
-
-.equipment-attributes-right .attributes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-
-/* 4. 属性列表优化：取消边框 */
-.equipment-attributes-right .attribute-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 8rpx;
-  padding: 12rpx 16rpx;
-  margin-bottom: 12rpx;
-}
-
-.equipment-attributes-right .attribute-item:last-child {
-  margin-bottom: 0;
-}
-
-.equipment-attributes-right .label {
-  color: var(--text-secondary);
-  font-size: 28rpx;
-  margin-right: 12rpx;
-  white-space: nowrap;
-}
-
-/* 5. 属性值优化 */
-.equipment-attributes-right .value {
-  color: var(--gold); /* 使用稍微柔和的暗金色 */
-  font-family: monospace; /* 等宽字体更有数据感 */
-  font-size: 28rpx;
-  font-weight: bold;
-  line-height: 1.4;
-  text-align: left;
-  flex: 1;
-}
-
-/* 取消头部区域的流光效果 */
-
-/* 取消流光动画定义 */
-
-.equipment-header:active {
-  transform: scale(0.98);
-  border-color: #ffd700;
-  box-shadow: 
-    0 0 30rpx rgba(255, 215, 0, 0.4),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
-}
-
-.equipment-icon {
-  width: 120rpx;
-  height: 120rpx;
-  margin-bottom: 20rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* 3. 装备名称的大标题优化 */
-.equipment-info-bottom-left .name {
-  font-size: 40rpx;
-  font-weight: 600; /* 普通字体粗细 */
-  color: var(--gold); /* 普通金色文字 */
-  margin-bottom: 16rpx;
-}
-
-/* 暗金装备品质样式 - 参考图鉴页面 */
-.equipment-rarity {
-  font-size: 20rpx;
-  font-weight: 500;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-  text-align: center;
-  margin-bottom: 18rpx;
-}
-
-.equipment-rarity.unique {
-  background: linear-gradient(135deg, #b89c4f, #d4af37);
-  color: #000000;
-  text-shadow: 0 1rpx 2rpx rgba(255, 255, 255, 0.5);
-}
-
-.equipment-rarity.suit {
-  background: linear-gradient(135deg, #5d9cec, #4a7bc8);
-  color: #ffffff;
-  text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.5);
-}
-
-.equipment-rarity.runeword {
-  background: linear-gradient(135deg, #ff8c00, #e67e22);
-  color: #000000;
-  text-shadow: 0 1rpx 2rpx rgba(255, 255, 255, 0.5);
-}
-
-.type {
-  display: block;
-  font-size: 30rpx;
-  color: var(--text-secondary);
-  margin-bottom: 18rpx;
-}
-
-.status {
-  display: inline-block;
-  padding: 10rpx 20rpx;
-  border-radius: 20rpx;
-  font-size: 26rpx;
-  font-weight: bold;
-}
-
-/* 6. 激活状态标签美化 */
-.status.activated {
-  background: linear-gradient(90deg, #d4af37, #f2d45c);
-  color: #000;
-  font-weight: bold;
-  border: none;
-  box-shadow: 0 0 15rpx rgba(212, 175, 55, 0.6);
-  padding: 6rpx 24rpx;
-}
-
-.status.not-activated {
-  background: rgba(244, 67, 54, 0.2);
-  color: #f44336;
-  border: 1rpx solid rgba(244, 67, 54, 0.5);
-}
-
-/* 图片区域 */
-.image-section {
-  margin-bottom: 30rpx;
-}
-
-.image-preview {
-  text-align: center;
-}
-
-.equipment-image {
-  width: 300rpx;
-  height: 300rpx;
-  border-radius: 16rpx;
-  transition: all 0.3s ease;
-  border: 2rpx solid var(--gold);
-}
-
-.image-controls {
-  margin-top: 20rpx;
-  display: flex;
-  gap: 20rpx;
-  justify-content: center;
-}
-
-.btn-view, .btn-share, .btn-upload {
-  background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
-  color: #000000;
-  border: none;
-  border-radius: 8rpx;
-  padding: 16rpx 24rpx;
-  font-size: 26rpx;
-  font-weight: bold;
-}
-
-.btn-view:active, .btn-share:active, .btn-upload:active {
-  opacity: 0.8;
-}
-
-/* 禁用按钮样式 */
-.btn-disabled {
-  background: linear-gradient(135deg, #666666 0%, #555555 100%) !important;
-  color: #999999 !important;
-  cursor: not-allowed !important;
-  opacity: 0.6 !important;
-}
-
-.btn-disabled:active {
-  opacity: 0.6 !important;
-  transform: none !important;
-}
-
-.no-image {
-  text-align: center;
-  padding: 60rpx 30rpx;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16rpx;
-  border: 1rpx dashed #666666;
-}
-
-.no-image-icon {
-  font-size: 80rpx;
-  margin-bottom: 20rpx;
-}
-
-.no-image-text {
-  display: block;
-  color: var(--text-secondary);
-  font-size: 28rpx;
-  margin-bottom: 30rpx;
-}
-
-/* 属性区域 */
-.attributes-section, .activation-info, .description-section {
-  background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid var(--gold);
-  border-radius: 16rpx;
-  padding: 30rpx;
-  margin-bottom: 30rpx;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
-}
-
-.attributes-section:active, .activation-info:active, .description-section:active {
-  transform: scale(0.98);
-  border-color: #ffd700;
-  box-shadow: 
-    0 0 30rpx rgba(255, 215, 0, 0.4),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
-}
-
-.section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: var(--gold);
-  margin-bottom: 20rpx;
-  border-bottom: 1rpx solid rgba(var(--gold-rgb), 0.3);
-  padding-bottom: 10rpx;
-}
-
-.attributes-list, .activation-details {
-  display: flex;
-  flex-direction: column;
-  gap: 15rpx;
-}
-
-.attribute-item, .activation-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15rpx 0;
-  border-bottom: 1rpx solid rgba(255, 255, 255, 0.1);
-}
-
-.attribute-item:last-child, .activation-item:last-child {
-  border-bottom: none;
-}
-
-.label {
-  color: var(--text-secondary);
-  font-size: 28rpx;
-}
-
-.value {
-  color: #ffffff;
-  font-size: 28rpx;
-  font-weight: bold;
-}
-
-/* 收藏者区域 */
-.collector-section {
-  background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid var(--gold);
-  border-radius: 16rpx;
-  padding: 30rpx;
-  margin-bottom: 30rpx;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
-}
-
-.collector-section:active {
-  transform: scale(0.98);
-  border-color: #ffd700;
-  box-shadow: 
-    0 0 30rpx rgba(255, 215, 0, 0.4),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
-}
-
-.collector-content {
-  display: flex;
-  justify-content: center;
-}
-
-.collector-info {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-}
-
-.collector-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  border: 2rpx solid var(--gold);
-}
-
-.collector-nickname {
-  font-size: 32rpx;
-  color: #ffffff;
-  font-weight: bold;
-}
-
-/* 收藏者区域 */
-.collector-section {
-  background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid var(--gold);
-  border-radius: 16rpx;
-  padding: 30rpx;
-  margin-bottom: 30rpx;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
-}
-
-.collector-section:active {
-  transform: scale(0.98);
-  border-color: #ffd700;
-  box-shadow: 
-    0 0 30rpx rgba(255, 215, 0, 0.4),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
-}
-
-.collector-content {
-  display: flex;
-  justify-content: center;
-}
-
-.collector-info {
-  display: flex;
-  align-items: center;
-  gap: 20rpx;
-}
-
-.collector-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  border: 2rpx solid var(--gold);
-}
-
-.collector-nickname {
-  font-size: 32rpx;
-  color: #ffffff;
-  font-weight: bold;
-}
-
-/* 描述区域 */
-.description-content {
-  color: var(--text-secondary);
-  font-size: 28rpx;
-  line-height: 1.6;
-}
-
-/* 未找到装备 */
-.not-found {
-  text-align: center;
-  padding: 100rpx 30rpx;
-}
-
-.not-found-icon {
-  font-size: 100rpx;
-  margin-bottom: 30rpx;
-}
-
-.not-found-text {
-  display: block;
-  color: var(--text-secondary);
-  font-size: 32rpx;
+  padding: 60rpx 0 40rpx;
   margin-bottom: 40rpx;
 }
 
-.btn-back {
-  background: #666666;
-  color: #ffffff;
-  border: none;
-  border-radius: 8rpx;
-  padding: 20rpx 40rpx;
-  font-size: 28rpx;
-}
-
-/* 所有卡片都使用横向布局 */
-.attributes-section, .images-section, .collector-section {
-  background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid var(--gold);
-  border-radius: 16rpx;
-  padding: 30rpx;
-  margin-bottom: 30rpx;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
-}
-
-.attributes-section:active, .images-section:active, .collector-section:active {
-  transform: scale(0.98);
-  border-color: #ffd700;
-  box-shadow: 
-    0 0 30rpx rgba(255, 215, 0, 0.4),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
-}
-
-/* 多图片预览卡片 - 横向布局 */
-.images-section {
-  min-height: 220rpx;
-}
-
-.images-container {
-  width: 100%;
-  height: 140rpx;
+/* 基座光效 */
+.relic-pedestal {
   position: relative;
-  overflow: hidden;
+  width: 200rpx; height: 200rpx;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 40rpx;
 }
 
-.images-scroll {
-  width: 100%;
-  height: 140rpx;
+.relic-image {
+  width: 160rpx; height: 160rpx;
+  z-index: 2;
+  filter: drop-shadow(0 10rpx 30rpx rgba(0,0,0,0.8));
+  animation: floatRelic 4s ease-in-out infinite;
+}
+
+.pedestal-ring {
+  position: absolute;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  border: 2rpx dashed rgba(255,255,255,0.1);
+  animation: rotateRing 20s linear infinite;
+  z-index: 1;
+}
+
+/* 动态光晕 */
+.glow-gold .pedestal-ring { border-color: rgba(212, 175, 55, 0.3); box-shadow: 0 0 40rpx rgba(212, 175, 55, 0.1); }
+.glow-green .pedestal-ring { border-color: rgba(50, 205, 50, 0.3); box-shadow: 0 0 40rpx rgba(50, 205, 50, 0.1); }
+
+/* 文本信息 */
+.relic-info {
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+}
+
+.relic-name {
+  font-size: 48rpx; font-weight: 800;
+  margin-bottom: 8rpx; letter-spacing: 2rpx;
+  text-shadow: 0 4rpx 10rpx rgba(0,0,0,0.5);
+}
+
+.relic-en-name {
+  font-size: 24rpx; color: var(--text-secondary);
+  margin-bottom: 24rpx; font-family: serif; font-style: italic;
+}
+
+.relic-tags {
+  display: flex; gap: 16rpx; justify-content: center;
+}
+
+.green-text { color: #32cd32; text-shadow: 0 0 10rpx rgba(50, 205, 50, 0.4); }
+.gold-text { color: #d4af37; text-shadow: 0 0 10rpx rgba(212, 175, 55, 0.4); }
+
+/* =========================================
+   2. 属性铭文区 (Stats)
+   ========================================= */
+.section-card {
+  margin-bottom: 32rpx;
+  padding: 32rpx;
+}
+
+.stats-list {
+  display: flex; flex-direction: column; gap: 16rpx;
+}
+
+/* 核心数值高亮 (如防御) */
+.stat-highlight {
+  text-align: center; margin-bottom: 16rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid rgba(255,255,255,0.1);
+}
+.stat-main-value {
+  font-size: 36rpx; font-weight: 700; color: #fff;
+  font-family: monospace;
+}
+
+/* 属性行 (复用 Upload 页面的风格) */
+.stat-row {
+  display: flex; align-items: center;
+  padding: 16rpx 24rpx;
+  border-radius: 12rpx;
+}
+
+/* 固定属性：暗纹 */
+.stat-row.fixed {
+  background: rgba(0,0,0,0.2);
+  border: 1rpx solid rgba(255,255,255,0.05);
+}
+.stat-row.fixed .stat-text { color: var(--text-secondary); }
+
+/* 变量属性：高亮 */
+.stat-row.variable {
+  background: rgba(255,255,255,0.05);
+  border: 1rpx solid rgba(212, 175, 55, 0.2);
+}
+.stat-row.variable .stat-text { color: var(--gold); }
+
+/* 用户 Roll 值展示 */
+.user-roll-container {
+  display: flex; align-items: center; width: 100%; justify-content: space-between;
+}
+.user-val { color: #fff; font-weight: 700; }
+.roll-badge {
+  font-size: 20rpx; background: var(--gold); color: #000;
+  padding: 2rpx 8rpx; border-radius: 6rpx; font-weight: 800;
+}
+
+.stat-text { font-size: 26rpx; letter-spacing: 1rpx; line-height: 1.4; }
+
+.no-stats { text-align: center; color: var(--text-secondary); padding: 20rpx; font-style: italic; }
+
+/* =========================================
+   3. 影像画廊 (Gallery)
+   ========================================= */
+.gallery-scroll {
+  display: flex;
   white-space: nowrap;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  height: 200rpx;
+  margin: 0 -10rpx; /* 修正 padding */
 }
 
-.images-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-.images-list {
-  display: inline-flex;
-  gap: 20rpx;
-  padding: 10rpx 0;
-  height: 120rpx;
-}
-
-.image-thumbnail {
-  position: relative;
-  width: 120rpx;
-  height: 120rpx;
+.gallery-item {
+  display: inline-block;
+  width: 200rpx; height: 200rpx;
+  margin-right: 16rpx;
   border-radius: 12rpx;
   overflow: hidden;
-  border: 3rpx solid var(--gold);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  background: rgba(0, 0, 0, 0.3);
+  border: 2rpx solid rgba(255,255,255,0.1);
+  position: relative;
 }
 
-.image-thumbnail:active {
-  transform: scale(0.95);
-  border-color: #ffd700;
-  box-shadow: 0 0 20rpx rgba(255, 215, 0, 0.6);
-}
+.gallery-img { width: 100%; height: 100%; }
 
-.thumbnail-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.thumbnail-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(var(--gold-rgb), 0.9);
-  padding: 2rpx;
-  text-align: center;
-  height: 20rpx;
-}
-
-.thumbnail-text {
-  font-size: 22rpx;
-  color: #000;
-  font-weight: bold;
-}
-
-/* 收藏者卡片样式 */
-.collector-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20rpx;
-  padding: 20rpx 0;
+/* =========================================
+   4. 收藏者印记 (Collector)
+   ========================================= */
+.collector-card {
+  display: flex; align-items: center;
+  padding: 16rpx 24rpx;
+  margin-top: 40rpx;
+  align-self: center; /* 居中显示 */
+  width: fit-content;
+  margin-left: auto; margin-right: auto;
 }
 
 .collector-avatar {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  border: 3rpx solid var(--gold);
-  box-shadow: 0 4rpx 15rpx rgba(var(--gold-rgb), 0.3);
-}
-
-.collector-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8rpx;
-}
-
-.collector-nickname {
-  font-size: 30rpx;
-  color: #ffffff;
-  font-weight: bold;
-}
-
-.collector-badge {
-  font-size: 24rpx;
-  color: var(--gold);
-  background: rgba(var(--gold-rgb), 0.1);
-  padding: 6rpx 12rpx;
-  border-radius: 15rpx;
-  border: 1rpx solid rgba(var(--gold-rgb), 0.3);
-}
-
-/* 用户属性区域样式 */
-.user-attributes-section {
-  background: rgba(10, 10, 10, 0.95);
+  width: 64rpx; height: 64rpx; border-radius: 50%;
   border: 2rpx solid var(--gold);
-  border-radius: 16rpx;
-  padding: 30rpx;
-  margin-bottom: 30rpx;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
+  margin-right: 20rpx;
 }
 
-.user-attributes-section:active {
-  transform: scale(0.98);
-  border-color: #ffd700;
-  box-shadow: 
-    0 0 30rpx rgba(255, 215, 0, 0.4),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
+.collector-meta { display: flex; flex-direction: column; margin-right: 30rpx; }
+.collector-label { font-size: 20rpx; color: var(--text-secondary); }
+.collector-name { font-size: 26rpx; color: #fff; font-weight: 600; }
+
+.collector-time { font-size: 22rpx; color: rgba(255,255,255,0.4); }
+
+/* =========================================
+   底部操作栏 (Action Bar)
+   ========================================= */
+.action-bar {
+  position: fixed;
+  bottom: 40rpx; left: 32rpx; right: 32rpx;
+  height: 110rpx;
+  border-radius: 55rpx;
+  
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255,255,255,0.1);
+  box-shadow: 0 10rpx 30rpx rgba(0,0,0,0.5);
+  
+  display: flex; align-items: center; padding: 0 16rpx;
+  z-index: 100;
+  
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.user-attributes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
+.action-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100rpx; height: 100%;
+  font-size: 20rpx; color: var(--text-secondary);
 }
+.action-icon { font-size: 36rpx; margin-bottom: 4rpx; }
 
-.user-attribute-item {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12rpx;
-  padding: 20rpx;
-  border: 1rpx solid rgba(var(--gold-rgb), 0.2);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-/* 取消用户属性区域的流光效果 */
-
-.user-attribute-item:active {
-  transform: scale(0.95);
-  border-color: #ffd700;
-  box-shadow: 0 0 20rpx rgba(255, 215, 0, 0.3);
-}
-
-.attribute-text {
-  font-size: 28rpx;
-  font-weight: bold;
-  font-family: monospace;
-  line-height: 1.4;
+/* 主按钮 (胶囊) */
+.action-main-btn {
   flex: 1;
-  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.5);
+  height: 80rpx;
+  margin-left: 20rpx; margin-right: 10rpx;
+  border-radius: 40rpx;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28rpx; font-weight: 700; letter-spacing: 2rpx;
+  transition: all 0.2s;
 }
 
-/* 参考上传页面的属性显示样式 */
-.equipment-attributes-right .attributes-section {
-  margin-top: 20rpx;
+.upload-mode {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.9) 0%, rgba(184, 156, 79, 1) 100%);
+  color: #000;
+  box-shadow: 0 0 20rpx rgba(212, 175, 55, 0.3);
 }
 
-.equipment-attributes-right .attr-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
+.edit-mode {
+  background: rgba(255,255,255,0.1);
+  border: 1rpx solid rgba(255,255,255,0.2);
+  color: #fff;
 }
 
-.equipment-attributes-right .attr-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 12rpx 0;
-  transition: all 0.3s ease;
+/* 动画定义 */
+@keyframes floatRelic {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10rpx); }
 }
-
-.equipment-attributes-right .attr-row:last-child {
-  border-bottom: none;
+@keyframes rotateRing {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
-
-.equipment-attributes-right .attr-row:active {
-  transform: scale(0.98);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.equipment-attributes-right .attr-label {
-  font-size: 28rpx;
-  font-weight: bold;
-  min-width: 120rpx;
-  line-height: 1.4;
-}
-
-.equipment-attributes-right .attr-text {
-  font-size: 28rpx;
-  font-weight: bold;
-  font-family: monospace;
-  text-align: center;
-  line-height: 1.4;
-}
-
-.equipment-attributes-right .attr-row.fixed .attr-text {
-  color: #c9b065;
-}
-
-.equipment-attributes-right .attr-row.variable .attr-text {
-  color: #ffffff;
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

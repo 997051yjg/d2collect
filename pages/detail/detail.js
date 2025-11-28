@@ -86,9 +86,12 @@ Page({
         userEquipment = userRes.data[0]
         isActivated = true
         
-        // 获取收藏者信息（这个可以最后异步去拿，不阻塞页面主要内容显示）
+        // 【新增】格式化时间并存入 data，供 wxml 直接使用
+        const formattedTime = this.formatActivationTime(userEquipment.createTime)
+        this.setData({ formattedTime })
+    
         this.getCollectorInfo(userEquipment.openid).then(info => {
-             this.setData({ userInfo: info })
+           this.setData({ userInfo: info })
         })
       }
 
@@ -285,6 +288,21 @@ Page({
     wx.switchTab({
       url: '/pages/upload/upload'
     })
+  },
+
+  // 修改 goToHome
+  goToHome() {
+    wx.switchTab({ url: '/pages/index/index' })
+  },
+  
+  // onBack 备用
+  onBack() {
+    const pages = getCurrentPages()
+    if (pages.length > 1) {
+      wx.navigateBack()
+    } else {
+      wx.switchTab({ url: '/pages/index/index' })
+    }
   },
 
   // 图片加载错误处理
