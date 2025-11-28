@@ -48,36 +48,40 @@ Page({
 
     if (!this.data.isLoggedIn) return
 
-    // 1. 检查是否有来自主页（或其他页面）的外部筛选指令
+    // --- 1. 【新增】检查是否有数据刷新请求 (来自 Upload 页面) ---
+    const shouldRefresh = wx.getStorageSync('shouldRefreshCollection')
+    if (shouldRefresh) {
+      console.log('检测到数据变更，执行刷新...')
+      // 1. 阅后即焚，防止无限刷新
+      wx.removeStorageSync('shouldRefreshCollection')
+      // 2. 强制重新加载数据 (会重新拉取 user_warehouse 并刷新状态)
+      this.loadCollectionData()
+      return // 数据重载会覆盖后续逻辑，直接返回
+    }
+
+    // --- 2. 检查是否有来自主页的筛选指令 (原有逻辑) ---
     const externalSettings = wx.getStorageSync('collectionFilterSettings')
     let hasExternalChanges = false
 
     if (externalSettings) {
       console.log('收到外部筛选指令:', externalSettings)
       
-      // 2. 应用外部配置
       this.setData({
         advancedFilters: externalSettings.advancedFilters,
         currentTypeFilter: externalSettings.currentTypeFilter || 'all',
         searchKeyword: externalSettings.searchKeyword || ''
       })
 
-      // 3. 标记变更并清除缓存（阅后即焚，防止污染下次进入）
       hasExternalChanges = true
       wx.removeStorageSync('collectionFilterSettings')
     }
 
-    // 4. 数据加载策略分流
+    // --- 3. 常规加载策略 ---
+    // 如果数据为空，或者刚才应用了新的筛选器，则刷新列表
     if (this.data.equipmentList.length === 0) {
-      // 场景 A: 首次进入或无数据 -> 执行完整加载
-      // loadCollectionData 内部最后会调用 applyFilters，所以这里不需要显式调用
       this.loadCollectionData()
     } else if (hasExternalChanges) {
-      // 场景 B: 已有数据且收到筛选指令 -> 仅重新计算筛选
-      // 避免重新请求网络/云函数，极大提升跳转速度
       this.applyFilters()
-      
-      // 可选：滚动回顶部，让用户看到筛选结果的开头
       wx.pageScrollTo({ scrollTop: 0, duration: 300 })
     }
   },

@@ -23,7 +23,7 @@ exports.main = async (event, context) => {
       .sort({
         activationTime: -1 // 按时间倒序
       })
-      .limit(5) // 取最新的5个
+      .limit(3) // 取最新的5个
       .lookup({
         from: 'equipment_templates', // 关联装备模板表
         localField: 'templateId',
