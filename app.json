@@ -2,7 +2,6 @@
     "pages": [
         "pages/index/index",
         "pages/upload/upload",
-        "pages/upload-quick/upload-quick",
         "pages/collection/collection",
         "pages/profile/profile",
         "pages/detail/detail"

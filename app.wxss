@@ -334,3 +334,52 @@
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
   }
+  /* =========================================================
+   G. 稀有度通用胶囊 (Rarity Pills - Corrected)
+   ========================================================= */
+
+/* 基础样式：严格复用 glass-pill 的椭圆几何特征 */
+.rarity-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* 核心修正：恢复椭圆形状 */
+    border-radius: 40rpx; 
+    
+    /* 视觉微调 */
+    padding: 6rpx 24rpx; /* 稍微加宽一点，保持大气 */
+    font-size: 22rpx;
+    font-weight: 600;
+    letter-spacing: 1rpx;
+    
+    /* 默认玻璃质感 (无品质时的状态) */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1rpx solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px); /* 保持毛玻璃效果 */
+  }
+  
+  /* 变体：暗金 (Unique) */
+  .rarity-pill.unique {
+    background: rgba(212, 175, 55, 0.15); /* 金色微光 */
+    border-color: rgba(212, 175, 55, 0.4); 
+    color: #d4af37; 
+    box-shadow: 0 0 15rpx rgba(212, 175, 55, 0.15); /* 增加一点发光感 */
+  }
+  
+  /* 变体：套装 (Suit/Set) */
+  .rarity-pill.suit {
+    background: rgba(50, 205, 50, 0.15); /* 绿色微光 */
+    border-color: rgba(50, 205, 50, 0.4);
+    color: #32cd32;
+    box-shadow: 0 0 15rpx rgba(50, 205, 50, 0.15);
+  }
+  
+  /* 变体：符文之语 (Runeword) */
+  .rarity-pill.runeword {
+    background: rgba(255, 165, 0, 0.15); /* 橙色微光 */
+    border-color: rgba(255, 165, 0, 0.4);
+    color: #ffa500;
+    box-shadow: 0 0 15rpx rgba(255, 165, 0, 0.15);
+  }

@@ -1,7 +1,7 @@
 {
-  "navigationBarTitleText": "上传装备",
-  "navigationBarBackgroundColor": "#0a0a0a",
-  "navigationBarTextStyle": "white",
-  "backgroundColor": "#0a0a0a",
-  "backgroundTextStyle": "dark"
-}
+    "navigationBarTitleText": "记录装备",
+    "navigationBarBackgroundColor": "#000000",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#000000",
+    "disableScroll": false
+  }

@@ -60,7 +60,10 @@
           <image class="recent-img" src="{{item.icon}}" mode="aspectFit" />
           <view class="recent-info">
             <text class="recent-name">{{item.name}}</text>
-            <text class="recent-rarity">{{item.rarity}}</text>
+          </view>
+          <view class="rarity-pill {{item.rarity === '套装' ? 'suit' : (item.rarity === '符文之语' ? 'runeword' : 'unique')}}" 
+            style="font-size: 18rpx; padding: 2rpx 10rpx;">
+            {{item.rarity}}
           </view>
         </view>
       </scroll-view>

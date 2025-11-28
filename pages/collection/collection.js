@@ -317,15 +317,62 @@ Page({
     /* console.warn('Image Load Fail', e.detail) */
   },
 
-  viewEquipment(e) {
+// 1. 点击事件
+viewEquipment(e) {
     const { id, activated, name } = e.currentTarget.dataset
+
+    //未激活装备显示模态属性玻璃浮窗
+    return
+
+    // 已激活装备保持不变
+    wx.navigateTo({
+      url: `/pages/detail/detail?id=${id}`
+    })
+  },
+
+  // 2. 长按菜单
+  onLongPressEquipment(e) {
+    const { id, name, activated } = e.currentTarget.dataset
+    
     if (!activated) {
-        // 去上传
-        wx.navigateTo({ url: `/pages/upload-quick/upload-quick?templateId=${id}&equipmentName=${encodeURIComponent(name)}` })
-    } else {
-        // 去详情
-        wx.navigateTo({ url: `/pages/detail/detail?id=${id}` })
+      wx.showActionSheet({
+        itemList: ['上传装备'],
+        success: (res) => {
+          if (res.tapIndex === 0) {
+            // --- 修改开始 ---
+            wx.setStorageSync('pendingUpload', {
+              templateId: id,
+              equipmentName: name
+            })
+            wx.switchTab({
+              url: '/pages/upload/upload'
+            })
+            // --- 修改结束 ---
+          }
+        }
+      })
+      return
     }
+    
+    // ... 已激活的逻辑保持不变 ...
+    wx.showActionSheet({
+      itemList: ['重新上传', '分享装备'],
+      success: (res) => {
+        if (res.tapIndex === 0) {
+          // --- 修改开始 ---
+          wx.setStorageSync('pendingUpload', {
+            templateId: id,
+            equipmentName: name
+          })
+          wx.switchTab({
+            url: '/pages/upload/upload'
+          })
+          // --- 修改结束 ---
+        } else if (res.tapIndex === 1) {
+          this.shareEquipment(id, name)
+        }
+      }
+    })
   },
 
   // 微信登录 (简写)

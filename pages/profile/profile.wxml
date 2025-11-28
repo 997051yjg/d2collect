@@ -58,7 +58,7 @@
           <text class="stat-label">卷轴已展开</text>
           <text class="stat-value gold-text">{{collectionStats.completionRate}}%</text>
           <view class="stat-bar-bg">
-            <view class="stat-bar-fill" style="width: {{collectionStats.completionRate}}%"></view>
+            <view class="stat-bar-fill" style="width: {{collectionStats.completionRate}}"></view>
           </view>
         </view>
         <view class="stat-item glass-card" bindtap="viewCollectionStats">

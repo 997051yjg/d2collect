@@ -15,7 +15,7 @@
           <text class="progress-val gold-text">{{collectionStats.activatedCount}} <text class="dim">/ {{collectionStats.totalCount}}</text></text>
         </view>
         <view class="progress-track">
-          <view class="progress-fill" style="width: {{collectionStats.completionRate}}%"></view>
+          <view class="progress-fill" style="width: {{collectionStats.completionRate}}"></view>
         </view>
       </view>
     </view>

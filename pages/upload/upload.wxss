@@ -1,576 +1,349 @@
-/* pages/upload/upload.wxss */
-
-.container {
-  padding: 20rpx;
-  min-height: 100vh;
-}
-
-/* 登录提示 */
-.login-prompt {
-  padding: 40rpx 20rpx;
-}
-
-.login-prompt-card {
-  padding: 60rpx 40rpx;
-  text-align: center;
-}
-
-.login-prompt-title {
-  display: block;
-  font-size: 36rpx;
-  color: #d4af37;
-  margin-bottom: 16rpx;
-  font-weight: 600;
-}
-
-.login-prompt-desc {
-  display: block;
-  font-size: 28rpx;
-  color: #999;
-  margin-bottom: 40rpx;
-  line-height: 1.5;
-}
-
-.login-btn {
-  padding: 24rpx 48rpx;
-  font-size: 32rpx;
-}
-
-/* 上传区域 */
-.upload-section {
+/* =========================================
+   Mode 1: 寻觅模式 (Seek Mode)
+   ========================================= */
+.seek-mode {
+  padding-top: 100rpx;
   display: flex;
   flex-direction: column;
-  gap: 30rpx;
-}
-
-.upload-area {
-  padding: 40rpx;
-}
-
-.upload-header {
-  text-align: center;
-  margin-bottom: 30rpx;
-}
-
-.upload-title {
-  display: block;
-  font-size: 36rpx;
-  margin-bottom: 12rpx;
-  font-weight: 600;
-}
-
-.upload-tip {
-  font-size: 24rpx;
-  color: #999;
-}
-
-/* 图片预览 */
-.image-preview {
-  text-align: center;
-}
-
-.preview-image {
-  width: 220rpx;
-  height: 220rpx;
-  border-radius: 8rpx;
-  margin-bottom: 20rpx;
-  border: 2rpx solid #d4af37;
-  background: rgba(184, 156, 79, 0.1);
-  object-fit: contain;
-  box-sizing: border-box;
-  padding: 12rpx;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.preview-actions {
-  display: flex;
-  gap: 20rpx;
-  justify-content: center;
-}
-
-.preview-actions button {
-  padding: 16rpx 32rpx;
-  font-size: 26rpx;
-}
-
-/* 上传按钮 */
-.upload-button {
-  text-align: center;
-  padding: 60rpx 40rpx;
-  border: 2rpx dashed #b89c4f;
-  border-radius: 16rpx;
-  transition: all 0.3s ease;
-  background: rgba(184, 156, 79, 0.05);
-}
-
-.upload-button:active {
-  border-color: #d4af37;
-  background: rgba(212, 175, 55, 0.1);
-  transform: scale(0.98);
-}
-
-.upload-icon {
-  font-size: 80rpx;
-  margin-bottom: 20rpx;
-  color: #b89c4f;
-}
-
-.upload-icon-image {
-  width: 80rpx;
-  height: 80rpx;
-  margin-bottom: 20rpx;
-}
-
-.upload-text {
-  display: block;
-  font-size: 28rpx;
-  color: #b89c4f;
-  margin-bottom: 20rpx;
-}
-
-.upload-btn {
-  padding: 20rpx 40rpx;
-  font-size: 28rpx;
-  background: linear-gradient(135deg, #d4af37 0%, #b89c4f 100%);
-  color: #000;
-  border: none;
-  border-radius: 8rpx;
-  font-weight: 600;
-}
-
-/* 表单区域 */
-.form-section {
-  padding: 40rpx;
-}
-
-.form-header {
-  margin-bottom: 30rpx;
-}
-
-.form-title {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: #d4af37;
-  text-shadow: 0 0 8rpx rgba(212, 175, 55, 0.3);
-}
-
-.form-group {
-  margin-bottom: 30rpx;
-}
-
-.form-label {
-  display: block;
-  font-size: 28rpx;
-  color: #b89c4f;
-  margin-bottom: 12rpx;
-  font-weight: 500;
-}
-
-.input {
-  min-height: 80rpx;
-  height: auto;
-}
-
-.input, .textarea, .picker {
-  width: 100%;
-  background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid #d4af37;
-  border-radius: 16rpx;
-  color: #ffffff;
-  padding: 20rpx 24rpx;
-  font-size: 28rpx;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
-}
-
-.input:focus, .textarea:focus {
-  border-color: #b89c4f;
-  box-shadow: 
-    0 0 30rpx rgba(184, 156, 79, 0.4),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
-}
-
-.textarea {
-  height: 120rpx;
-  resize: none;
-}
-
-.picker-value {
-  color: #ffffff;
-}
-
-.picker-value:empty::before {
-  content: '请选择装备类型';
-  color: #b89c4f;
-  opacity: 0.7;
-}
-
-/* 表单操作 */
-.form-actions {
-  display: flex;
-  gap: 20rpx;
-  margin-top: 40rpx;
-}
-
-.form-actions button {
-  flex: 1;
-  padding: 24rpx;
-  font-size: 28rpx;
-  border-radius: 12rpx;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.form-actions button:active {
-  transform: scale(0.98);
-}
-
-/* 上传进度 */
-.upload-progress {
-  padding: 20rpx;
-}
-
-.progress-card {
-  padding: 40rpx;
-  text-align: center;
-}
-
-.progress-title {
-  display: block;
-  font-size: 28rpx;
-  color: #d4af37;
-  margin-bottom: 20rpx;
-}
-
-.progress-bar {
-  width: 100%;
-  margin-bottom: 16rpx;
-}
-
-.progress-text {
-  font-size: 24rpx;
-  color: #999;
-}
-
-/* 加载状态 */
-.loading {
-  flex-direction: column;
-  gap: 20rpx;
-  padding: 60rpx;
-}
-
-.loading-text {
-  color: #999;
-  font-size: 28rpx;
-}
-
-/* 搜索相关样式 */
-.search-container {
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.search-input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* 卡片样式 */
-.card {
-  background: rgba(10, 10, 10, 0.95);
-  border: 2rpx solid #d4af37;
-  border-radius: 16rpx;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
-}
-
-.card:active {
-  transform: scale(0.98);
-  border-color: #ffd700;
-  box-shadow: 
-    0 0 30rpx rgba(255, 215, 0, 0.4),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
-}
-
-/* 按钮样式 */
-.btn-primary {
-  background: linear-gradient(135deg, #d4af37 0%, #b89c4f 100%);
-  color: #000;
-  border: none;
-  border-radius: 12rpx;
-  font-weight: 600;
-  box-shadow: 0 4rpx 12rpx rgba(212, 175, 55, 0.3);
-}
-
-.btn-primary:active {
-  background: linear-gradient(135deg, #b89c4f 0%, #d4af37 100%);
-  transform: scale(0.98);
-  box-shadow: 0 2rpx 6rpx rgba(212, 175, 55, 0.5);
-}
-
-.btn-primary:disabled {
-  background: #666;
-  color: #999;
-  box-shadow: none;
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: #b89c4f;
-  border: 2rpx solid #b89c4f;
-  border-radius: 12rpx;
-  font-weight: 600;
-}
-
-.btn-secondary:active {
-  background: rgba(184, 156, 79, 0.2);
-  transform: scale(0.98);
-}
-
-/* 金色文字 */
-.gold-text {
-  color: #d4af37;
-  text-shadow: 0 0 8rpx rgba(212, 175, 55, 0.3);
-}
-
-/* 独立装备模板卡片区域 */
-.templates-section {
-  margin-top: 30rpx;
-  margin-bottom: 20rpx;
-}
-
-.templates-header {
-  text-align: center;
-  margin-bottom: 24rpx;
-  padding: 20rpx;
-  background: rgba(184, 156, 79, 0.1);
-  border: 2rpx solid #d4af37;
-  border-radius: 12rpx;
-}
-
-.templates-title {
-  display: block;
-  font-size: 32rpx;
-  color: #d4af37;
-  font-weight: 600;
-  margin-bottom: 8rpx;
-  text-shadow: 0 0 8rpx rgba(212, 175, 55, 0.4);
-}
-
-.templates-tip {
-  font-size: 24rpx;
-  color: #b89c4f;
-  opacity: 0.8;
-}
-
-.templates-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20rpx;
-}
-
-.template-card {
-  background: rgba(10, 10, 10, 0.95);
-  border-radius: 16rpx;
-  padding: 24rpx;
-  border: 2rpx solid #d4af37;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 
-    0 4rpx 20rpx rgba(0, 0, 0, 0.5),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.1);
-}
-
-.template-card:active {
-  transform: scale(0.98);
-  border-color: #ffd700;
-  box-shadow: 
-    0 0 30rpx rgba(255, 215, 0, 0.4),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.2);
-}
-
-.template-card.selected {
-  border-color: #b89c4f;
-  box-shadow: 0 0 20rpx rgba(184, 156, 79, 0.3);
-}
-
-.template-image {
-  position: relative;
-  width: 100rpx;
-  height: 100rpx;
-  margin: 0 auto 16rpx;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  background: rgba(184, 156, 79, 0.1);
-  border-radius: 12rpx;
-  border: 1rpx solid rgba(184, 156, 79, 0.3);
 }
 
-.image-placeholder {
-  font-size: 48rpx;
-  z-index: 2;
-  position: relative;
-  color: #b89c4f;
-}
-
-.template-card.selected .template-image {
-  background: rgba(184, 156, 79, 0.2);
-  border-color: #b89c4f;
-}
-
-.template-info {
-  text-align: center;
-  margin-bottom: 16rpx;
-}
-
-.template-name {
-  display: block;
-  font-size: 28rpx;
-  font-weight: 600;
-  margin-bottom: 8rpx;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
-}
-
-.template-card.selected .template-name {
-  color: #b89c4f;
-  text-shadow: 0 0 10rpx rgba(184, 156, 79, 0.6);
-}
-
-.template-type {
-  display: block;
-  font-size: 24rpx;
-  color: #999;
-  margin-bottom: 8rpx;
-}
-
-.template-rarity {
-  display: inline-block;
-  font-size: 20rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
-  margin-top: 8rpx;
-}
-
-.template-rarity.suit {
-  background: rgba(0, 255, 0, 0.2);
-  color: #00ff00;
-}
-
-.template-rarity.unique {
-  background: rgba(184, 156, 79, 0.3);
-  color: #b89c4f;
-}
-
-.activation-status {
-  text-align: center;
-}
-
-.status-text {
-  font-size: 22rpx;
-  color: #b89c4f;
-  padding: 6rpx 16rpx;
-  border-radius: 12rpx;
-  background: rgba(184, 156, 79, 0.2);
-  border: 1rpx solid #b89c4f;
-}
-
-.status-text.default {
-  color: #999;
-  background: rgba(153, 153, 153, 0.2);
-  border-color: #666;
-}
-
-/* 空状态 */
-.empty-templates {
-  text-align: center;
-  padding: 60rpx 40rpx;
-  background: rgba(10, 10, 10, 0.8);
-  border: 2rpx solid #d4af37;
-  border-radius: 16rpx;
-  margin-top: 20rpx;
-}
-
-.empty-icon {
-  font-size: 60rpx;
-  margin-bottom: 20rpx;
-  opacity: 0.5;
-}
-
-.empty-text {
-  display: block;
-  font-size: 28rpx;
-  color: #999;
-  margin-bottom: 12rpx;
-}
-
-.empty-subtext {
-  display: block;
-  font-size: 24rpx;
-  color: #666;
-}
-
-/* 属性编辑区域 */
-.attributes-section {
-  margin-top: 30rpx;
-  padding-top: 20rpx;
-  border-top: 2rpx solid rgba(212, 175, 55, 0.2);
-}
-
-.attr-list {
+.seek-header {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  margin-bottom: 60rpx;
+}
+
+.horadric-icon {
+  width: 120rpx; height: 120rpx;
+  margin-bottom: 24rpx;
+  filter: drop-shadow(0 0 20rpx rgba(212, 175, 55, 0.4));
+  animation: floatIcon 4s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10rpx); }
+}
+
+.seek-title {
+  font-size: 40rpx; font-weight: 700; color: #fff;
+  letter-spacing: 2rpx; margin-bottom: 12rpx;
+  text-shadow: 0 2rpx 10rpx rgba(0,0,0,0.8);
+}
+
+.seek-subtitle {
+  font-size: 26rpx; color: var(--text-secondary);
+}
+
+/* 搜索框增强 */
+.search-core {
+  width: 100%;
+  margin-bottom: 40rpx;
+  padding: 4rpx;
+}
+
+.ios-search-bar.large {
+  height: 96rpx;
+  background: rgba(0,0,0,0.3);
+  border-radius: 16rpx;
+}
+
+.ios-search-input { font-size: 30rpx; }
+
+/* 物品栏结果网格 */
+.inventory-grid { width: 100%; }
+
+.grid-label {
+  font-size: 24rpx; color: var(--text-secondary);
+  margin-bottom: 24rpx; text-align: center;
+}
+
+.inventory-item {
+  display: flex; align-items: center;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  transition: all 0.2s ease;
+  border: 1rpx solid transparent;
+}
+
+.inventory-item:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
+
+/* 列表里的发光效果 */
+.unique-glow { border-color: rgba(212, 175, 55, 0.3); box-shadow: inset 0 0 20rpx rgba(212, 175, 55, 0.05); }
+.set-glow { border-color: rgba(50, 205, 50, 0.3); box-shadow: inset 0 0 20rpx rgba(50, 205, 50, 0.05); }
+
+.item-visual {
+  width: 80rpx; height: 80rpx;
+  background: rgba(0,0,0,0.3);
+  border-radius: 8rpx;
+  display: flex; align-items: center; justify-content: center;
+  margin-right: 24rpx;
+}
+.item-icon { width: 80%; height: 80%; }
+
+.item-meta { flex: 1; display: flex; flex-direction: column; }
+.item-name { font-size: 30rpx; font-weight: 600; margin-bottom: 4rpx; }
+.item-type { font-size: 22rpx; color: var(--text-secondary); }
+
+.green-text { color: #32cd32; text-shadow: 0 0 5rpx rgba(50, 205, 50, 0.4); }
+.gold-text { color: #d4af37; text-shadow: 0 0 5rpx rgba(212, 175, 55, 0.4); }
+
+.identify-btn {
+  font-size: 24rpx; color: var(--gold);
+  border: 1rpx solid var(--gold);
+  padding: 8rpx 20rpx; border-radius: 30rpx;
+}
+
+.empty-guide {
+  margin-top: 80rpx; color: var(--text-secondary); font-size: 26rpx; text-align: center;
+}
+
+/* =========================================
+   Mode 2: 鉴定模式 (Identify Mode)
+   ========================================= */
+.identify-mode { width: 100%; }
+
+.top-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 32rpx;
+}
+
+.back-btn {
+  font-size: 24rpx; color: var(--text-secondary);
+  padding: 8rpx 20rpx;
+}
+.back-icon { margin-right: 8rpx; font-size: 28rpx; }
+
+/* ------------------------------------------------
+   1. 圣物卡片 (已修正居中)
+   ------------------------------------------------ */
+.artifact-card {
+  padding: 50rpx 40rpx; /* 增加内边距 */
+  display: flex;
+  flex-direction: column; /* 纵向排列 */
+  align-items: center;    /* 水平居中 */
+  margin-bottom: 48rpx;
+  border-width: 2rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.border-gold { border-color: rgba(212, 175, 55, 0.5); box-shadow: 0 0 30rpx rgba(212, 175, 55, 0.1); }
+.border-green { border-color: rgba(50, 205, 50, 0.5); box-shadow: 0 0 30rpx rgba(50, 205, 50, 0.1); }
+
+/* 头部布局：强制居中 */
+.artifact-header {
+  display: flex;
+  flex-direction: column; /* 图在上，文在下 */
+  align-items: center;    /* 居中 */
+  width: 100%;
+  z-index: 2;
+}
+
+.artifact-icon {
+  width: 160rpx; 
+  height: 160rpx;
+  filter: drop-shadow(0 10rpx 20rpx rgba(0,0,0,0.6));
+  margin-bottom: 30rpx; /* 图片与文字的间距 */
+  animation: hoverItem 3s ease-in-out infinite; /* 保持原有的悬浮动效 */
+}
+
+@keyframes hoverItem {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8rpx); }
+}
+
+.artifact-titles {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 16rpx;
 }
 
-.attr-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 12rpx 20rpx;
-  border-radius: 8rpx;
+.artifact-name { 
+  font-size: 40rpx; font-weight: 800; display: block; 
 }
 
+/* 标签容器 */
+.artifact-tags { 
+  display: flex; 
+  gap: 16rpx; 
+  justify-content: center; 
+}
+
+/* ------------------------------------------------
+   2. 属性铭文区 (已美化固定属性)
+   ------------------------------------------------ */
+.inscription-section { margin-bottom: 48rpx; }
+.section-title { font-size: 28rpx; color: rgba(212, 175, 55, 0.5)}
+.attr-list { display: flex; flex-direction: column; gap: 16rpx; }
+
+/* 可变属性行 (保持高亮风格) */
 .attr-row.variable {
-  border: 1rpx solid rgba(212, 175, 55, 0.3);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 24rpx 32rpx;
+  border: 1rpx solid rgba(212, 175, 55, 0.2);
+  border-radius: 16rpx;
+  background: rgba(255, 255, 255, 0.03);
 }
 
-.attr-label {
-  font-size: 28rpx;
-  font-weight: 500;
-}
-
-.attr-range {
-  font-size: 22rpx;
-  color: #666;
-  margin-left: 8rpx;
-}
+.attr-meta { display: flex; flex-direction: column; }
+.attr-label { font-size: 28rpx; font-weight: 600; margin-bottom: 4rpx; }
+.attr-range { font-size: 20rpx; color: var(--text-secondary); }
 
 .attr-input {
-  width: 120rpx;
-  text-align: right;
-  color: #fff;
-  font-size: 28rpx;
-  border-bottom: 1rpx solid #666;
+  width: 140rpx; text-align: right;
+  font-size: 36rpx; font-weight: 700;
+  border-bottom: 2rpx solid var(--gold);
+  height: 60rpx;
+}
+.dim-placeholder { color: rgba(255,255,255,0.1); font-size: 32rpx; }
+
+/* 固定属性行 (蚀刻铭文风格) */
+.attr-row.fixed {
+  padding: 24rpx 32rpx;
+  border-radius: 16rpx;
+  background: rgba(0, 0, 0, 0.2); /* 深色内嵌底 */
+  border: 1rpx solid rgba(255, 255, 255, 0.05); /* 极细边框 */
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.input-placeholder {
-  color: #444;
+/* 左侧金色装饰条 */
+.attr-row.fixed::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 25%; bottom: 25%;
+  width: 6rpx;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0 4rpx 4rpx 0;
 }
 
-.attr-text {
-  font-size: 28rpx;
+/* 锁图标暗示不可编辑 */
+.attr-row.fixed::after {
+  content: '🔒'; 
+  font-size: 20rpx;
+  margin-left: auto; 
+  opacity: 0.2;
+  filter: grayscale(100%);
+}
+
+.attr-fixed-text { 
+  font-size: 26rpx; 
+  opacity: 0.9;
+  letter-spacing: 1rpx;
+  padding-left: 16rpx;
+}
+
+.no-attrs { text-align: center; color: var(--text-secondary); font-size: 24rpx; padding: 20rpx; }
+
+/* 影像上传 */
+.evidence-section { margin-bottom: 40rpx; }
+.upload-zone {
+  height: 300rpx;
+  border: 2rpx dashed rgba(255,255,255,0.2);
+  border-radius: 24rpx;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+.upload-zone:active { background: rgba(255,255,255,0.05); }
+
+.upload-placeholder { display: flex; flex-direction: column; align-items: center; }
+.upload-icon-big { font-size: 64rpx; margin-bottom: 16rpx; opacity: 0.6; }
+.upload-hint { font-size: 28rpx; color: var(--gold); margin-bottom: 8rpx; }
+.upload-sub { font-size: 22rpx; color: var(--text-secondary); }
+
+.preview-img { width: 100%; height: 100%; }
+
+.upload-actions {
+  position: absolute; bottom: 20rpx; right: 20rpx;
+}
+.action-btn.remove {
+  background: rgba(0,0,0,0.6); color: #ff6b6b; font-size: 20rpx;
+  backdrop-filter: blur(10px);
+  line-height: normal; /* 确保行高正常 */
+  padding: 8rpx 16rpx; /* 添加内边距让文字有空间 */
+}
+/* =========================================
+   提交仪式按钮 (Ritual Button - Final Polish)
+   ========================================= */
+   .submit-bar {
+    padding: 0 40rpx;
+    margin-top: 40rpx;
+  }
+  
+  /* 按钮基础容器 */
+  .submit-btn {
+    width: 100%; 
+    height: 96rpx;
+    border-radius: 48rpx; /* 完美胶囊圆角 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .btn-text {
+    position: relative;
+    z-index: 2; /* 确保文字在流光之上 */
+    font-size: 32rpx;
+    font-weight: 600;
+    letter-spacing: 4rpx;
+  }
+  
+  /* --- 状态 A: 未激活/禁用 (纯净玻璃态) --- */
+  .submit-btn.disabled {
+    /* 关键：半透明背景，去除任何白色 */
+    background: rgba(255, 255, 255, 0.05); 
+    /* 微弱的玻璃边框 */
+    border: 1rpx solid rgba(255, 255, 255, 0.1);
+    /* 灰暗文字 */
+    color: rgba(255, 255, 255, 0.2); 
+    /* 毛玻璃效果 */
+    backdrop-filter: blur(10px); 
+  }
+  
+  /* --- 状态 B: 已激活 (暗金流光态) --- */
+  .submit-btn:not(.disabled) {
+    /* 暗金渐变填充 */
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.9) 0%, rgba(184, 156, 79, 1) 100%);
+    /* 金色高亮边框 */
+    border: 1rpx solid rgba(255, 215, 0, 0.6);
+    /* 深色文字形成对比 */
+    color: #000; 
+    /* 能量光晕：让按钮看起来在发光 */
+    box-shadow: 
+      0 0 20rpx rgba(212, 175, 55, 0.4),
+      inset 0 2rpx 0 rgba(255, 255, 255, 0.4); /* 顶部高光条 */
+  }
+  
+  /* 激活态的点击反馈：微微缩小 */
+  .submit-btn:not(.disabled):active {
+    transform: scale(0.96);
+    box-shadow: 0 0 10rpx rgba(212, 175, 55, 0.2);
+  }
+  
+  /* --- 流光动画层 --- */
+  .btn-shine {
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transform: skewX(-20deg);
+    animation: shinePass 3s infinite;
+    z-index: 1;
+  }
+  
+  @keyframes shinePass {
+    0% { left: -100%; }
+    20% { left: 200%; } /* 快速扫过 */
+    100% { left: 200%; } /* 停留等待 */
 }
