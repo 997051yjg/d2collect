@@ -189,7 +189,7 @@
   .menu-item:active { transform: scale(0.98); background: rgba(255,255,255,0.08); }
   
   .menu-left { display: flex; align-items: center; }
-  .menu-icon { font-size: 32rpx; margin-right: 24rpx; opacity: 0.8; }
+  .menu-icon { width: 28px; height: 28px; object-fit: contain;}
   .menu-text { font-size: 28rpx; color: #fff; font-weight: 500; }
   
   .menu-right { display: flex; align-items: center; }
@@ -200,7 +200,7 @@
   .menu-arrow { color: var(--text-secondary); font-size: 24rpx; }
   
   .menu-item.logout .menu-text { color: #ff6b6b; }
-  .menu-item.logout .menu-icon { filter: grayscale(100%) brightness(1.5) sepia(1) hue-rotate(-50deg) saturate(3); }
+  .menu-item.logout .menu-icon { width: 26px; height: 26px; object-fit: contain;}
   
   /* 动画定义 */
   @keyframes pulseGlow {

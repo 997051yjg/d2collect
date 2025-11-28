@@ -6,7 +6,7 @@
     
     <view class="login-gate animate-enter" wx:if="{{!isLoggedIn}}">
       <view class="gate-icon-wrapper">
-        <image class="gate-icon" src="/images/4.png" mode="aspectFit" />
+        <image class="gate-icon" src="/images/7.png" mode="aspectFit" />
         <view class="gate-glow"></view>
       </view>
       <text class="gate-title">圣殿的大门紧闭</text>
@@ -72,7 +72,7 @@
         
         <view class="menu-item glass-card" bindtap="viewCollectionStats">
           <view class="menu-left">
-            <text class="menu-icon">📜</text>
+            <image class="menu-icon" src="/images/1.png" mode="aspectFit" />
             <text class="menu-text">赫拉迪姆图鉴</text>
           </view>
           <text class="menu-arrow">></text>
@@ -80,8 +80,8 @@
 
         <view class="menu-item glass-card" bindtap="viewAchievements">
           <view class="menu-left">
-            <text class="menu-icon">🏆</text>
-            <text class="menu-text">生涯成就</text>
+            <image class="menu-icon" src="/images/5.png" mode="aspectFit" />
+            <text class="menu-text">英雄的旗帜</text>
           </view>
           <view class="menu-right">
             <text class="menu-tag">开发中</text>
@@ -91,8 +91,8 @@
 
         <view class="menu-item glass-card logout" bindtap="logout">
           <view class="menu-left">
-            <text class="menu-icon">🚪</text>
-            <text class="menu-text">离开游戏 (退出)</text>
+            <image class="menu-icon" src="/images/8.png" mode="aspectFit" />
+            <text class="menu-text">重置人物属性 (退出登陆)</text>
           </view>
         </view>
       </view>
