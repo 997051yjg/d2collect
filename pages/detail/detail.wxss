@@ -243,3 +243,31 @@
   from { transform: translateY(100%); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* ... 现有的 stat-row 样式 ... */
+
+/* 新增：属性内容容器 (用于排列 文本 和 范围) */
+.stat-content {
+  display: flex;
+  align-items: baseline; /* 文字底部对齐 */
+  flex-wrap: wrap;       /* 防止过长换行 */
+  gap: 12rpx;            /* 文字和范围之间的间距 */
+}
+
+/* 新增：变量范围样式 [10-20] */
+.stat-range {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.3); /* 低对比度灰色，不抢眼 */
+  font-family: monospace;          /* 等宽字体，数字更整齐 */
+  letter-spacing: 0;
+}
+
+/* 调整：用户数值容器 */
+.user-roll-container {
+  display: flex; 
+  align-items: center; 
+  width: 100%; 
+  justify-content: space-between;
+}
+
+/* ... 现有的 user-val, roll-badge 样式保持不变 ... */

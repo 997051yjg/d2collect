@@ -53,15 +53,28 @@
 
         <block wx:for="{{equipment.attributes}}" wx:key="code">
           <view class="stat-row {{item.isVariable ? 'variable' : 'fixed'}}">
-            <block wx:if="{{isActivated && item.userValue !== undefined}}">
+            
+            <block wx:if="{{isActivated && item.isVariable && item.userValue !== undefined}}">
                <view class="user-roll-container">
-                 <text class="stat-text user-val">{{item.displayText}}</text>
+                 <view class="stat-content">
+                   <text class="stat-text user-val" style="color: {{item.displayColor}}">{{item.displayText}}</text>
+                   <text class="stat-range">[{{item.min}}-{{item.max}}]</text>
+                 </view>
                  <text class="roll-badge">Roll</text>
                </view>
             </block>
+            
+            <block wx:elif="{{item.isVariable}}">
+               <view class="stat-content">
+                 <text class="stat-text" style="color: {{item.displayColor}}">{{item.displayText}}</text>
+                 <text class="stat-range">[{{item.min}}-{{item.max}}]</text>
+               </view>
+            </block>
+
             <block wx:else>
                <text class="stat-text" style="color: {{item.displayColor}}">{{item.displayText}}</text>
             </block>
+            
           </view>
         </block>
 
