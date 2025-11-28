@@ -385,13 +385,6 @@ Page({
     // 微信小程序中使用 wx.createSelectorQuery() 来获取元素
     const query = wx.createSelectorQuery()
     query.selectAll('.scroll-fade').boundingClientRect()
-    query.exec((res) => {
-      if (res[0]) {
-        // 获取到所有滚动元素后，可以通过设置数据来触发动画
-        // 这里简化处理，因为微信小程序的动画主要依赖CSS和WXML
-        console.log('找到滚动动画元素:', res[0].length)
-      }
-    })
   },
 
   // 页面滚动事件处理

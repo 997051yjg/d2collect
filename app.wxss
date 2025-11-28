@@ -1,855 +1,267 @@
-/* app.wxss */
-
-page {
-  /* iOS 深色模式基调 */
-  background-color: #000000;
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, sans-serif;
-  font-size: 28rpx;
-  line-height: 1.5;
+/* ====================================
+   1. 全局变量与基础设置
+   ==================================== */
+   page {
+    /* iOS 深色模式基调 */
+    background-color: #000000;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, sans-serif;
+    font-size: 28rpx;
+    line-height: 1.5;
+    
+    /* 变量定义 */
+    --gold: #D4AF37;       
+    --gold-dim: #8c7220;   
+    --gold-rgb: 212, 175, 55;
+    --surface: #1C1C1E;    
+    --surface-light: #2C2C2E;
+    --text-secondary: #8E8E93;
+    --border-radius: 24rpx;
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); 
+  }
   
-  /* 全局变量 */
-  --gold: #D4AF37;       /* 经典暗金 */
-  --gold-dim: #8c7220;   /* 暗淡金（用于辅助） */
-  --gold-rgb: 212, 175, 55; /* 金色RGB值，用于rgba */
-  --surface: #1C1C1E;    /* iOS 标准层级背景色 */
-  --surface-light: #2C2C2E;
-  --text-secondary: #8E8E93;
-  --border-radius: 24rpx; /* 现代大圆角 */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* 苹果风弹性动画曲线 */
-}
-
-.container {
-  padding: 32rpx;
-  padding-bottom: 120rpx; /* 底部留白，防遮挡 */
-  box-sizing: border-box;
-  min-height: 100vh;
-}
-
-/* Apple 风格卡片：无边框，重阴影，柔和圆角 */
-.ios-card {
-  background-color: var(--surface);
-  border-radius: var(--border-radius);
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-  /* 极细的顶部高光，增加立体感 */
-  box-shadow: 
-    0 1px 0 rgba(255, 255, 255, 0.05) inset,
-    0 10rpx 40rpx rgba(0, 0, 0, 0.5);
-}
-
-/* 金色标题 */
-.gold-title {
-  color: var(--gold);
-  font-size: 34rpx;
-  font-weight: 600;
-  margin-bottom: 24rpx;
-  letter-spacing: 1rpx;
-}
-
-/* 交互按钮：弹性缩放 */
-.btn-primary {
-  background: linear-gradient(135deg, #D4AF37 0%, #B48F25 100%);
-  color: #000;
-  font-weight: 600;
-  font-size: 30rpx;
-  height: 88rpx;
-  border-radius: 44rpx; /* 胶囊按钮 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  box-shadow: 0 8rpx 24rpx rgba(212, 175, 55, 0.3);
-  transition: transform 0.4s var(--ease-spring), opacity 0.2s;
-}
-
-.btn-primary:active {
-  transform: scale(0.94); /* 点击时的回弹质感 */
-  opacity: 0.9;
-}
-
-/* 进场动画：丝滑上浮 */
-.animate-enter {
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-@keyframes slideUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
-
-/* 金色文字 */
-.gold-text {
-  color: var(--gold);
-}
-
-/* 底部导航栏样式增强 - 苹果风格 */
-/* 导航栏背景光效 */
-.tab-bar {
-  position: relative;
-}
-
-.tab-bar::before {
-  content: '';
-  position: absolute;
-  top: -2rpx;
-  left: 0;
-  right: 0;
-  height: 2rpx;
-  background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), 0.3), transparent);
-}
-
-/* 导航项选中状态增强 */
-.tab-bar-item {
-  position: relative;
-  transition: all 0.3s var(--ease-spring);
-}
-
-.tab-bar-item.active::before {
-  content: '';
-  position: absolute;
-  top: -8rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24rpx;
-  height: 4rpx;
-  background: var(--gold);
-  border-radius: 2rpx;
-  animation: tabIndicator 0.3s ease-out;
-}
-
-@keyframes tabIndicator {
-  0% {
-    width: 0;
+  .container {
+    padding: 32rpx;
+    padding-bottom: 120rpx;
+    box-sizing: border-box;
+    min-height: 100vh;
+  }
+  
+  /* ====================================
+     2. 暗黑主题背景系统 (Global Background System)
+     ==================================== */
+  
+  /* 基础底色容器 (加在页面最外层) */
+  .theme-bg-diablo {
+    background: 
+      linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #0a0a0a 50%, #1a1a1a 75%, #000000 100%),
+      radial-gradient(circle at 20% 20%, rgba(42, 42, 42, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(30, 30, 30, 0.4) 0%, transparent 50%);
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  /* 动态粒子层 */
+  .bg-particles {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+      radial-gradient(circle at 10% 10%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 30%, rgba(212, 175, 55, 0.06) 0%, transparent 45%),
+      radial-gradient(circle at 30% 70%, rgba(212, 175, 55, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 70% 90%, rgba(212, 175, 55, 0.05) 0%, transparent 55%),
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+    animation: bgParticle 25s ease-in-out infinite;
+  }
+  
+  /* 网格纹理层 */
+  .bg-texture {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+      repeating-linear-gradient(0deg, transparent, transparent 2rpx, rgba(255, 255, 255, 0.01) 2rpx, rgba(255, 255, 255, 0.01) 4rpx),
+      repeating-linear-gradient(90deg, transparent, transparent 2rpx, rgba(255, 255, 255, 0.005) 2rpx, rgba(255, 255, 255, 0.005) 4rpx);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.3;
+  }
+  
+  /* 粒子浮动动画 */
+  @keyframes bgParticle {
+    0% { opacity: 0.6; transform: scale(1) rotate(0deg); }
+    25% { opacity: 0.8; transform: scale(1.02) rotate(1deg); }
+    50% { opacity: 1; transform: scale(1.05) rotate(0deg); }
+    75% { opacity: 0.8; transform: scale(1.02) rotate(-1deg); }
+    100% { opacity: 0.6; transform: scale(1) rotate(0deg); }
+  }
+  
+  /* ====================================
+     3. 排版与装饰工具
+     ==================================== */
+  .gold-title {
+    color: var(--gold);
+    font-size: 34rpx;
+    font-weight: 600;
+    letter-spacing: 1rpx;
+  }
+  
+  .gold-text { color: var(--gold); }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 24rpx;
+    padding: 0 8rpx;
+  }
+  
+  .section-title {
+    font-size: 34rpx;
+    font-weight: 700;
+    color: #fff;
+  }
+  
+  .section-more {
+    font-size: 24rpx;
+    color: var(--text-secondary);
+  }
+  
+  /* 装饰线条 */
+  .decorative-line { position: relative; }
+  .decorative-line::after {
+    content: '';
+    position: absolute;
+    bottom: -8rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60rpx;
+    height: 2rpx;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.6;
+  }
+  
+  /* 金色脉冲文字 */
+  .gold-pulse {
+    animation: goldPulse 3s ease-in-out infinite;
+    position: relative;
+  }
+  
+  /* ====================================
+     4. 核心组件 (Components)
+     ==================================== */
+  
+  /* --- 布局网格 --- */
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32rpx;
+    position: relative;
+  }
+  
+  @media (max-width: 750rpx) {
+    .grid-3 { gap: 24rpx; }
+    .container { padding-bottom: 140rpx; }
+  }
+  
+  /* --- 玻璃质感卡片 --- */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 24rpx;
+    border: 1rpx solid rgba(255, 255, 255, 0.12);
+    box-shadow: 
+      0 8rpx 32rpx rgba(0, 0, 0, 0.3),
+      inset 0 1rpx 0 rgba(255, 255, 255, 0.15),
+      inset 0 -1rpx 0 rgba(255, 255, 255, 0.03);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s var(--ease-spring);
+  }
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30%, transparent 70%, rgba(255, 255, 255, 0.05) 100%);
+    z-index: -1;
+  }
+  .glass-card:hover {
+    transform: translateY(-6rpx) scale(1.02);
+    border-color: rgba(var(--gold-rgb), 0.2);
+    box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.4), 0 0 0 1rpx rgba(var(--gold-rgb), 0.2);
+  }
+  .glass-card:active {
+    transform: scale(0.96);
+    background: var(--surface-light);
+  }
+  .glass-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), 0.15), transparent);
+    transition: left 0.6s ease;
+  }
+  .glass-card:hover::after { left: 100%; }
+  
+  /* --- 玻璃胶囊 --- */
+  .glass-pill {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    padding: 8rpx 24rpx 8rpx 8rpx;
+    border-radius: 40rpx;
+    display: inline-flex;
+    align-items: center;
+    border: 1rpx solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.3), inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s var(--ease-spring);
+  }
+  .glass-pill:hover {
+    transform: translateY(-4rpx) scale(1.02);
+    border-color: rgba(var(--gold-rgb), 0.2);
+  }
+  
+  /* --- 状态组件 --- */
+  .loading-state, .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120rpx 0;
     opacity: 0;
+    animation: fadeInUp 0.8s ease-out 0.3s forwards;
   }
-  100% {
-    width: 24rpx;
-    opacity: 1;
+  
+  /* Loading */
+  .loading-spinner {
+    width: 80rpx; height: 80rpx;
+    border: 4rpx solid rgba(var(--gold-rgb), 0.2);
+    border-top: 4rpx solid var(--gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 32rpx;
   }
-}
-
-/* 导航图标动画 */
-.tab-bar-icon {
-  transition: transform 0.3s var(--ease-spring);
-}
-
-.tab-bar-item.active .tab-bar-icon {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 10rpx rgba(var(--gold-rgb), 0.4));
-}
-
-/* 导航文字动画 */
-.tab-bar-text {
-  transition: all 0.3s ease;
-}
-
-.tab-bar-item.active .tab-bar-text {
-  font-weight: 600;
-  text-shadow: 0 0 15rpx rgba(var(--gold-rgb), 0.3);
-}
-
-/* 页面切换动画 */
-.page-transition {
-  animation: pageSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes pageSlide {
-  0% {
-    opacity: 0;
-    transform: translateX(20rpx);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* 页面加载动画 */
-.page-loading {
-  animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-/* 滚动加载动画 */
-.scroll-load {
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(30rpx);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ========== 可复用组件样式 ========== */
-
-/* 玻璃质感卡片组件 - 统一视觉风格 */
-.glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border-radius: 24rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.12);
-  box-shadow: 
-    0 8rpx 32rpx rgba(0, 0, 0, 0.3),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.15),
-    inset 0 -1rpx 0 rgba(255, 255, 255, 0.03);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s var(--ease-spring);
-}
-
-/* 玻璃背景层 */
-.glass-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30%, transparent 70%, rgba(255, 255, 255, 0.05) 100%);
-  z-index: -1;
-}
-
-/* 玻璃卡片悬浮效果 */
-.glass-card:hover {
-  transform: translateY(-6rpx) scale(1.02);
-  border-color: rgba(var(--gold-rgb), 0.2);
-  box-shadow: 
-    0 12rpx 40rpx rgba(0, 0, 0, 0.4),
-    0 0 0 1rpx rgba(var(--gold-rgb), 0.2);
-}
-
-.glass-card:active {
-  transform: scale(0.96);
-  background: var(--surface-light);
-}
-
-/* 玻璃卡片高光动画 */
-.glass-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), 0.15), transparent);
-  transition: left 0.6s ease;
-}
-
-.glass-card:hover::after {
-  left: 100%;
-}
-
-/* 小尺寸玻璃胶囊（用于用户头像等） */
-.glass-pill {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  padding: 8rpx 24rpx 8rpx 8rpx;
-  border-radius: 40rpx;
-  display: inline-flex;
-  align-items: center;
-  border: 1rpx solid rgba(255, 255, 255, 0.12);
-  box-shadow: 
-    0 8rpx 32rpx rgba(0, 0, 0, 0.3),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.15),
-    inset 0 -1rpx 0 rgba(255, 255, 255, 0.03);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s var(--ease-spring);
-}
-
-.glass-pill::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30%, transparent 70%, rgba(255, 255, 255, 0.05) 100%);
-  z-index: -1;
-}
-
-.glass-pill:hover {
-  transform: translateY(-4rpx) scale(1.02);
-  border-color: rgba(var(--gold-rgb), 0.2);
-}
-
-/* 加载状态组件 */
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 120rpx 0;
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 0.3s forwards;
-}
-
-.loading-spinner {
-  width: 80rpx;
-  height: 80rpx;
-  border: 4rpx solid rgba(var(--gold-rgb), 0.2);
-  border-top: 4rpx solid var(--gold);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 32rpx;
-}
-
-.loading-text {
-  font-size: 28rpx;
-  color: var(--text-secondary);
-  letter-spacing: 2rpx;
-}
-
-/* 空状态组件 */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 120rpx 0;
-  text-align: center;
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 0.3s forwards;
-}
-
-.empty-icon {
-  width: 120rpx;
-  height: 120rpx;
-  margin-bottom: 32rpx;
-  opacity: 0.6;
-}
-
-.empty-title {
-  font-size: 32rpx;
-  color: var(--text-secondary);
-  margin-bottom: 16rpx;
-  font-weight: 600;
-}
-
-.empty-desc {
-  font-size: 26rpx;
-  color: var(--text-secondary);
-  opacity: 0.8;
-  line-height: 1.6;
-}
-
-/* 区块标题组件 */
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 24rpx;
-  padding: 0 8rpx;
-}
-
-.section-title {
-  font-size: 34rpx;
-  font-weight: 700;
-  color: #fff;
-}
-
-.section-more {
-  font-size: 24rpx;
-  color: var(--text-secondary);
-}
-
-/* 动画效果 */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes fadeInUp {
-  0% {
+  .loading-text { font-size: 28rpx; color: var(--text-secondary); letter-spacing: 2rpx; }
+  
+  /* Empty */
+  .empty-state { text-align: center; }
+  .empty-icon { width: 120rpx; height: 120rpx; margin-bottom: 32rpx; opacity: 0.6; }
+  .empty-title { font-size: 32rpx; color: var(--text-secondary); margin-bottom: 16rpx; font-weight: 600; }
+  .empty-desc { font-size: 26rpx; color: var(--text-secondary); opacity: 0.8; line-height: 1.6; }
+  
+  /* ====================================
+     5. 通用动画库
+     ==================================== */
+  .animate-enter {
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     opacity: 0;
     transform: translateY(40rpx);
   }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  
+  .page-transition, .scroll-load {
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
-}
-
-@keyframes goldPulse {
-  0%, 100% {
-    color: var(--gold);
-    text-shadow: 0 0 15rpx rgba(var(--gold-rgb), 0.4);
-  }
-  50% {
-    color: #ffd700;
-    text-shadow: 0 0 25rpx rgba(255, 215, 0, 0.6);
-  }
-}
-
-/* 金色脉冲文字 */
-.gold-pulse {
-  animation: goldPulse 3s ease-in-out infinite;
-  position: relative;
-}
-
-.gold-pulse::after {
-  content: '';
-  position: absolute;
-  bottom: -4rpx;
-  left: 0;
-  right: 0;
-  height: 2rpx;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0.6;
-}
-
-/* 滚动淡入动画 */
-.scroll-fade {
-  opacity: 0;
-  transform: translateY(30rpx);
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-fade.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* 装饰线条 */
-.decorative-line {
-  position: relative;
-}
-
-.decorative-line::after {
-  content: '';
-  position: absolute;
-  bottom: -8rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60rpx;
-  height: 2rpx;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0.6;
-}
-
-/* 响应式网格 */
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32rpx;
-  position: relative;
-}
-
-@media (max-width: 750rpx) {
-  .grid-3 {
-    gap: 24rpx;
-  }
-}
-
-@media (min-width: 751rpx) {
-  .grid-3 {
-    gap: 32rpx;
-  }
-}
-
-/* 底部导航栏样式增强 - 苹果风格 */
-/* 导航栏背景光效 */
-.tab-bar {
-  position: relative;
-}
-
-.tab-bar::before {
-  content: '';
-  position: absolute;
-  top: -2rpx;
-  left: 0;
-  right: 0;
-  height: 2rpx;
-  background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), 0.3), transparent);
-}
-
-/* 导航项选中状态增强 */
-.tab-bar-item {
-  position: relative;
-  transition: all 0.3s var(--ease-spring);
-}
-
-.tab-bar-item.active::before {
-  content: '';
-  position: absolute;
-  top: -8rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24rpx;
-  height: 4rpx;
-  background: var(--gold);
-  border-radius: 2rpx;
-  animation: tabIndicator 0.3s ease-out;
-}
-
-@keyframes tabIndicator {
-  0% {
-    width: 0;
-    opacity: 0;
-  }
-  100% {
-    width: 24rpx;
-    opacity: 1;
-  }
-}
-
-/* 导航图标动画 */
-.tab-bar-icon {
-  transition: transform 0.3s var(--ease-spring);
-}
-
-.tab-bar-item.active .tab-bar-icon {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 10rpx rgba(var(--gold-rgb), 0.4));
-}
-
-/* 导航文字动画 */
-.tab-bar-text {
-  transition: all 0.3s ease;
-}
-
-.tab-bar-item.active .tab-bar-text {
-  font-weight: 600;
-  text-shadow: 0 0 15rpx rgba(var(--gold-rgb), 0.3);
-}
-
-/* 页面切换动画 */
-.page-transition {
-  animation: pageSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes pageSlide {
-  0% {
-    opacity: 0;
-    transform: translateX(20rpx);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* 页面加载动画 */
-.page-loading {
-  animation: fadeIn 0.5s ease-out;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-/* 滚动加载动画 */
-.scroll-load {
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideUp {
-  0% {
+  .page-loading { animation: fadeIn 0.5s ease-out; }
+  
+  .scroll-fade {
     opacity: 0;
     transform: translateY(30rpx);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+  .scroll-fade.visible { opacity: 1; transform: translateY(0); }
+  
+  @keyframes slideUp { from { opacity: 0; transform: translateY(40rpx); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(40rpx); } 100% { opacity: 1; transform: translateY(0); } }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  @keyframes goldPulse {
+    0%, 100% { color: var(--gold); text-shadow: 0 0 15rpx rgba(var(--gold-rgb), 0.4); }
+    50% { color: #ffd700; text-shadow: 0 0 25rpx rgba(255, 215, 0, 0.6); }
   }
-}
-
-/* ========== 可复用组件样式 ========== */
-
-/* 玻璃质感卡片组件 - 统一视觉风格 */
-.glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border-radius: 24rpx;
-  border: 1rpx solid rgba(255, 255, 255, 0.12);
-  box-shadow: 
-    0 8rpx 32rpx rgba(0, 0, 0, 0.3),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.15),
-    inset 0 -1rpx 0 rgba(255, 255, 255, 0.03);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s var(--ease-spring);
-}
-
-/* 玻璃背景层 */
-.glass-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30%, transparent 70%, rgba(255, 255, 255, 0.05) 100%);
-  z-index: -1;
-}
-
-/* 玻璃卡片悬浮效果 */
-.glass-card:hover {
-  transform: translateY(-6rpx) scale(1.02);
-  border-color: rgba(var(--gold-rgb), 0.2);
-  box-shadow: 
-    0 12rpx 40rpx rgba(0, 0, 0, 0.4),
-    0 0 0 1rpx rgba(var(--gold-rgb), 0.2);
-}
-
-.glass-card:active {
-  transform: scale(0.96);
-  background: var(--surface-light);
-}
-
-/* 玻璃卡片高光动画 */
-.glass-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), 0.15), transparent);
-  transition: left 0.6s ease;
-}
-
-.glass-card:hover::after {
-  left: 100%;
-}
-
-/* 小尺寸玻璃胶囊（用于用户头像等） */
-.glass-pill {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  padding: 8rpx 24rpx 8rpx 8rpx;
-  border-radius: 40rpx;
-  display: inline-flex;
-  align-items: center;
-  border: 1rpx solid rgba(255, 255, 255, 0.12);
-  box-shadow: 
-    0 8rpx 32rpx rgba(0, 0, 0, 0.3),
-    inset 0 1rpx 0 rgba(255, 255, 255, 0.15),
-    inset 0 -1rpx 0 rgba(255, 255, 255, 0.03);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s var(--ease-spring);
-}
-
-.glass-pill::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30%, transparent 70%, rgba(255, 255, 255, 0.05) 100%);
-  z-index: -1;
-}
-
-.glass-pill:hover {
-  transform: translateY(-4rpx) scale(1.02);
-  border-color: rgba(var(--gold-rgb), 0.2);
-}
-
-/* 加载状态组件 */
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 120rpx 0;
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 0.3s forwards;
-}
-
-.loading-spinner {
-  width: 80rpx;
-  height: 80rpx;
-  border: 4rpx solid rgba(var(--gold-rgb), 0.2);
-  border-top: 4rpx solid var(--gold);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 32rpx;
-}
-
-.loading-text {
-  font-size: 28rpx;
-  color: var(--text-secondary);
-  letter-spacing: 2rpx;
-}
-
-/* 空状态组件 */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 120rpx 0;
-  text-align: center;
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 0.3s forwards;
-}
-
-.empty-icon {
-  width: 120rpx;
-  height: 120rpx;
-  margin-bottom: 32rpx;
-  opacity: 0.6;
-}
-
-.empty-title {
-  font-size: 32rpx;
-  color: var(--text-secondary);
-  margin-bottom: 16rpx;
-  font-weight: 600;
-}
-
-.empty-desc {
-  font-size: 26rpx;
-  color: var(--text-secondary);
-  opacity: 0.8;
-  line-height: 1.6;
-}
-
-/* 区块标题组件 */
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 24rpx;
-  padding: 0 8rpx;
-}
-
-.section-title {
-  font-size: 34rpx;
-  font-weight: 700;
-  color: #fff;
-}
-
-.section-more {
-  font-size: 24rpx;
-  color: var(--text-secondary);
-}
-
-/* 动画效果 */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(40rpx);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes goldPulse {
-  0%, 100% {
-    color: var(--gold);
-    text-shadow: 0 0 15rpx rgba(var(--gold-rgb), 0.4);
-  }
-  50% {
-    color: #ffd700;
-    text-shadow: 0 0 25rpx rgba(255, 215, 0, 0.6);
-  }
-}
-
-/* 金色脉冲文字 */
-.gold-pulse {
-  animation: goldPulse 3s ease-in-out infinite;
-  position: relative;
-}
-
-.gold-pulse::after {
-  content: '';
-  position: absolute;
-  bottom: -4rpx;
-  left: 0;
-  right: 0;
-  height: 2rpx;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0.6;
-}
-
-/* 滚动淡入动画 */
-.scroll-fade {
-  opacity: 0;
-  transform: translateY(30rpx);
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-fade.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* 装饰线条 */
-.decorative-line {
-  position: relative;
-}
-
-.decorative-line::after {
-  content: '';
-  position: absolute;
-  bottom: -8rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60rpx;
-  height: 2rpx;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0.6;
-}
-
-/* 响应式网格 */
-.grid-3 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32rpx;
-  position: relative;
-}
-
-@media (max-width: 750rpx) {
-  .grid-3 {
-    gap: 24rpx;
-  }
-}
-
-@media (min-width: 751rpx) {
-  .grid-3 {
-    gap: 32rpx;
-  }
-}
