@@ -5,41 +5,25 @@ const { getPropertyConfig } = require('../../utils/propertyMap.js')
 
 Page({
   data: {
-    // 核心数据
-    equipment: null,      // 装备模板数据
-    userEquipment: null,  // 用户仓库数据（具体的Roll值、图片）
-    userInfo: null,       // 收藏者（主人）信息
-    
-    // 状态标识
+    equipment: null,
+    userEquipment: null,
+    userInfo: null,
     loading: true,
-    isActivated: false,   // 是否已点亮
-    isOwner: false,       // 【新增】当前查看者是否是装备主人
-    
-    // 辅助
-    showCanvas: false,
+    isActivated: false,
+    isOwner: false,
     generatingImage: false,
-    currentImageIndex: 0,
-    scrollLeft: 0
+    formattedTime: ''
   },
 
-// pages/detail/detail.js - onLoad 函数
-
-onLoad(options) {
+  onLoad(options) {
     const equipmentId = options.id
     let ownerId = options.ownerId
-    
-    // 1. 尝试获取 openid
     const myOpenId = app.globalData.openid
 
-    // 2. 如果我是通过普通点击进来的（没带 ownerId），默认看自己的
     if (!ownerId && myOpenId) {
       ownerId = myOpenId
     }
 
-    // 3. 【新增】如果此时 ownerId 还是空的（比如刷新页面导致 globalData 丢失），
-    // 再次尝试调用 app.wxLogin() 或等待逻辑 (视你 app.js 实现而定)
-    // 这里做一个简单的兜底：如果没有 ownerId，就只加载模版，不加载用户数据
-    
     this.setData({ equipmentId, ownerId })
 
     if (equipmentId) {
@@ -47,7 +31,6 @@ onLoad(options) {
     }
   },
 
-  // 统一加载流程
   async loadData(equipmentId, ownerId) {
     this.setData({ loading: true })
     
@@ -55,12 +38,9 @@ onLoad(options) {
       const db = wx.cloud.database()
       const myOpenId = app.globalData.openid
       
-      // 判断身份
       const isOwner = (ownerId === myOpenId)
       this.setData({ isOwner })
 
-      // 1. 并行查询：装备模板 + 用户仓库数据
-      // 注意：查询 user_warehouse 时，我们要查 ownerId 的数据
       const templatePromise = db.collection('equipment_templates').doc(equipmentId).get()
       
       let userPromise = Promise.resolve({ data: [] })
@@ -68,7 +48,6 @@ onLoad(options) {
       if (ownerId) {
         userPromise = db.collection('user_warehouse')
           .where({
-            // 【修正】将 _openid 改为 openid，与 upload.js 保存的字段一致
             openid: ownerId, 
             templateId: equipmentId
           })
@@ -77,13 +56,11 @@ onLoad(options) {
 
       const [templateRes, userRes] = await Promise.all([templatePromise, userPromise])
       
-      // 2. 处理装备模板
       const equipment = {
         ...templateRes.data,
         rarity: getRarityText(templateRes.data)
       }
 
-      // 3. 处理用户数据
       let userEquipment = null
       let isActivated = false
       
@@ -91,11 +68,14 @@ onLoad(options) {
         userEquipment = userRes.data[0]
         isActivated = true
         
-        // 获取主人的个人信息
-        this.loadOwnerInfo(ownerId)
+        const formattedTime = this.formatActivationTime(userEquipment.createTime)
+        this.setData({ formattedTime })
+
+        this.getCollectorInfo(ownerId).then(info => {
+           this.setData({ userInfo: info })
+        })
       }
 
-      // 4. 处理属性显示 (复用原有逻辑，增加容错)
       if (equipment.attributes) {
         equipment.attributes = this.processAttributes(equipment.attributes, userEquipment)
       }
@@ -114,19 +94,16 @@ onLoad(options) {
     }
   },
 
-  // 属性处理逻辑抽离
   processAttributes(attributes, userEquipment) {
     return attributes.map(attr => {
       const config = getPropertyConfig(attr.code)
       let displayText = ''
       let userValue = undefined
 
-      // 如果已激活，尝试获取用户的 Roll 值
       if (userEquipment && userEquipment.attributes && userEquipment.attributes[attr.code] !== undefined) {
         userValue = userEquipment.attributes[attr.code]
       }
 
-      // 生成显示文本
       const valToShow = userValue !== undefined ? userValue : attr.min
       displayText = config.format.replace('{0}', valToShow)
       if (attr.param) displayText = displayText.replace('{p}', attr.param)
@@ -136,52 +113,65 @@ onLoad(options) {
         label: config.label,
         displayColor: config.color,
         displayText,
-        userValue // 存下来，wxml 里判断是否显示 "Roll" 标记
+        userValue
       }
     })
   },
 
-  // 获取主人的信息
-  async loadOwnerInfo(openid) {
+  async getCollectorInfo(openid) {
     try {
       const db = wx.cloud.database()
       const { data } = await db.collection('users').where({ openid }).get()
-      if (data.length > 0) {
-        this.setData({ userInfo: data[0] })
-      } else {
-        // 默认信息
-        this.setData({ userInfo: { nickName: '神秘奈非天', avatarUrl: '/images/default-avatar.png' } })
-      }
+      if (data.length > 0) return data[0]
+      return { nickName: '神秘奈非天', avatarUrl: '/images/default-avatar.png' }
     } catch (e) {
-      console.error(e)
+      return { nickName: '神秘奈非天', avatarUrl: '/images/default-avatar.png' }
     }
   },
 
-  // ==========================================
-  // 分享核心配置 (Share Logic)
-  // ==========================================
-  
-  // 1. 分享给好友 (卡片)
+  formatActivationTime(timeString) {
+    if (!timeString) return '未知时间'
+    const date = new Date(timeString)
+    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2,'0')}/${String(date.getDate()).padStart(2,'0')}`
+  },
+
+  viewImage(e) {
+    if (!this.data.userEquipment?.images?.length) return
+    const index = e.currentTarget.dataset.index || 0
+    const urls = this.data.userEquipment.images
+    wx.previewImage({ urls, current: urls[index] })
+  },
+
+  goToHome() {
+    wx.switchTab({ url: '/pages/index/index' })
+  },
+
+  goToUpload() {
+    const { equipment } = this.data
+    wx.setStorageSync('pendingUpload', {
+      templateId: equipment._id,
+      equipmentName: equipment.name
+    })
+    wx.switchTab({ url: '/pages/upload/upload' })
+  },
+
+  getEquipmentIcon(type) {
+    return '/images/1.png'
+  },
+
   onShareAppMessage() {
     const { equipment, isActivated, ownerId, userInfo } = this.data
-    
-    // 构造标题
     let title = `暗黑2图鉴：${equipment.name}`
     if (isActivated && userInfo) {
-      title = `快来看${userInfo.nickName}的【${equipment.name}】！`
+      title = `${userInfo.nickName} 的【${equipment.name}】`
     }
-
-    // 构造路径：必须带上 ownerId，否则别人点进来也是空的
-    const path = `/pages/detail/detail?id=${equipment._id}&ownerId=${ownerId}`
-
     return {
-      title: title,
-      path: path,
-      imageUrl: this.data.userEquipment?.images?.[0] || '/images/share-cover.jpg' // 优先用装备图，否则用默认图
+      title,
+      path: `/pages/detail/detail?id=${equipment._id}&ownerId=${ownerId}`,
+      imageUrl: this.data.userEquipment?.images?.[0] || '/images/share-cover.jpg'
     }
   },
 
-  // 2. 分享到朋友圈
   onShareTimeline() {
     const { equipment, ownerId } = this.data
     return {
@@ -191,101 +181,71 @@ onLoad(options) {
     }
   },
 
-  // 补充：回到首页
-  goToHome() {
-    wx.switchTab({ url: '/pages/index/index' })
-  },
-  
-  // 补充：去上传（只有主人或者未激活时才显示）
-  goToUpload() {
-    // 这里由于是 TabBar 跳转，无法直接传参，沿用之前的 Cache 方案
-    const { equipment } = this.data
-    wx.setStorageSync('pendingUpload', {
-      templateId: equipment._id,
-      equipmentName: equipment.name
-    })
-    wx.switchTab({ url: '/pages/upload/upload' })
-  },
-
 // ==========================================
-  // 海报生成系统 (Canvas 2D Version)
+  // 海报生成系统 (Unified Card Version)
   // ==========================================
 
   async generateShareImage() {
     if (this.data.generatingImage) return
     
-    const { equipment, isActivated, userEquipment } = this.data
+    const { equipment, isActivated, userEquipment, userInfo } = this.data
     if (!isActivated || !userEquipment?.images?.[0]) {
       return wx.showToast({ title: '无图片可分享', icon: 'none' })
     }
 
     this.setData({ generatingImage: true })
-    wx.showLoading({ title: '正在铭刻海报...', mask: true })
+    wx.showLoading({ title: '铭刻海报...', mask: true })
 
     try {
-      // 1. 初始化 Canvas 2D 节点
-      const { canvas, ctx, width, height, dpr } = await this.initCanvasNode()
+      const { canvas, ctx, width, height } = await this.initCanvasNode()
 
-      // 2. 准备资源 (并行下载)
-      // 注意：Canvas 2D 需要使用 canvas.createImage() 创建图片对象，不能直接画路径
-      
-      // A. 装备图
-      let equipImgUrl = userEquipment.images[0]
-      // 如果是云存储路径，先换取临时链接
-      if (equipImgUrl.startsWith('cloud://')) {
-        equipImgUrl = await this.getTempPathFromCloud(equipImgUrl)
-      }
-      
-      // B. 头像
-      const avatarUrl = this.data.userInfo?.avatarUrl || '/images/4.png'
-      
-      // C. 二维码 (本地图片)
-      const qrCodePath = '/images/3.png'
+      // 1. 准备资源
+      const equipSource = userEquipment.images[0]
+      const avatarSource = userInfo?.avatarUrl || '//images/default-avatar.png'
+      const qrCodeSource = '//images/qrcode-placeholder.png' 
+      const iconSource = equipment.image || '//images/1.png'
 
-      // D. 加载所有图片对象
-      const [equipImgObj, avatarImgObj, qrImgObj] = await Promise.all([
-        this.loadImage2D(canvas, equipImgUrl),
-        this.loadImage2D(canvas, avatarUrl),
-        this.loadImage2D(canvas, qrCodePath)
+      const [equipPath, avatarPath, qrPath, iconPath] = await Promise.all([
+        this.downloadToLocal(equipSource, 'equipment'),
+        this.downloadToLocal(avatarSource, 'avatar'),
+        this.downloadToLocal(qrCodeSource, 'qrcode'),
+        this.downloadToLocal(iconSource, 'icon')
       ])
 
-      // 3. 开始绘制 (使用标准 Web Canvas API)
-      
-      // 清空画布
+      const [equipImgObj, avatarImgObj, qrImgObj, iconImgObj] = await Promise.all([
+        this.createCanvasImage(canvas, equipPath),
+        this.createCanvasImage(canvas, avatarPath),
+        this.createCanvasImage(canvas, qrPath),
+        this.createCanvasImage(canvas, iconPath)
+      ])
+
+      wx.hideLoading()
+      wx.showLoading({ title: '正在绘制...', mask: true })
+
+      // 2. 开始绘制
       ctx.clearRect(0, 0, width, height)
 
-      // A. 绘制背景
+      // A. 背景 (纯净暗黑)
       this.drawBackground2D(ctx, width, height)
 
-      // B. 绘制装备大图
-      this.drawEquipmentImage2D(ctx, equipImgObj, width)
-
-      // C. 绘制信息卡片背景
-      // 这里的坐标需要根据 dpr 换算吗？不需要，因为我们在 initCanvasNode 里 scale 了 ctx
-      // 所以我们依然可以使用 750x1200 的逻辑坐标系写代码
-      this.drawGlassCard2D(ctx, 40, 780, 670, 380)
-
-      // D. 绘制文字信息
-      this.drawEquipmentInfo2D(ctx, equipment)
-
-      // E. 绘制用户胶囊
-      this.drawUserCapsule2D(ctx, avatarImgObj, this.data.userInfo?.nickName)
-
-      // F. 绘制二维码
-      // 假设 qrImgObj 加载成功，如果没图则跳过
-      if (qrImgObj) {
-        ctx.drawImage(qrImgObj, 560, 1050, 100, 100)
+      // B. 装备大图 (稍微上移，给大卡片留空间)
+      if (equipImgObj) {
+        this.drawMainImage2D(ctx, equipImgObj, width, 700) 
       }
-      
-      ctx.fillStyle = 'rgba(255,255,255,0.3)'
-      ctx.font = 'normal 20px sans-serif'
-      ctx.fillText('长按识别', 575, 1180)
 
-      // 4. 导出图片
-      // Canvas 2D 需要稍微延时一下确保渲染缓冲区就绪
+      // C. 统一大卡片 (包含信息、发现者、二维码)
+      // 从 Y=760 开始，一直到底部留白处
+      const cardY = 760
+      const cardH = 420 // 足够高以容纳所有内容
+      this.drawUnifiedPanel2D(ctx, equipment, iconImgObj, avatarImgObj, qrImgObj, userInfo?.nickName, 40, cardY, width - 80, cardH)
+
+      // D. 底部水印 (移到大卡片下方)
+      this.drawWatermark2D(ctx, 40, cardY + cardH + 50)
+
+      // 3. 导出
       setTimeout(() => {
         this.exportPostImage2D(canvas)
-      }, 200)
+      }, 500)
 
     } catch (error) {
       console.error('海报生成失败:', error)
@@ -296,218 +256,284 @@ onLoad(options) {
   },
 
   // ------------------------------------------
-  // Canvas 2D 专用工具函数
+  // 绘图逻辑 (Drawing Logic)
   // ------------------------------------------
 
-  // 初始化 Canvas 节点
+  drawBackground2D(ctx, w, h) {
+    const grd = ctx.createLinearGradient(0, 0, 0, h)
+    grd.addColorStop(0, '#1a1a1a')
+    grd.addColorStop(1, '#000000')
+    ctx.fillStyle = grd
+    ctx.fillRect(0, 0, w, h)
+  },
+
+  drawMainImage2D(ctx, imgObj, canvasWidth, targetHeight) {
+    const boxSize = 640
+    const boxX = (canvasWidth - boxSize) / 2
+    const boxY = 60 // 稍微上移
+
+    // 底座光晕
+    const centerX = canvasWidth / 2
+    const centerY = boxY + boxSize / 2
+    const grd = ctx.createRadialGradient(centerX, centerY, 50, centerX, centerY, 350)
+    grd.addColorStop(0, 'rgba(212, 175, 55, 0.15)')
+    grd.addColorStop(1, 'transparent')
+    ctx.fillStyle = grd
+    ctx.fillRect(0, 0, canvasWidth, targetHeight + 50)
+
+    // 绘制图片 (Aspect Fit)
+    const imgW = imgObj.width
+    const imgH = imgObj.height
+    const scale = Math.min(boxSize / imgW, boxSize / imgH)
+    const drawW = imgW * scale
+    const drawH = imgH * scale
+    const offsetX = (boxSize - drawW) / 2
+    const offsetY = (boxSize - drawH) / 2
+
+    ctx.save()
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'
+    ctx.shadowBlur = 30
+    ctx.shadowOffsetY = 20
+    ctx.drawImage(imgObj, boxX + offsetX, boxY + offsetY, drawW, drawH)
+    ctx.restore()
+  },
+
+  // 【核心新函数】绘制统一大面板
+  drawUnifiedPanel2D(ctx, equipment, iconImg, avatarImg, qrImg, nickName, x, y, w, h) {
+    // 1. 大卡片背景
+    ctx.save()
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.08)' // 统一的浅色玻璃
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)'
+    ctx.shadowBlur = 30
+    ctx.shadowOffsetY = 10
+    this.roundRect2D(ctx, x, y, w, h, 24)
+    ctx.fill()
+    ctx.restore()
+
+    // 边框
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'
+    ctx.lineWidth = 1
+    this.roundRect2D(ctx, x, y, w, h, 24)
+    ctx.stroke()
+
+    // --- 上半部分：装备信息 ---
+    let textOffsetX = 40
+    if (iconImg) {
+      const iconSize = 120
+      ctx.drawImage(iconImg, x + 40, y + 40, iconSize, iconSize) // 图标略大
+      textOffsetX = 190
+    }
+
+    // 装备名称
+    let titleColor = '#d4af37'
+    let rarityColor = '#d4af37'
+    let rarityBg = 'rgba(212, 175, 55, 0.15)'
+    let rarityBorder = 'rgba(212, 175, 55, 0.4)'
+
+    if (equipment.rarity === '套装') {
+      titleColor = '#32cd32'
+      rarityColor = '#32cd32'
+      rarityBg = 'rgba(50, 205, 50, 0.15)'
+      rarityBorder = 'rgba(50, 205, 50, 0.4)'
+    } else if (equipment.rarity === '符文之语') {
+      titleColor = '#ffa500'
+      rarityColor = '#ffa500'
+      rarityBg = 'rgba(255, 165, 0, 0.15)'
+      rarityBorder = 'rgba(255, 165, 0, 0.4)'
+    } else {
+      titleColor = '#ffffff'
+    }
+
+    ctx.fillStyle = titleColor
+    ctx.font = 'bold 44px "Times New Roman", serif'
+    ctx.textAlign = 'left'
+    ctx.fillText(equipment.name_zh, x + textOffsetX, y + 80)
+
+    // 品质胶囊
+    const pillText = equipment.rarity
+    ctx.font = 'bold 22px sans-serif'
+    const textMetrics = ctx.measureText(pillText)
+    const pillW = textMetrics.width + 40
+    const pillH = 40
+    const pillX = x + textOffsetX
+    const pillY = y + 110
+
+    ctx.save()
+    ctx.fillStyle = rarityBg
+    ctx.strokeStyle = rarityBorder
+    ctx.lineWidth = 1
+    this.roundRect2D(ctx, pillX, pillY, pillW, pillH, pillH/2)
+    ctx.fill()
+    ctx.stroke()
+    ctx.fillStyle = rarityColor
+    ctx.textAlign = 'center'
+    ctx.fillText(pillText, pillX + pillW/2, pillY + 28)
+    ctx.restore()
+
+    // --- 分割线 ---
+    const dividerY = y + 200
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'
+    ctx.beginPath()
+    ctx.moveTo(x + 40, dividerY)
+    ctx.lineTo(x + w - 40, dividerY)
+    ctx.stroke()
+
+    // --- 下半部分：发现者 & 二维码 ---
+    const bottomContentY = dividerY + 40
+    
+    // 发现者头像
+    const avatarSize = 100
+    ctx.save()
+    ctx.beginPath()
+    ctx.arc(x + 40 + avatarSize/2, bottomContentY + avatarSize/2, avatarSize/2, 0, 2 * Math.PI)
+    ctx.clip()
+    if (avatarImg) ctx.drawImage(avatarImg, x + 40, bottomContentY, avatarSize, avatarSize)
+    ctx.restore()
+    // 头像金框
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.arc(x + 40 + avatarSize/2, bottomContentY + avatarSize/2, avatarSize/2, 0, 2 * Math.PI)
+    ctx.stroke()
+
+    // 发现者名字
+    ctx.textAlign = 'left'
+    ctx.fillStyle = '#d4af37'
+    ctx.font = 'normal 24px sans-serif'
+    ctx.fillText('发现者', x + 160, bottomContentY + 30)
+    
+    ctx.fillStyle = '#fff'
+    ctx.font = 'bold 32px sans-serif'
+    ctx.fillText(nickName || '奈非天', x + 160, bottomContentY + 75)
+
+    // 二维码 (右对齐)
+    if (qrImg) {
+      const qrSize = 140
+      const qrX = x + w - 40 - qrSize
+      const qrY = bottomContentY - 20
+      
+      ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize)
+      
+      ctx.fillStyle = 'rgba(255,255,255,0.4)'
+      ctx.font = 'normal 20px sans-serif'
+      ctx.textAlign = 'center'
+      ctx.fillText('长按识别', qrX + qrSize/2, qrY + qrSize + 30)
+    }
+  },
+
+  // 独立水印绘制
+  drawWatermark2D(ctx, x, y) {
+    ctx.save()
+    ctx.fillStyle = 'rgba(212, 175, 55, 0.5)' // 暗金半透明
+    ctx.font = 'italic bold 28px "Times New Roman", serif' 
+    ctx.textAlign = 'left'
+    ctx.fillText('Diablo II Resurrected', x, y)
+    
+    // 右侧加个小装饰线
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    const textWidth = ctx.measureText('Diablo II Resurrected').width
+    ctx.moveTo(x + textWidth + 20, y - 10)
+    ctx.lineTo(x + textWidth + 100, y - 10)
+    ctx.lineTo(x + textWidth + 100, y - 25)
+    ctx.stroke()
+    
+    ctx.restore()
+  },
+
+  // ------------------------------------------
+  // 工具函数 (Utils)
+  // ------------------------------------------
+
   initCanvasNode() {
     return new Promise((resolve) => {
       const query = wx.createSelectorQuery()
       query.select('#shareCanvas')
         .fields({ node: true, size: true })
         .exec((res) => {
+          if (!res[0] || !res[0].node) throw new Error('Canvas节点未找到')
           const canvas = res[0].node
           const ctx = canvas.getContext('2d')
           
-          // 处理高清屏 DPR
-          const dpr = wx.getSystemInfoSync().pixelRatio
+          const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
+          const dpr = info.pixelRatio
           
-          // 设置画布内部尺寸 (物理像素)
-          canvas.width = res[0].width * dpr
-          canvas.height = res[0].height * dpr
+          const designWidth = 750
+          const designHeight = 1334
           
-          // 缩放上下文，让我们后续可以用逻辑像素 (CSS像素) 绘图
+          canvas.width = designWidth * dpr
+          canvas.height = designHeight * dpr
           ctx.scale(dpr, dpr)
 
-          // 这里的 width/height 返回逻辑像素，用于后续布局计算
-          resolve({ canvas, ctx, width: res[0].width, height: res[0].height, dpr })
+          resolve({ canvas, ctx, width: designWidth, height: designHeight })
         })
     })
   },
 
-  // 加载图片对象 (Canvas 2D 专用)
-  loadImage2D(canvas, src) {
-    return new Promise((resolve, reject) => {
+  async downloadToLocal(path, type) {
+    if (!path) return null
+    try {
+      if (path.startsWith('cloud://')) {
+        const res = await wx.cloud.downloadFile({ fileID: path })
+        return res.tempFilePath
+      }
+      if (path.startsWith('http')) {
+        return new Promise(resolve => {
+          wx.downloadFile({
+            url: path,
+            success: res => resolve(res.statusCode === 200 ? res.tempFilePath : null),
+            fail: () => resolve(null)
+          })
+        })
+      }
+      return new Promise(resolve => {
+        wx.getImageInfo({
+          src: path,
+          success: res => resolve(res.path),
+          fail: (err) => {
+            console.error(`本地图片失败 [${type}]:`, path, err)
+            resolve(null)
+          }
+        })
+      })
+    } catch (e) {
+      console.error(`资源异常 [${type}]:`, e)
+      return null
+    }
+  },
+
+  createCanvasImage(canvas, src) {
+    return new Promise((resolve) => {
+      if (!src) return resolve(null)
       const img = canvas.createImage()
       img.onload = () => resolve(img)
-      img.onerror = (e) => {
-        console.warn('图片加载失败:', src, e)
-        // 即使失败也 resolve null，避免 Promise.all 卡死
-        resolve(null)
-      }
+      img.onerror = () => resolve(null)
       img.src = src
     })
   },
 
-  // 获取云文件临时路径
-  async getTempPathFromCloud(fileID) {
-    try {
-      const { tempFileURLs } = await wx.cloud.getTempFileURL({ fileList: [fileID] })
-      return tempFileURLs[0].tempFileURL
-    } catch (e) {
-      return fileID // 失败降级
-    }
-  },
-
-  // ------------------------------------------
-  // 绘图逻辑 (Standard Web API)
-  // ------------------------------------------
-
-  drawBackground2D(ctx, w, h) {
-    // 线性渐变
-    const grd = ctx.createLinearGradient(0, 0, 0, h)
-    grd.addColorStop(0, '#1a1a1a')
-    grd.addColorStop(1, '#000000')
-    ctx.fillStyle = grd
-    ctx.fillRect(0, 0, w, h)
-
-    // 金色边框
-    ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)'
-    ctx.lineWidth = 2
-    ctx.strokeRect(20, 20, w - 40, h - 40)
-  },
-
-  drawEquipmentImage2D(ctx, imgObj, canvasWidth) {
-    if (!imgObj) return
-
-    const size = 600
-    const x = (canvasWidth - size) / 2
-    const y = 100
-
-    // 背景光晕
-    const grd = ctx.createRadialGradient(375, 400, 50, 375, 400, 300)
-    grd.addColorStop(0, 'rgba(212, 175, 55, 0.2)')
-    grd.addColorStop(1, 'transparent')
-    ctx.fillStyle = grd
-    ctx.fillRect(0, 0, canvasWidth, 700)
-
-    // 图片绘制 (圆角剪裁)
-    ctx.save()
-    this.roundRect2D(ctx, x, y, size, size, 20)
-    ctx.clip()
-    // drawImage 传入的是 Image 对象
-    ctx.drawImage(imgObj, x, y, size, size)
-    ctx.restore()
-
-    // 金框
-    ctx.strokeStyle = '#d4af37'
-    ctx.lineWidth = 4
-    this.roundRect2D(ctx, x, y, size, size, 20)
-    ctx.stroke()
-  },
-
-  drawGlassCard2D(ctx, x, y, w, h) {
-    ctx.save()
-    ctx.fillStyle = 'rgba(30, 30, 30, 0.8)'
-    
-    // Canvas 2D 阴影写法
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)'
-    ctx.shadowBlur = 30
-    ctx.shadowOffsetY = 10
-    
-    this.roundRect2D(ctx, x, y, w, h, 24)
-    ctx.fill()
-    ctx.restore()
-
-    // 顶部高光条
-    ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)'
-    ctx.lineWidth = 2
-    ctx.beginPath()
-    ctx.moveTo(x + 24, y)
-    ctx.lineTo(x + w - 24, y)
-    ctx.stroke()
-  },
-
-  drawEquipmentInfo2D(ctx, equipment) {
-    const startX = 80
-    let startY = 860
-
-    // 1. 名称
-    ctx.fillStyle = '#d4af37'
-    // Canvas 2D 设置字体必须是完整字符串
-    ctx.font = 'bold 48px sans-serif'
-    ctx.fillText(equipment.name, startX, startY)
-
-    // 2. 类型
-    startY += 60
-    ctx.fillStyle = '#888888'
-    ctx.font = 'normal 28px sans-serif'
-    const subText = `${equipment.name_zh !== equipment.name ? equipment.name + ' · ' : ''}${equipment.type}`
-    ctx.fillText(subText, startX, startY)
-
-    // 3. 属性
-    startY += 60
-    ctx.fillStyle = '#cccccc'
-    ctx.font = 'normal 26px sans-serif'
-    
-    const attrs = equipment.attributes || []
-    let count = 0
-    attrs.forEach(attr => {
-      if (count >= 4) return
-      
-      // 复用之前的属性显示逻辑
-      let text = attr.displayText
-      // 如果没有预处理，这里简单降级处理
-      if (!text) {
-         const { getPropertyConfig } = require('../../utils/propertyMap.js')
-         const config = getPropertyConfig(attr.code)
-         if(attr.userValue !== undefined) {
-             text = config.format.replace('{0}', attr.userValue)
-         } else {
-             text = `${config.label}: ${attr.min}`
-         }
-         if (attr.param) text = text.replace('{p}', attr.param)
+  exportPostImage2D(canvas) {
+    wx.canvasToTempFilePath({
+      canvas: canvas,
+      fileType: 'jpg',
+      quality: 0.9,
+      success: (res) => {
+        wx.hideLoading()
+        this.setData({ generatingImage: false })
+        wx.previewImage({
+          current: res.tempFilePath,
+          urls: [res.tempFilePath]
+        })
+      },
+      fail: () => {
+        wx.hideLoading()
+        this.setData({ generatingImage: false })
+        wx.showToast({ title: '导出失败', icon: 'none' })
       }
-
-      ctx.fillText('• ' + text, startX, startY + (count * 40))
-      count++
     })
-    
-    if (attrs.length > 4) {
-      ctx.fillText('...', startX, startY + (count * 40))
-    }
   },
 
-  drawUserCapsule2D(ctx, avatarImgObj, nickName) {
-    const x = 80
-    const y = 1080
-    const h = 80
-    const w = 300
-
-    // 胶囊背景
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)'
-    this.roundRect2D(ctx, x, y, w, h, h/2)
-    ctx.fill()
-
-    // 头像
-    ctx.save()
-    ctx.beginPath()
-    ctx.arc(x + 40, y + 40, 30, 0, 2 * Math.PI)
-    ctx.clip()
-    if (avatarImgObj) {
-      ctx.drawImage(avatarImgObj, x + 10, y + 10, 60, 60)
-    }
-    ctx.restore()
-
-    // 边框
-    ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)'
-    ctx.lineWidth = 2
-    ctx.beginPath()
-    ctx.arc(x + 40, y + 40, 30, 0, 2 * Math.PI)
-    ctx.stroke()
-
-    // 名字
-    ctx.fillStyle = '#ffffff'
-    ctx.font = 'normal 28px sans-serif'
-    ctx.fillText(nickName || '奈非天', x + 90, y + 50)
-    
-    // 标签
-    ctx.fillStyle = '#d4af37'
-    ctx.font = 'normal 20px sans-serif'
-    ctx.fillText('发现者', x + 90, y + 25)
-  },
-
-  // 绘制圆角矩形路径 (标准)
   roundRect2D(ctx, x, y, w, h, r) {
     if (w < 2 * r) r = w / 2;
     if (h < 2 * r) r = h / 2;
@@ -518,30 +544,5 @@ onLoad(options) {
     ctx.arcTo(x, y + h, x, y, r);
     ctx.arcTo(x, y, x + w, y, r);
     ctx.closePath();
-  },
-
-  // 导出图片
-  exportPostImage2D(canvas) {
-    wx.canvasToTempFilePath({
-      canvas: canvas, // Canvas 2D 必须传 canvas 实例，而不是 canvas-id
-      fileType: 'jpg',
-      quality: 0.9,
-      success: (res) => {
-        wx.hideLoading()
-        this.setData({ generatingImage: false })
-        
-        wx.previewImage({
-          current: res.tempFilePath,
-          urls: [res.tempFilePath]
-        })
-      },
-      fail: (err) => {
-        console.error('导出图片失败', err)
-        wx.hideLoading()
-        this.setData({ generatingImage: false })
-        wx.showToast({ title: '导出失败', icon: 'none' })
-      }
-    })
   }
-
 })
