@@ -150,6 +150,8 @@
   align-items: center;
   padding: 0 20rpx;
   height: 72rpx;
+  background: transparent !important;
+  backdrop-filter: none !important;
 }
 
 .search-icon {
@@ -176,6 +178,8 @@
   padding: 0 24rpx;
   height: 72rpx;
   transition: all 0.3s var(--ease-spring);
+  background: transparent !important;
+  backdrop-filter: none !important;
 }
 
 .filter-btn.active {
@@ -254,6 +258,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24rpx;
+  margin-top: 32rpx;
 }
 
 .grid-item {
@@ -360,6 +365,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
+}
+
+/* 重置筛选按钮自适应宽度 */
+.btn-primary {
+  width: fit-content !important;
+  min-width: 160rpx;
+  padding: 0 48rpx;
 }
 
 /* 加载更多指示器 */

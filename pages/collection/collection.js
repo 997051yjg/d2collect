@@ -818,14 +818,17 @@ Page({
     
     // 获取所有需要动画的元素
     const query = wx.createSelectorQuery();
-    const elements = query.selectAll('.scroll-fade');
-    
-    elements.boundingClientRect((rects) => {
-      rects.forEach((rect, index) => {
-        // 如果元素进入视口，添加可见类
-        if (rect.top <= wx.getSystemInfoSync().windowHeight - 100) {
-          const element = elements.select(index);
-          element.addClass('visible').exec();
+    query.selectAll('.scroll-fade').boundingClientRect((rects) => {
+      // 获取窗口信息（使用新API）
+      wx.getWindowInfo({
+        success: (windowInfo) => {
+          rects.forEach((rect, index) => {
+            // 如果元素进入视口，添加可见类
+            if (rect.top <= windowInfo.windowHeight - 100) {
+              const elementQuery = wx.createSelectorQuery();
+              elementQuery.selectAll('.scroll-fade').at(index).addClass('visible').exec();
+            }
+          });
         }
       });
     }).exec();
@@ -842,14 +845,17 @@ Page({
   // 初始化滚动动画
   initScrollAnimations() {
     const query = wx.createSelectorQuery();
-    const elements = query.selectAll('.scroll-fade');
-    
-    elements.boundingClientRect((rects) => {
-      rects.forEach((rect, index) => {
-        // 检查元素是否在视口中
-        if (rect.top <= wx.getSystemInfoSync().windowHeight) {
-          const element = elements.select(index);
-          element.addClass('visible').exec();
+    query.selectAll('.scroll-fade').boundingClientRect((rects) => {
+      // 获取窗口信息（使用新API）
+      wx.getWindowInfo({
+        success: (windowInfo) => {
+          rects.forEach((rect, index) => {
+            // 检查元素是否在视口中
+            if (rect.top <= windowInfo.windowHeight) {
+              const elementQuery = wx.createSelectorQuery();
+              elementQuery.selectAll('.scroll-fade').at(index).addClass('visible').exec();
+            }
+          });
         }
       });
     }).exec();

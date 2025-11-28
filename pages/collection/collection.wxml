@@ -100,11 +100,6 @@
 
     <!-- 装备网格 -->
     <view class="section animate-enter delay-2 scroll-fade" wx:if="{{displayList.length > 0}}" data-animation="true">
-      <view class="section-header">
-        <text class="section-title decorative-line">装备列表</text>
-        <text class="section-count">{{displayList.length}} / {{filteredList.length}}</text>
-      </view>
-      
       <view class="collection-grid">
         <view class="grid-item scroll-load" 
               wx:for="{{displayList}}" 
