@@ -122,6 +122,10 @@
     </view>
   </view>
 
-  <canvas canvas-id="shareCanvas" style="width: 750rpx; height: 1000rpx; position: fixed; top: -9999px;"></canvas>
+  <canvas 
+    type="2d"
+    id="shareCanvas" 
+    style="width: 750rpx; height: 1200rpx; position: fixed; top: 0; left: -9999px;"
+  ></canvas>
 
 </view>
