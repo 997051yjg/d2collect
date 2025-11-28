@@ -1,110 +1,63 @@
-<view class="container page-loading">
+<view class="container theme-bg-diablo">
+  <view class="bg-particles"></view>
+  <view class="bg-texture"></view>
+
   <view class="page-content">
     
-    <!-- 头部区域 -->
-    <view class="header animate-enter scroll-fade" data-animation="true">
-      <view class="logo-area">
-        <view class="logo-container">
-          <image class="logo" src="/images/1.png" mode="aspectFit" />
-        </view>
-        <view class="titles">
-          <text class="main-title">装备图鉴</text>
-          <text class="sub-title">Collection</text>
-        </view>
+    <view class="header-compact animate-enter">
+      <view class="header-info">
+        <text class="page-title">装备图鉴</text>
+        <text class="page-subtitle decorative-line">Collection</text>
       </view>
-
-      <!-- 统计信息 -->
-      <view class="stats-pill glass-pill" wx:if="{{isLoggedIn}}">
-        <text class="stats-text">已收集 {{collectionStats.activatedCount}} / {{collectionStats.totalCount}}</text>
-        <view class="progress-bar">
+      <view class="progress-card glass-card">
+        <view class="progress-info">
+          <text class="progress-label">收集进度</text>
+          <text class="progress-val gold-text">{{collectionStats.activatedCount}} <text class="dim">/ {{collectionStats.totalCount}}</text></text>
+        </view>
+        <view class="progress-track">
           <view class="progress-fill" style="width: {{collectionStats.completionRate}}%"></view>
         </view>
       </view>
     </view>
 
-    <!-- 搜索和筛选区域 -->
-    <view class="section animate-enter delay-1 scroll-fade" data-animation="true">
-      <view class="search-filter-container glass-card">
-        <!-- 搜索框 -->
-        <view class="search-box glass-pill">
-          <icon class="search-icon" type="search" size="16" color="var(--text-secondary)" />
-          <input class="search-input" 
-                 placeholder="搜索装备名称或类型..." 
-                 placeholder-class="placeholder"
-                 bindinput="onSearchInput" 
-                 value="{{searchKeyword}}" />
-        </view>
-        
-        <!-- 筛选按钮 -->
-        <view class="filter-btn glass-pill {{showFilterPanel ? 'active' : ''}}" 
-              bindtap="toggleFilterPanel">
-          <icon class="filter-icon" type="filter" size="16" color="{{showFilterPanel ? 'var(--gold)' : 'var(--text-secondary)'}}" />
-          <text class="filter-text">筛选</text>
-        </view>
+    <view class="filter-zone animate-enter delay-1">
+      
+      <view class="ios-search-bar">
+        <icon type="search" size="16" color="var(--text-secondary)"/>
+        <input class="ios-search-input" 
+               placeholder="搜索装备名称..." 
+               placeholder-class="ios-search-placeholder"
+               value="{{searchKeyword}}"
+               bindinput="onSearchInput"
+               confirm-type="search"/>
+        <icon wx:if="{{searchKeyword}}" type="clear" size="16" color="#888" bindtap="clearSearch"/>
       </view>
 
-      <!-- 筛选面板 -->
-      <view class="filter-panel glass-card animate-enter" wx:if="{{showFilterPanel}}">
-        <view class="filter-section">
-          <text class="section-title decorative-line">装备类型</text>
-          <view class="filter-tags">
-            <view 
-              class="tag glass-pill {{currentTypeFilter === item.key ? 'active' : ''}}" 
+      <scroll-view class="type-scroll" scroll-x enable-flex show-scrollbar="{{false}}">
+        <view class="type-item {{currentTypeFilter === item.key ? 'active' : ''}}"
               wx:for="{{filterCategories}}" 
               wx:key="key"
               bindtap="setTypeFilter" 
               data-type="{{item.key}}">
-              {{item.label}}
-            </view>
-          </view>
+          {{item.label}}
+          <view class="active-indicator" wx:if="{{currentTypeFilter === item.key}}"></view>
         </view>
+      </scroll-view>
 
-        <view class="filter-section">
-          <text class="section-title decorative-line">稀有度</text>
-          <view class="filter-options">
-            <view class="option-item glass-pill {{advancedFilters.unique ? 'active' : ''}}" 
-                  bindtap="toggleAdvancedFilter" 
-                  data-filter="unique">
-              <text>暗金</text>
-            </view>
-            <view class="option-item glass-pill {{advancedFilters.suit ? 'active' : ''}}" 
-                  bindtap="toggleAdvancedFilter" 
-                  data-filter="suit">
-              <text>套装</text>
-            </view>
-            <view class="option-item glass-pill {{advancedFilters.runeWord ? 'active' : ''}}" 
-                  bindtap="toggleAdvancedFilter" 
-                  data-filter="runeWord">
-              <text>符文之语</text>
-            </view>
-          </view>
-        </view>
-
-        <view class="filter-section">
-          <text class="section-title decorative-line">收集状态</text>
-          <view class="filter-options">
-            <view class="option-item glass-pill {{advancedFilters.activated ? 'active' : ''}}" 
-                  bindtap="toggleAdvancedFilter" 
-                  data-filter="activated">
-              <text>已收集</text>
-            </view>
-            <view class="option-item glass-pill {{advancedFilters.notActivated ? 'active' : ''}}" 
-                  bindtap="toggleAdvancedFilter" 
-                  data-filter="notActivated">
-              <text>未收集</text>
-            </view>
-          </view>
-        </view>
+      <view class="filter-chips">
+        <view class="chip glass-pill {{advancedFilters.unique ? 'active-gold' : ''}}" bindtap="toggleAdvancedFilter" data-filter="unique">暗金</view>
+        <view class="chip glass-pill {{advancedFilters.suit ? 'active-green' : ''}}" bindtap="toggleAdvancedFilter" data-filter="suit">套装</view>
+        <view class="chip glass-pill {{advancedFilters.runeWord ? 'active-orange' : ''}}" bindtap="toggleAdvancedFilter" data-filter="runeWord">符文</view>
+        <view class="chip glass-pill {{advancedFilters.activated ? 'active-dim' : ''}}" bindtap="toggleAdvancedFilter" data-filter="activated">已拥有</view>
+        <view class="chip glass-pill {{advancedFilters.notActivated ? 'active-dim' : ''}}" bindtap="toggleAdvancedFilter" data-filter="notActivated">未拥有</view>
       </view>
     </view>
 
-    <!-- 装备网格 -->
-    <view class="section animate-enter delay-2 scroll-fade" wx:if="{{displayList.length > 0}}" data-animation="true">
-      <view class="collection-grid">
-        <view class="grid-item scroll-load" 
+    <view class="grid-container animate-enter delay-2" wx:if="{{displayList.length > 0}}">
+      <view class="collection-grid grid-3">
+        <view class="grid-item" 
               wx:for="{{displayList}}" 
               wx:key="id"
-              style="animation-delay: {{index * 0.05}}s"
               bindtap="viewEquipment" 
               bindlongpress="onLongPressEquipment"
               data-id="{{item.id}}"
@@ -112,53 +65,42 @@
               data-activated="{{item.isActivated}}">
           
           <view class="item-card glass-card {{item.isActivated ? 'owned' : ''}}">
-            <image class="item-img" src="{{item.icon}}" mode="aspectFit" lazy-load 
-                   bindload="onImageLoad" binderror="onImageError"
-                   data-id="{{item.id}}" data-name="{{item.name}}" data-src="{{item.icon}}" />
+            <image class="item-img" src="{{item.icon}}" mode="aspectFit" lazy-load binderror="onImageError" data-index="{{index}}" />
             
-            <!-- 稀有度标识 -->
-            <view class="rarity-badge {{item.rarityClass}}" wx:if="{{item.rarityClass}}">
-              <text>{{item.rarity}}</text>
-            </view>
+            <view class="rarity-dot {{item.rarityClass}}"></view>
             
-            <!-- 收集状态标识 -->
-            <view class="status-indicator" wx:if="{{item.isActivated}}">
-              <icon type="success_no_circle" size="12" color="#000" />
+            <view class="status-badge" wx:if="{{item.isActivated}}">
+              <icon type="success_no_circle" size="10" color="#000" />
             </view>
           </view>
           
-          <text class="item-name">{{item.name}}</text>
-          <text class="item-type">{{item.type}}</text>
+          <text class="item-name {{item.isActivated ? 'gold-text' : ''}}">{{item.name}}</text>
         </view>
       </view>
     </view>
 
-    <!-- 加载更多指示器 -->
     <view class="loading-more" wx:if="{{loading && displayList.length > 0}}">
-      <view class="loading-spinner"></view>
-      <text class="loading-text">加载更多...</text>
+      <view class="loading-spinner small"></view>
     </view>
 
-    <!-- 空状态显示 -->
     <view class="empty-state" wx:if="{{!loading && displayList.length === 0 && isLoggedIn}}">
       <image class="empty-icon" src="/images/4.png" mode="aspectFit" />
-      <text class="empty-title">未找到相关装备</text>
-      <text class="empty-desc">尝试调整筛选条件或搜索关键词</text>
-      <view class="btn-primary" bindtap="resetFilters">重置筛选</view>
+      <text class="empty-title">未找到装备</text>
+      <text class="empty-desc">换个关键词或筛选条件试试吧</text>
+      <view class="btn-primary" bindtap="resetFilters" style="margin-top: 30rpx;">重置筛选</view>
     </view>
 
-    <!-- 未登录提示 -->
     <view class="empty-state" wx:if="{{!isLoggedIn}}">
       <image class="empty-icon" src="/images/1.png" mode="aspectFit" />
-      <text class="empty-title">登录查看图鉴</text>
-      <text class="empty-desc">登录后开始记录你的装备收集</text>
-      <view class="btn-primary" bindtap="wxLogin">立即登录</view>
+      <text class="empty-title">圣殿的大门紧闭</text>
+      <text class="empty-desc">登录以查阅赫拉迪克方块的记录</text>
+      <view class="btn-primary" bindtap="wxLogin" style="margin-top: 30rpx;">点亮火把 (登录)</view>
     </view>
 
-    <!-- 加载状态 -->
     <view class="loading-state" wx:if="{{loading && displayList.length === 0}}">
       <view class="loading-spinner"></view>
-      <text class="loading-text">加载中...</text>
+      <text class="loading-text">正在翻阅古籍...</text>
     </view>
+
   </view>
 </view>

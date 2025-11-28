@@ -265,3 +265,72 @@
     0%, 100% { color: var(--gold); text-shadow: 0 0 15rpx rgba(var(--gold-rgb), 0.4); }
     50% { color: #ffd700; text-shadow: 0 0 25rpx rgba(255, 215, 0, 0.6); }
   }
+
+  /* ====================================
+   6. 表单与交互组件 (Forms & Inputs)
+   ==================================== */
+
+/* iOS 风格搜索栏 */
+.ios-search-bar {
+    display: flex;
+    align-items: center;
+    height: 72rpx;
+    padding: 0 24rpx;
+    /* 复用玻璃胶囊样式，但调整圆角 */
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border-radius: 20rpx;
+    border: 1rpx solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .ios-search-bar:focus-within {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(var(--gold-rgb), 0.5);
+    box-shadow: 0 0 20rpx rgba(var(--gold-rgb), 0.2);
+  }
+  
+  .ios-search-input {
+    flex: 1;
+    font-size: 28rpx;
+    color: #fff;
+    height: 100%;
+    margin-left: 16rpx;
+  }
+  
+  .ios-search-placeholder {
+    color: var(--text-secondary);
+  }
+  
+  /* 进度条组件 */
+  .progress-track {
+    width: 100%;
+    height: 8rpx;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4rpx;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), #ffd700);
+    border-radius: 4rpx;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+  
+  /* 进度条扫光动画 */
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: translateX(-100%);
+    animation: progressShine 2s infinite;
+  }
+  
+  @keyframes progressShine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
