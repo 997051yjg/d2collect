@@ -93,13 +93,13 @@
     <view class="empty-state" wx:if="{{!isLoggedIn}}">
       <image class="empty-icon" src="/images/1.png" mode="aspectFit" />
       <text class="empty-title">圣殿的大门紧闭</text>
-      <text class="empty-desc">登录以查阅赫拉迪克方块的记录</text>
+      <text class="empty-desc">登录以查阅赫拉迪克卷轴的记录</text>
       <view class="btn-primary" bindtap="wxLogin" style="margin-top: 30rpx;">点亮火把 (登录)</view>
     </view>
 
     <view class="loading-state" wx:if="{{loading && displayList.length === 0}}">
       <view class="loading-spinner"></view>
-      <text class="loading-text">正在翻阅古籍...</text>
+      <text class="loading-text">正在展开卷轴...</text>
     </view>
 
   </view>
