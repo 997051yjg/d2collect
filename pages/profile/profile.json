@@ -1,8 +1,7 @@
 {
-  "navigationBarTitleText": "个人中心",
-  "navigationBarBackgroundColor": "#0a0a0a",
-  "navigationBarTextStyle": "white",
-  "backgroundColor": "#0a0a0a",
-  "enablePullDownRefresh": false,
-  "disableScroll": true
-}
+    "navigationBarTitleText": "角色面板",
+    "navigationBarBackgroundColor": "#000000",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#000000",
+    "disableScroll": false
+  }

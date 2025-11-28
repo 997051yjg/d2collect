@@ -1,64 +1,102 @@
-<!--pages/profile/profile.wxml-->
-<view class="container">
-  <!-- 头部区域 -->
-  <view class="header animate-enter">
-    <view class="logo-section">
-      <view class="logo"><image class="logo-image" src="/images/4.png" mode="aspectFit" /></view>
-      <text class="title">我的信息</text>
-      <text class="subtitle">管理您的个人信息</text>
-    </view>
-  </view>
+<view class="container theme-bg-diablo">
+  <view class="bg-particles"></view>
+  <view class="bg-texture"></view>
 
-  <!-- 未登录状态 -->
-  <view wx:if="{{!isLoggedIn}}" class="login-prompt">
-    <view class="login-icon"><image class="login-icon-image" src="/images/4.png" mode="aspectFit" /></view>
-    <text class="login-text">请先登录</text>
-    <button class="btn-primary login-btn" bindtap="wxLogin">微信登录</button>
-    <text class="login-alternative">使用微信账号登录</text>
-  </view>
-
-  <!-- 已登录状态 -->
-  <view wx:if="{{isLoggedIn}}" class="profile-content">
-    <!-- 头像区域 -->
-    <view class="avatar-section card animate-enter delay-1">
-      <view class="avatar-container">
-        <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
-        <view class="avatar-overlay" bindtap="uploadAvatar">
-          <text class="upload-text">{{uploadingAvatar ? '上传中...' : '更换头像'}}</text>
-        </view>
+  <view class="page-content">
+    
+    <view class="login-gate animate-enter" wx:if="{{!isLoggedIn}}">
+      <view class="gate-icon-wrapper">
+        <image class="gate-icon" src="/images/4.png" mode="aspectFit" />
+        <view class="gate-glow"></view>
       </view>
-      <text class="avatar-tip">点击头像可更换</text>
-    </view>
-
-    <!-- 昵称区域 -->
-    <view class="nickname-section card">
-      <view wx:if="{{!editing}}" class="nickname-display">
-        <text class="nickname-label">昵称：</text>
-        <text class="nickname-value">{{userInfo.nickName}}</text>
-        <button class="edit-btn" size="mini" bindtap="startEditNickName">编辑</button>
-      </view>
+      <text class="gate-title">圣殿的大门紧闭</text>
+      <text class="gate-subtitle">只有真正的英雄才能通过</text>
       
-      <view wx:if="{{editing}}" class="nickname-edit">
-        <input 
-          class="nickname-input" 
-          value="{{tempNickName}}" 
-          placeholder="请输入昵称" 
-          maxlength="20"
-          bindinput="onNickNameInput"
-        />
-        <view class="edit-actions">
-          <button class="cancel-btn" size="mini" bindtap="cancelEditNickName">取消</button>
-          <button class="save-btn" size="mini" bindtap="saveNickName">保存</button>
-        </view>
-      </view>
+      <button class="btn-primary login-btn" bindtap="wxLogin">
+        <text>开启旅程 (微信登录)</text>
+      </button>
     </view>
 
+    <view class="profile-dashboard" wx:else>
+      
+      <view class="hero-card glass-card animate-enter">
+        <view class="hero-header">
+          <view class="avatar-rune-wrapper" bindtap="uploadAvatar">
+            <view class="rune-ring {{uploadingAvatar ? 'spinning' : ''}}"></view>
+            <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+            <view class="avatar-badge">
+              <icon type="success" size="12" color="#000" wx:if="{{!uploadingAvatar}}"/>
+            </view>
+          </view>
+          
+          <view class="hero-info">
+            <view class="name-row">
+              <block wx:if="{{!editing}}">
+                <text class="hero-name gold-text">{{userInfo.nickName}}</text>
+                <view class="edit-icon-wrapper" bindtap="startEditNickName">
+                  <text class="edit-icon">✎</text>
+                </view>
+              </block>
+              <block wx:else>
+                <input class="hero-name-input glass-pill" 
+                       value="{{tempNickName}}" 
+                       focus="{{editing}}"
+                       bindinput="onNickNameInput"
+                       bindblur="saveNickName"
+                       bindconfirm="saveNickName"/>
+              </block>
+            </view>
+            <text class="hero-class">{{userTitle || '流浪者'}} (Lv.{{userLevel || 1}})</text>
+          </view>
+        </view>
 
+        <view class="card-bg-decoration"></view>
+      </view>
 
-    <!-- 功能按钮 -->
-    <view class="actions-section">
-      <button class="action-btn home-btn" bindtap="goToHome">返回首页</button>
-      <button class="action-btn logout-btn" bindtap="logout">退出登录</button>
+      <view class="stats-row animate-enter delay-1">
+        <view class="stat-item glass-card" bindtap="viewCollectionStats">
+          <text class="stat-label">卷轴已展开</text>
+          <text class="stat-value gold-text">{{collectionStats.completionRate}}%</text>
+          <view class="stat-bar-bg">
+            <view class="stat-bar-fill" style="width: {{collectionStats.completionRate}}%"></view>
+          </view>
+        </view>
+        <view class="stat-item glass-card" bindtap="viewCollectionStats">
+          <text class="stat-label">圣物收集</text>
+          <text class="stat-value">{{collectionStats.activatedCount}} <text class="stat-sub">/ {{collectionStats.totalCount}}</text></text>
+        </view>
+      </view>
+
+      <view class="menu-list animate-enter delay-2">
+        <view class="menu-group-title decorative-line">系统选项</view>
+        
+        <view class="menu-item glass-card" bindtap="viewCollectionStats">
+          <view class="menu-left">
+            <text class="menu-icon">📜</text>
+            <text class="menu-text">赫拉迪姆图鉴</text>
+          </view>
+          <text class="menu-arrow">></text>
+        </view>
+
+        <view class="menu-item glass-card" bindtap="viewAchievements">
+          <view class="menu-left">
+            <text class="menu-icon">🏆</text>
+            <text class="menu-text">生涯成就</text>
+          </view>
+          <view class="menu-right">
+            <text class="menu-tag">开发中</text>
+            <text class="menu-arrow">></text>
+          </view>
+        </view>
+
+        <view class="menu-item glass-card logout" bindtap="logout">
+          <view class="menu-left">
+            <text class="menu-icon">🚪</text>
+            <text class="menu-text">离开游戏 (退出)</text>
+          </view>
+        </view>
+      </view>
+
     </view>
   </view>
 </view>

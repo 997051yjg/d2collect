@@ -7,7 +7,16 @@ Page({
     userInfo: null,
     editing: false,
     tempNickName: '',
-    uploadingAvatar: false
+    uploadingAvatar: false,
+    
+    // 游戏化数据
+    collectionStats: {
+      activatedCount: 0,
+      totalCount: 0,
+      completionRate: 0
+    },
+    userTitle: '流浪者',
+    userLevel: 1
   },
 
   onLoad() {
@@ -16,9 +25,11 @@ Page({
 
   onShow() {
     this.checkLoginStatus()
+    if (this.data.isLoggedIn) {
+      this.refreshStats() // 每次显示都刷新数据
+    }
   },
 
-  // 检查登录状态
   checkLoginStatus() {
     const isLoggedIn = app.globalData.isLoggedIn
     const userInfo = app.globalData.userInfo
@@ -28,456 +39,233 @@ Page({
       userInfo,
       tempNickName: userInfo ? userInfo.nickName : ''
     })
+    
+    if (isLoggedIn) {
+      this.refreshStats()
+    }
   },
 
-  // 微信登录
+  // 刷新统计数据（从缓存读取，不一定非要请求网络）
+  refreshStats() {
+    // 尝试读取 collection 页面的缓存数据
+    const cacheKey = `collectionData_${app.globalData.openid}`
+    const cachedData = wx.getStorageSync(cacheKey)
+    
+    if (cachedData) {
+      this.setData({
+        collectionStats: {
+          activatedCount: cachedData.activatedCount || 0,
+          totalCount: cachedData.totalCount || 0,
+          completionRate: cachedData.completionRate || 0
+        }
+      })
+      // 计算头衔
+      this.calculateUserTitle(cachedData.activatedCount || 0)
+    }
+  },
+
+  // 简单的头衔计算逻辑
+  calculateUserTitle(count) {
+    let title = '流浪者'
+    let level = 1
+    
+    if (count > 0) { title = '冒险者'; level = 5; }
+    if (count > 10) { title = '赫拉迪克学徒'; level = 10; }
+    if (count > 30) { title = '宝藏猎人'; level = 25; }
+    if (count > 50) { title = '奈非天'; level = 50; }
+    if (count > 80) { title = '圣殿守护者'; level = 70; }
+    if (count > 100) { title = '破坏神之敌'; level = 99; }
+    
+    this.setData({ userTitle: title, userLevel: level })
+  },
+
+  // 微信登录 (保持原有逻辑)
   async wxLogin() {
     try {
-      wx.showLoading({
-        title: '登录中...',
-        mask: true
-      })
-      
-      // 先进行基础登录获取openid
+      wx.showLoading({ title: '开启圣殿...', mask: true })
       const result = await app.wxLogin()
       
       if (result.success) {
-        this.setData({
-          isLoggedIn: true,
-          userInfo: result.userInfo
-        })
-        
+        this.setData({ isLoggedIn: true, userInfo: result.userInfo })
         wx.hideLoading()
-        wx.showToast({
-          title: '登录成功',
-          icon: 'success',
-          duration: 1500
-        })
-        
-        // 检查是否需要提示完善信息
-        setTimeout(() => {
-          this.checkAndPromptUserInfo()
-        }, 1000)
-        
+        this.refreshStats() // 登录后立即刷新数据
+        wx.showToast({ title: '欢迎归来', icon: 'none' })
       } else {
-        wx.hideLoading()
-        wx.showModal({
-          title: '登录失败',
-          content: result.error || '登录过程中出现错误',
-          showCancel: false
-        })
+        throw new Error(result.error)
       }
     } catch (error) {
       wx.hideLoading()
-      console.error('登录失败:', error)
-      
-      // 更详细的错误提示
-      let errorMsg = '登录失败，请重试'
-      if (error.errMsg) {
-        if (error.errMsg.includes('getUserProfile')) {
-          errorMsg = '获取用户信息失败，请重试'
-        } else if (error.errMsg.includes('cloud')) {
-          errorMsg = '云服务异常，请检查网络连接'
-        }
-      }
-      
-      wx.showModal({
-        title: '登录失败',
-        content: errorMsg,
-        showCancel: false
-      })
+      wx.showToast({ title: '登录失败', icon: 'none' })
     }
   },
 
-  // 检查并提示完善用户信息
-  async checkAndPromptUserInfo() {
-    // 检查用户是否已经完善了信息（不是默认信息）
-    const { userInfo } = this.data
-    
-    if (userInfo && 
-        (userInfo.nickName === '暗黑冒险者' || 
-         userInfo.avatarUrl === '/images/default-avatar.png')) {
-      // 用户信息不完整，提示完善
-      wx.showModal({
-        title: '完善信息',
-        content: '是否要完善您的个人信息？',
-        confirmText: '立即完善',
-        cancelText: '稍后再说',
-        success: (res) => {
-          if (res.confirm) {
-            this.updateUserProfile()
-          }
-        }
-      })
-    } else {
-      // 用户信息已经完善，不显示提示
-      console.log('用户信息已完善，跳过提示')
-    }
-  },
-
-  // 更新用户信息（必须在用户点击事件中调用）
-  async updateUserProfile() {
-    try {
-      const result = await app.getUserProfile()
-      
-      if (result.success) {
-        // 合并新获取的用户信息与现有信息，避免丢失已完善的信息
-        const mergedUserInfo = {
-          ...this.data.userInfo,
-          ...result.userInfo
-        }
-        
-        this.setData({
-          userInfo: mergedUserInfo
-        })
-        
-        // 更新全局数据和本地存储
-        app.globalData.userInfo = mergedUserInfo
-        wx.setStorageSync('userInfo', mergedUserInfo)
-        
-        // 更新数据库
-        await this.updateUserInfoInDB(mergedUserInfo)
-        
-        wx.showToast({
-          title: '信息更新成功',
-          icon: 'success'
-        })
-      } else {
-        wx.showModal({
-          title: '更新失败',
-          content: result.error || '更新用户信息失败',
-          showCancel: false
-        })
-      }
-    } catch (error) {
-      console.error('更新用户信息失败:', error)
-      wx.showToast({
-        title: '更新失败',
-        icon: 'none'
-      })
-    }
-  },
-
-  // 开始编辑昵称
+  // 编辑昵称逻辑优化
   startEditNickName() {
-    if (!this.data.isLoggedIn) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      return
-    }
-    
-    this.setData({
-      editing: true,
-      tempNickName: this.data.userInfo.nickName
-    })
+    this.setData({ editing: true, tempNickName: this.data.userInfo.nickName })
   },
 
-  // 取消编辑昵称
-  cancelEditNickName() {
-    this.setData({
-      editing: false,
-      tempNickName: this.data.userInfo.nickName
-    })
+  onNickNameInput(e) {
+    this.setData({ tempNickName: e.detail.value })
   },
 
-  // 保存昵称
   async saveNickName() {
-    const { tempNickName, userInfo } = this.data
+    if (!this.data.editing) return // 防止多次触发
     
+    const { tempNickName, userInfo } = this.data
     if (!tempNickName.trim()) {
-      wx.showToast({
-        title: '昵称不能为空',
-        icon: 'none'
-      })
-      return
-    }
-
-    if (tempNickName.length > 20) {
-      wx.showToast({
-        title: '昵称不能超过20个字符',
-        icon: 'none'
-      })
-      return
+      return wx.showToast({ title: '名字不能为空', icon: 'none' })
     }
 
     try {
-      // 更新全局数据
-      const updatedUserInfo = {
-        ...userInfo,
-        nickName: tempNickName
-      }
-      
+      const updatedUserInfo = { ...userInfo, nickName: tempNickName }
       app.globalData.userInfo = updatedUserInfo
-      
-      // 更新本地存储
       wx.setStorageSync('userInfo', updatedUserInfo)
       
-      // 更新数据库中的用户信息
-      await this.updateUserInfoInDB(updatedUserInfo)
+      // 异步更新数据库，不阻塞UI
+      this.updateUserInfoInDB(updatedUserInfo)
       
-      this.setData({
-        userInfo: updatedUserInfo,
-        editing: false
-      })
-      
-      wx.showToast({
-        title: '昵称修改成功',
-        icon: 'success'
-      })
-      
+      this.setData({ userInfo: updatedUserInfo, editing: false })
+      wx.showToast({ title: '更名成功', icon: 'none' })
     } catch (error) {
-      console.error('保存昵称失败:', error)
-      wx.showToast({
-        title: '修改失败',
-        icon: 'none'
-      })
+      // ignore
     }
   },
 
-  // 更新数据库中的用户信息
-  async updateUserInfoInDB(userInfo) {
-    try {
-      const db = wx.cloud.database()
-      const openid = app.globalData.openid
-      
-      // 获取用户记录
-      const { data: existingUsers } = await db.collection('users')
-        .where({ openid: openid })
-        .get()
-      
-      if (existingUsers.length > 0) {
-        // 更新用户信息
-        await db.collection('users').doc(existingUsers[0]._id).update({
-          data: {
-            nickName: userInfo.nickName,
-            avatarUrl: userInfo.avatarUrl,
-            updateTime: new Date()
-          }
-        })
-      }
-    } catch (error) {
-      console.error('更新数据库用户信息失败:', error)
-      // 这里不抛出错误，因为用户可能只是修改了本地信息
-    }
-  },
-
-  // 上传头像
   uploadAvatar() {
+    // 1. 权限与状态检查
+    if (this.data.uploadingAvatar) return
     if (!this.data.isLoggedIn) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      return
+      return wx.showToast({ title: '请先登录', icon: 'none' })
     }
 
-    this.setData({ uploadingAvatar: true })
-    
-    // 使用更现代的wx.chooseMedia API
     wx.chooseMedia({
       count: 1,
       mediaType: ['image'],
       sourceType: ['album', 'camera'],
-      camera: 'front', // 默认前置摄像头拍头像
+      sizeType: ['compressed'], // 建议压缩，节省流量和空间
       success: async (res) => {
-        try {
-          console.log('选择图片返回结果:', res)
-          
-          // 检查返回结果结构
-          if (!res.tempFiles || res.tempFiles.length === 0) {
-            throw new Error('未获取到图片文件')
-          }
-          
-          const tempFilePath = res.tempFiles[0].tempFilePath
-          
-          // 检查图片大小（限制2MB）
-          if (res.tempFiles[0].size > 2 * 1024 * 1024) {
-            wx.showModal({
-              title: '图片过大',
-              content: '请选择小于2MB的图片',
-              showCancel: false
-            })
-            this.setData({ uploadingAvatar: false })
-            return
-          }
+        this.setData({ uploadingAvatar: true })
+        
+        const tempFilePath = res.tempFiles[0].tempFilePath
+        
+        // 2. 【关键】在更新前，记录旧头像的 FileID
+        const oldAvatarUrl = this.data.userInfo.avatarUrl
 
-          // 先保存旧头像的文件ID（用于后续删除）
-          const oldAvatarUrl = this.data.userInfo.avatarUrl
+        try {
+          // 3. 上传新头像到云存储
+          // 使用时间戳+随机数防止文件名冲突
+          const cloudPath = `avatars/${app.globalData.openid}_${Date.now()}.jpg`
           
-          // 上传新图片到云存储
           const uploadResult = await wx.cloud.uploadFile({
-            cloudPath: `avatars/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`,
+            cloudPath: cloudPath,
             filePath: tempFilePath
           })
+          
+          const newFileID = uploadResult.fileID
 
-          // 更新用户信息
-          const updatedUserInfo = {
-            ...this.data.userInfo,
-            avatarUrl: uploadResult.fileID
+          // 4. 更新本地数据与全局数据
+          const updatedUserInfo = { 
+            ...this.data.userInfo, 
+            avatarUrl: newFileID 
           }
           
           app.globalData.userInfo = updatedUserInfo
           wx.setStorageSync('userInfo', updatedUserInfo)
-          
-          // 更新数据库
+          this.setData({ userInfo: updatedUserInfo })
+
+          // 5. 同步更新到数据库
           await this.updateUserInfoInDB(updatedUserInfo)
-          
-          this.setData({
-            userInfo: updatedUserInfo
-          })
-          
-          // 删除旧头像文件（如果存在且不是默认头像）
-          if (oldAvatarUrl && oldAvatarUrl !== '/images/default-avatar.png' && oldAvatarUrl.startsWith('cloud://')) {
-            try {
-              await wx.cloud.deleteFile({
-                fileList: [oldAvatarUrl]
-              })
-              console.log('旧头像已删除:', oldAvatarUrl)
-            } catch (deleteError) {
-              console.warn('删除旧头像失败:', deleteError)
-              // 删除失败不影响正常使用
-            }
+
+          // 6. 【关键】删除云端的旧头像
+          // 必须判断：旧头像是云文件 AND 旧头像不是新头像 AND 旧头像不是默认图
+          if (oldAvatarUrl && 
+              oldAvatarUrl.startsWith('cloud://') && 
+              oldAvatarUrl !== newFileID &&
+              oldAvatarUrl !== '/images/default-avatar.png') { // 假设你有默认图的逻辑
+            
+            wx.cloud.deleteFile({
+              fileList: [oldAvatarUrl]
+            }).then(res => {
+              console.log('旧头像清理成功', res.fileList)
+            }).catch(err => {
+              console.warn('旧头像清理失败，不影响主流程', err)
+            })
           }
-          
-          wx.showToast({
-            title: '头像上传成功',
-            icon: 'success'
-          })
-          
-        } catch (error) {
-          console.error('上传头像失败:', error)
-          
-          let errorMessage = '上传失败'
-          if (error.errMsg && error.errMsg.includes('auth deny')) {
-            errorMessage = '请授权访问相册或相机'
-          } else if (error.errMsg && error.errMsg.includes('cancel')) {
-            // 用户取消，不显示提示
-            return
-          } else if (error.errMsg && error.errMsg.includes('security')) {
-            errorMessage = '图片包含敏感内容，请更换图片'
-          }
-          
-          wx.showToast({
-            title: errorMessage,
-            icon: 'none'
-          })
+
+          wx.showToast({ title: '头像更新成功', icon: 'success' })
+
+        } catch (e) {
+          console.error('头像上传流程失败', e)
+          wx.showToast({ title: '上传失败', icon: 'none' })
         } finally {
           this.setData({ uploadingAvatar: false })
         }
-      },
-      fail: (err) => {
-        console.error('选择图片失败:', err)
-        this.setData({ uploadingAvatar: false })
-        
-        if (err.errMsg && err.errMsg.includes('auth deny')) {
-          wx.showModal({
-            title: '权限申请',
-            content: '请授权访问相册或相机权限',
-            showCancel: false
-          })
-        } else if (err.errMsg && err.errMsg.includes('cancel')) {
-          // 用户取消，不显示提示
-        } else {
-          wx.showToast({
-            title: '选择图片失败',
-            icon: 'none'
-          })
-        }
       }
     })
   },
 
-  // 退出登录
+  // ====================================================
+  // 数据库更新逻辑 (优化版)
+  // ====================================================
+  async updateUserInfoInDB(userInfo) {
+    try {
+      const db = wx.cloud.database()
+      const _ = db.command
+      
+      // 直接根据 openid 更新，无需先查询后更新
+      // 使用 .where().update() 比 .doc().update() 更灵活，
+      // 因为前端有时候不一定拿得到 _id，但一定有 openid (隐式包含在鉴权信息中)
+      const res = await db.collection('users')
+        .where({
+          // 这里的 openid 其实是多余的，因为云数据库默认只能查改自己的数据
+          // 但写上语义更清晰
+          _openid: '{openid}' 
+        })
+        .update({
+          data: {
+            nickName: userInfo.nickName,
+            avatarUrl: userInfo.avatarUrl,
+            updateTime: db.serverDate() // 【建议】使用服务端时间，更准确
+          }
+        })
+
+      console.log('数据库更新结果：', res)
+      
+      // 如果 updated 为 0，说明数据库里可能没有这个用户（比如老数据清洗掉了）
+      // 可以在这里做一个容错：如果没更新到，就尝试 add 一条（看你的业务需求）
+
+    } catch (error) {
+      console.error('更新数据库用户信息失败:', error)
+      // 这里的错误通常是网络问题或权限问题
+      // 可以选择不打扰用户，或者上报日志
+    }
+  },
+
   logout() {
     wx.showModal({
-      title: '确认退出',
-      content: '确定要退出登录吗？',
+      title: '离开游戏',
+      content: '确定要退出并返回主菜单吗？',
+      confirmColor: '#ff6b6b',
       success: (res) => {
         if (res.confirm) {
           app.logout()
-          
-          this.setData({
-            isLoggedIn: false,
-            userInfo: null
+          this.setData({ isLoggedIn: false, userInfo: null })
+          // 清除页面数据
+          this.setData({ 
+              collectionStats: { activatedCount:0, totalCount:0, completionRate:0 },
+              userTitle: '流浪者'
           })
-          
-          wx.showToast({
-            title: '已退出登录',
-            icon: 'success'
-          })
-          
-          // 跳转到首页
-          setTimeout(() => {
-            wx.switchTab({
-              url: '/pages/index/index'
-            })
-          }, 1500)
         }
       }
     })
   },
 
-  // 昵称输入
-  onNickNameInput(e) {
-    this.setData({
-      tempNickName: e.detail.value
-    })
-  },
-
-  // 查看收集统计
+  // 页面跳转
   viewCollectionStats() {
-    if (!this.data.isLoggedIn) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      return
-    }
-    
-    wx.switchTab({
-      url: '/pages/collection/collection'
-    })
+    wx.switchTab({ url: '/pages/collection/collection' })
   },
-
-  // 查看成就
+  
   viewAchievements() {
-    if (!this.data.isLoggedIn) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      return
-    }
-    
-    wx.showModal({
-      title: '成就系统',
-      content: '成就功能正在开发中',
-      showCancel: false
-    })
-  },
-
-  // 跳转到首页
-  goToHome() {
-    wx.switchTab({
-      url: '/pages/index/index'
-    })
-  },
-
-  // 分享功能
-  onShareAppMessage() {
-    return {
-      title: '我的暗黑2装备收藏',
-      path: '/pages/profile/profile'
-    }
-  },
-
-  // 分享到朋友圈
-  onShareTimeline() {
-    return {
-      title: '暗黑2装备图鉴 - 我的收藏',
-      imageUrl: this.data.userInfo ? this.data.userInfo.avatarUrl : '/images/default-avatar.png'
-    }
+    wx.showToast({ title: 'DLC开发中...', icon: 'none' })
   }
 })
