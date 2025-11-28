@@ -45,9 +45,40 @@ Page({
 
   onShow() {
     this.checkLoginStatus()
-    // 简单判断是否需要刷新，这里可以配合全局状态管理优化
-    if (this.data.isLoggedIn && this.data.equipmentList.length === 0) {
+
+    if (!this.data.isLoggedIn) return
+
+    // 1. 检查是否有来自主页（或其他页面）的外部筛选指令
+    const externalSettings = wx.getStorageSync('collectionFilterSettings')
+    let hasExternalChanges = false
+
+    if (externalSettings) {
+      console.log('收到外部筛选指令:', externalSettings)
+      
+      // 2. 应用外部配置
+      this.setData({
+        advancedFilters: externalSettings.advancedFilters,
+        currentTypeFilter: externalSettings.currentTypeFilter || 'all',
+        searchKeyword: externalSettings.searchKeyword || ''
+      })
+
+      // 3. 标记变更并清除缓存（阅后即焚，防止污染下次进入）
+      hasExternalChanges = true
+      wx.removeStorageSync('collectionFilterSettings')
+    }
+
+    // 4. 数据加载策略分流
+    if (this.data.equipmentList.length === 0) {
+      // 场景 A: 首次进入或无数据 -> 执行完整加载
+      // loadCollectionData 内部最后会调用 applyFilters，所以这里不需要显式调用
       this.loadCollectionData()
+    } else if (hasExternalChanges) {
+      // 场景 B: 已有数据且收到筛选指令 -> 仅重新计算筛选
+      // 避免重新请求网络/云函数，极大提升跳转速度
+      this.applyFilters()
+      
+      // 可选：滚动回顶部，让用户看到筛选结果的开头
+      wx.pageScrollTo({ scrollTop: 0, duration: 300 })
     }
   },
 
