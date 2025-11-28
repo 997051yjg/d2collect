@@ -26,6 +26,13 @@ Page({
     sortBy: 'name', // name, type, rarity, activation
     sortOrder: 'asc', // asc, desc
     
+    // 统计数据
+    collectionStats: {
+      activatedCount: 0,
+      totalCount: 0,
+      completionRate: 0
+    },
+    
     // ✅ 2. 新增：用于渲染筛选按钮的数组
     filterCategories: []
   },
@@ -152,9 +159,11 @@ Page({
       if (!forceRefresh && cachedData && (now - cachedData.timestamp < 3 * 60 * 1000)) {
         this.setData({
           equipmentList: cachedData.equipmentList,
-          activatedCount: cachedData.activatedCount,
-          totalCount: cachedData.totalCount,
-          completionRate: cachedData.completionRate
+          collectionStats: {
+            activatedCount: cachedData.activatedCount,
+            totalCount: cachedData.totalCount,
+            completionRate: cachedData.completionRate
+          }
         })
         this.filterEquipmentList()
         return
@@ -180,9 +189,11 @@ Page({
       
       this.setData({
         equipmentList: processedData.list,
-        activatedCount: processedData.stats.activatedCount,
-        totalCount: processedData.stats.totalCount,
-        completionRate: processedData.stats.completionRate
+        collectionStats: {
+          activatedCount: processedData.stats.activatedCount,
+          totalCount: processedData.stats.totalCount,
+          completionRate: processedData.stats.completionRate
+        }
       })
       
       this.filterEquipmentList()
@@ -627,6 +638,28 @@ Page({
     })
   },
 
+  // 微信登录
+  async wxLogin() {
+    try {
+      wx.showLoading({
+        title: '登录中...'
+      })
+      
+      const result = await app.wxLogin()
+      if (result) {
+        this.setData({ isLoggedIn: true })
+        await this.loadCollectionData()
+      }
+    } catch (error) {
+      wx.showToast({
+        title: '登录失败',
+        icon: 'none'
+      })
+    } finally {
+      wx.hideLoading()
+    }
+  },
+
   // 刷新数据
   async refreshData() {
     if (!this.data.isLoggedIn) {
@@ -776,5 +809,49 @@ Page({
       displayList: this.data.displayList.concat(nextBatch),
       loading: false
     });
+  },
+
+  // 页面滚动检测 - 添加滚动动画
+  onPageScroll(e) {
+    // 获取滚动位置
+    const scrollTop = e.scrollTop;
+    
+    // 获取所有需要动画的元素
+    const query = wx.createSelectorQuery();
+    const elements = query.selectAll('.scroll-fade');
+    
+    elements.boundingClientRect((rects) => {
+      rects.forEach((rect, index) => {
+        // 如果元素进入视口，添加可见类
+        if (rect.top <= wx.getSystemInfoSync().windowHeight - 100) {
+          const element = elements.select(index);
+          element.addClass('visible').exec();
+        }
+      });
+    }).exec();
+  },
+
+  // 页面显示时初始化动画
+  onReady() {
+    // 延迟执行动画初始化，确保页面已渲染
+    setTimeout(() => {
+      this.initScrollAnimations();
+    }, 300);
+  },
+
+  // 初始化滚动动画
+  initScrollAnimations() {
+    const query = wx.createSelectorQuery();
+    const elements = query.selectAll('.scroll-fade');
+    
+    elements.boundingClientRect((rects) => {
+      rects.forEach((rect, index) => {
+        // 检查元素是否在视口中
+        if (rect.top <= wx.getSystemInfoSync().windowHeight) {
+          const element = elements.select(index);
+          element.addClass('visible').exec();
+        }
+      });
+    }).exec();
   }
 })
